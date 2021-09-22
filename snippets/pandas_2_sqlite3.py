@@ -16,6 +16,10 @@ if __name__ == '__main__':
     # as a sqlite3 table.
     sadlsa_align_qual_df = pd.read_csv('../output/sadlsa_alignment_quality.csv')
 
+    # Drop 'Unnamed' column since the original first column of the CSV file
+    # doesn't have a name, and it's for an index we don't want anyway.
+    sadlsa_align_qual_df = sadlsa_align_qual_df[sadlsa_align_qual_df.columns.drop(list(sadlsa_align_qual_df.filter(regex='Unnamed')))]
+
     # this will create the sqlite3 database if it does not already exist;
     # echo=True to have it be noisy about what it's doing; turn that off for
     # production, natch
@@ -33,6 +37,5 @@ if __name__ == '__main__':
         # "upsert", which I don't see; i.e., add new information if not
         # already there, but replace it if it is.)
         sadlsa_align_qual_df.to_sql(sqlite_table, sqlite_connection,
+                                    index=False,
                                     if_exists='replace')
-
-    pass
