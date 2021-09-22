@@ -3,6 +3,10 @@
 .idea
 local/
 
+notebooks/.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/*
+*/.ipynb_checkpoints/*
+
 #Developer specific project files
 /tmp.*
 *.log
@@ -55,3 +59,4 @@ venv/
 
 # dask
 dask-worker-space
+/notebooks/.ipynb_checkpoints/
