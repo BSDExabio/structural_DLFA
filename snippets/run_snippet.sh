@@ -7,3 +7,4 @@
 python3 ./pandas_2_sqlite3.py
 
 # do a stupid query on it to show that all the data is there  :P
+sqlite3 -header  -column save_pandas.db 'SELECT * FROM sadlsa_alignment_quality WHERE tms1 > 0.9 AND tms2 > 0.9' | head
