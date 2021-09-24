@@ -30,6 +30,10 @@ logging.basicConfig(level='DEBUG', format='%(message)s',
 logger = logging.getLogger(__name__)
 
 
+# name of target database table
+EC_TABLE = 'enzyme_desciptions'
+
+
 def ec_file_to_df(ec_file):
     """ parse the file containing the ENZYME nomenclature database
 
@@ -45,14 +49,15 @@ def ec_file_to_df(ec_file):
     :param ec_file: EC file of nomenclature database
     :return: data frame of EC file
     """
-    ec_df = pd.DataFrame(columns=['class', 'subclass', 'subsubclass',
-                                  'class_name', 'sub_class_desc',
-                                  'sub_sub_class_desc'])
+    rows = [] # will contain rows of dicts corresponding to EC ec_df
 
-    curr_class_idx = 0 # index for current class
-    curr_subclass_idx = 0 # index for current subclass
-    curr_class_name = '' # name of current class
-    curr_subclass_desc = '' # current subclass description
+    # Gets updated for each entry, then appended to rows
+    curr_entry = {'class' : 0,
+                  'subclass' : 0,
+                  'subsubclass' : 0,
+                  'class_name' : '',
+                  'subclass_desc' : '',
+                  'subsubclass_desc' : ''}
 
     with ec_file.open('r') as ec_db:
         while line in ec_db:
@@ -60,16 +65,19 @@ def ec_file_to_df(ec_file):
                 # we have a hit on a line of data
                 if line[6] in string.digits:
                     # this is a sub-sub-class
-                    pass
+                    curr_entry['subsubclass'] = line[5:7]
+                    curr_entry['subsubclass_desc'] = line[11:]
+                    rows.append(curr_entry)
                 elif line[3] in string.digits:
                     # this is a sub-class
-                    pass
+                    curr_entry['subclass'] = line[2:4]
+                    curr_entry['subclass_desc'] = line[11:]
                 else:
                     # this is a class
-                    curr_class_idx = int(line[0])
-                    ec_df[curr_subclass] = {'class' : line[11:]}
+                    curr_entry['class'] = line[0]
+                    curr_entry['class_name'] = line[11:]
 
-
+    ec_df = pd.DataFrame(rows)
 
     return ec_df
 
@@ -84,9 +92,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     ec_file = Path(args.ec_file)
-
     if not ec_file.exists():
-        print(f'{args.ec_file} does not exist ... exiting')
+        logging.critical(f'{args.ec_file} does not exist ... exiting')
         sys.exit(1)
 
-    entries = ec_file_to_df(ec_file)
+    logging.info(f'Ingesting {args.ec_file}')
+
+    ec_df = ec_file_to_df(ec_file)
+
+    logging.info(f'Done.  Added {len(ec_df)} entries to'
+                 f' {args.database} table {EC_TABLE}.')
