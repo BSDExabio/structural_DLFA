@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """
     Imports ENZYME nomenclature database to an sqlite3 table
+
+usage: ec_2_sqlite3.py [-h] --ec-file EC_FILE --database DATABASE
+
+ENZYME nomenclature database importer
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --ec-file EC_FILE    ENZYME nomenclature database file
+  --database DATABASE  sqlite3 in which to insert EC data
 """
 import argparse
 import re
@@ -43,7 +52,7 @@ def ec_file_to_df(ec_file):
     1. 1. -.-   Acting on the CH-OH group of donors.
     1. 1. 1.-    With NAD(+) or NADP(+) as acceptor.
 
-    So: columns 0 is class, 2-3 subclass, 5-6 sub-subclass, 11: is description
+    So: columns 0 is class, 2-3 subclass, 5-6 sub-subclass, 11+: is description
 
     :param ec_file: EC file of nomenclature database
     :return: data frame of EC file
