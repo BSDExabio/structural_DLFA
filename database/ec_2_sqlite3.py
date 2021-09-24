@@ -12,23 +12,18 @@ optional arguments:
   --database DATABASE  sqlite3 in which to insert EC data
 """
 import argparse
-import re
-import string
-from pathlib import Path
-import pandas as pd
-import numpy as np
-import sys
-from sqlalchemy import create_engine
 import logging
-from rich.logging import RichHandler
-from rich.table import Table
-from rich import print
-from rich import pretty
+import string
+import sys
+from pathlib import Path
 
+import pandas as pd
+from rich import pretty
+from rich.logging import RichHandler
+from sqlalchemy import create_engine
 pretty.install()
 
 from rich.traceback import install
-
 install()
 
 rich_handler = RichHandler(rich_tracebacks=True,
