@@ -29,7 +29,6 @@ logging.basicConfig(level='DEBUG', format='%(message)s',
                     handlers=[rich_handler])
 logger = logging.getLogger(__name__)
 
-
 # name of target database table
 EC_TABLE = 'enzyme_desciptions'
 
@@ -49,15 +48,15 @@ def ec_file_to_df(ec_file):
     :param ec_file: EC file of nomenclature database
     :return: data frame of EC file
     """
-    rows = [] # will contain rows of dicts corresponding to EC ec_df
+    rows = []  # will contain rows of dicts corresponding to EC ec_df
 
     # Gets updated for each entry, then appended to rows
-    curr_entry = {'class' : 0,
-                  'subclass' : 0,
-                  'subsubclass' : 0,
-                  'class_name' : '',
-                  'subclass_desc' : '',
-                  'subsubclass_desc' : ''}
+    curr_entry = {'class'           : 0,
+                  'subclass'        : 0,
+                  'subsubclass'     : 0,
+                  'class_name'      : '',
+                  'subclass_desc'   : '',
+                  'subsubclass_desc': ''}
 
     with ec_file.open('r') as ec_db:
         for line in ec_db:
@@ -86,17 +85,44 @@ def ec_file_to_df(ec_file):
     # Converts from objects to strings
     ec_df = ec_df.convert_dtypes()
 
-    # But these are really integers, and not very big ones
+    # But these are really integers, and not very big ones, so Int8
+    # is big enough
     ec_df['class'] = pd.to_numeric(ec_df['class']).astype('Int8')
-    ec_df.subclass = pd.to_numeric(ec_df.subclass).astype('Int8')
-    ec_df.subsubclass = pd.to_numeric(ec_df.subsubclass).astype('Int8')
+    ec_df['subclass'] = pd.to_numeric(ec_df['subclass']).astype('Int8')
+    ec_df['subsubclass'] = pd.to_numeric(ec_df['subsubclass']).astype('Int8')
 
     return ec_df
 
 
+def write_df_to_db(ec_df, database):
+    """ write the given EC dataframe to the sqlite3 db
+
+    :param ec_df: dataframe of EC nomenclature
+    :param database: name of sqlite3 database
+    :return: none.
+    """
+    # this will create the sqlite3 database if it does not already exist;
+    # echo=True to have it be noisy about what it's doing; turn that off for
+    # production, natch
+    engine = create_engine(f'sqlite:///{database}', echo=True)
+
+    with engine.connect() as sqlite_connection:
+        # if_exists='replace' means dropping the whole table first and then
+        # replacing if with new values.  See
+        # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas
+        # .DataFrame.to_sql.html for more information.  (You may want to
+        # append, instead.  Also, I was hoping there would be support for
+        # "upsert", which I don't see; i.e., add new information if not
+        # already there, but replace it if it is.)
+        ec_df.to_sql(EC_TABLE, sqlite_connection,
+                     index=False,
+                     if_exists='replace')
+
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='ENZYME nomenclature database importer')
-    parser.add_argument('--ec-file',  required=True,
+    parser = argparse.ArgumentParser(
+        description='ENZYME nomenclature database importer')
+    parser.add_argument('--ec-file', required=True,
                         help='ENZYME nomenclature database file')
     parser.add_argument('--database', required=True,
                         help='sqlite3 in which to insert EC data')
