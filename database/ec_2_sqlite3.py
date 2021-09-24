@@ -79,6 +79,18 @@ def ec_file_to_df(ec_file):
 
     ec_df = pd.DataFrame(rows)
 
+    # Strip out whitespace
+    # (https://stackoverflow.com/questions/33788913/pythonic-efficient-way-to-strip-whitespace-from-every-pandas-data-frame-cell-tha/33789292)
+    ec_df = ec_df.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+
+    # Converts from objects to strings
+    ec_df = ec_df.convert_dtypes()
+
+    # But these are really integers, and not very big ones
+    ec_df['class'] = pd.to_numeric(ec_df['class']).astype('Int8')
+    ec_df.subclass = pd.to_numeric(ec_df.subclass).astype('Int8')
+    ec_df.subsubclass = pd.to_numeric(ec_df.subsubclass).astype('Int8')
+
     return ec_df
 
 
