@@ -24,7 +24,7 @@ install()
 
 rich_handler = RichHandler(rich_tracebacks=True,
                            markup=True)
-logging.basicConfig(level='DEBUG', format='%(message)s',
+logging.basicConfig(level='INFO', format='%(message)s',
                     datefmt="[%Y/%m/%d %H:%M:%S]",
                     handlers=[rich_handler])
 logger = logging.getLogger(__name__)
@@ -104,7 +104,7 @@ def write_df_to_db(ec_df, database):
     # this will create the sqlite3 database if it does not already exist;
     # echo=True to have it be noisy about what it's doing; turn that off for
     # production, natch
-    engine = create_engine(f'sqlite:///{database}', echo=True)
+    engine = create_engine(f'sqlite:///{database}', echo=False)
 
     with engine.connect() as sqlite_connection:
         # if_exists='replace' means dropping the whole table first and then
@@ -137,6 +137,8 @@ if __name__ == '__main__':
     logging.info(f'Ingesting {args.ec_file}')
 
     ec_df = ec_file_to_df(ec_file)
+
+    write_df_to_db(ec_df, args.database)
 
     logging.info(f'Done.  Added {len(ec_df)} entries to'
                  f' {args.database} table {EC_TABLE}.')
