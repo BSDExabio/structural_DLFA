@@ -60,14 +60,14 @@ def ec_file_to_df(ec_file):
                   'subsubclass_desc' : ''}
 
     with ec_file.open('r') as ec_db:
-        while line in ec_db:
+        for line in ec_db:
             if line[0] in string.digits:
                 # we have a hit on a line of data
                 if line[6] in string.digits:
                     # this is a sub-sub-class
                     curr_entry['subsubclass'] = line[5:7]
                     curr_entry['subsubclass_desc'] = line[11:]
-                    rows.append(curr_entry)
+                    rows.append(curr_entry.copy())
                 elif line[3] in string.digits:
                     # this is a sub-class
                     curr_entry['subclass'] = line[2:4]
