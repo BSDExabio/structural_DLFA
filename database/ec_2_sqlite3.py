@@ -95,6 +95,11 @@ def ec_file_to_df(ec_file):
     ec_df['subclass'] = pd.to_numeric(ec_df['subclass']).astype('Int8')
     ec_df['subsubclass'] = pd.to_numeric(ec_df['subsubclass']).astype('Int8')
 
+    # Snip out those awful trailing periods
+    ec_df['class_name'] = ec_df['class_name'].str.replace(r'.$','')
+    ec_df['subclass_desc'] = ec_df['subclass_desc'].str.replace(r'.$','')
+    ec_df['subsubclass_desc'] = ec_df['subsubclass_desc'].str.replace(r'.$','')
+
     return ec_df
 
 
