@@ -22,23 +22,27 @@ class Database():
         """
             This will add a table in the sqlite3 database that will identify
             the source of this database.
+
+            TODO need to drop table before hand if run on existing database
+            so tht we only have the one canonical row of info.
         """
         if not date:
-            date = datetime.now().date()
+            date = datetime.now().date().isoformat()
         if not version:
             version = '0.0'
         with self.engine.connect() as conn:
-            # TODO finish creating the table for institution
-            conn.execute(text('CREATE TABLE info (institution varchar(255), '
-                              'date varchar(10),'
-                              'version varchar(20)'))
+            conn.execute(text('CREATE TABLE IF NOT EXISTS '
+                              'info (institution TEXT, '
+                              'date TEXT, '
+                              'version TEXT)'))
             conn.execute(text('INSERT INTO info (institution, date, version) '
-                              'VALUES (:info, :date, :version)'),
+                              'VALUES (:institution, :date, :version)'),
                          [{'institution' : 'Oak Ridge National Laboratory',
                            'date' : date,
                            'version' : version}])
-            conn.commit()
 
 
 if __name__ == '__main__':
     # test harness
+    dlfa_db = Database('/tmp/dlfa.db')
+    dlfa_db.add_info_table()
