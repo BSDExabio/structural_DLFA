@@ -4,6 +4,7 @@
 """
 from datetime import datetime
 from sqlalchemy import create_engine, text
+import json
 
 class Database():
     """
@@ -40,6 +41,37 @@ class Database():
                          [{'institution' : 'Oak Ridge National Laboratory',
                            'date' : date,
                            'version' : version}])
+
+    def query_enzyme(self, class_num, subclass_num, subsubclass_num):
+        """ Queries the enzyme table
+
+        We return a JSON object because that works well with web sites.
+
+        :param class_num: class number of enzyme
+        :param subclass_num: subclass number of enzyme
+        :param subsubclass_num: subsubclass number of enzyme
+
+        :return: JSON of enzyme or None if not found
+        """
+        with self.engine.connect() as conn:
+            result = conn.execute(text("SELECT class_name, "
+                                       "subclass_desc, "
+                                       "subsubclass_desc "
+                                       "FROM enzyme_desciptions "
+                                       "WHERE class = :class_num AND "
+                                       "subclass = :subclass_num AND "
+                                       "subsubclass = :subsubclass_num" ),
+                                  {'class_num' : class_num,
+                                   'subclass_num' : subclass_num,
+                                   'subsubclass_num' : subsubclass_num})
+
+            for class_name, subclass_desc, subsubclass_desc in result:
+                return json.dumps({'class_name' : class_name,
+                                   'subclass_desc' : subclass_desc,
+                                   'subsubclass_desc' : subsubclass_desc})
+
+            # If we got this far, then there were no hits.
+            return None
 
 
 if __name__ == '__main__':
