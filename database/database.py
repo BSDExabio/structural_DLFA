@@ -5,6 +5,7 @@
 from datetime import datetime
 from sqlalchemy import create_engine, text
 import json
+import sqlite3
 
 class Database():
     """
@@ -42,6 +43,7 @@ class Database():
                            'date' : date,
                            'version' : version}])
 
+
     def query_enzyme(self, class_num, subclass_num, subsubclass_num):
         """ Queries the enzyme table
 
@@ -78,3 +80,9 @@ if __name__ == '__main__':
     # test harness
     dlfa_db = Database('/tmp/dlfa.db')
     dlfa_db.add_info_table()
+
+    try:
+        enzyme = dlfa_db.query_enzyme(1, 1, 1)
+        print(f'Got {enzyme}')
+    except sqlite3.OperationalError as e:
+        print(f'{e}')
