@@ -4,9 +4,9 @@ def parse_sadlsa_score_file(fn, count=10):
     import gzip
 
     columns = ["seqname", "alnlen", "range1", "tmscore1", "range2", "tmscore2", "alnscore", "seq_id", "desc"]
-    df = pd.DataFrame(columns = cols)
+    df = pd.DataFrame(columns = columns)
 
-    with gzip.open(fn) as f:
+    with gzip.open(fn, mode='rt') as f:
         lines=f.readlines()
 
     for line in lines[3:count+3]:
