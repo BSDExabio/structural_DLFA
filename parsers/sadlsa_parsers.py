@@ -26,6 +26,7 @@ def parse_sadlsa_score_file(fn, count=10):
         with gzip.open(fn, mode='rt') as f:
             lines = f.readlines()
     else:
+        # Someone manually uncompressed the file, probably to look at it
         with open(fn, mode='rt') as f:
             lines = f.readlines()
 
@@ -42,6 +43,10 @@ def parse_sadlsa_score_file(fn, count=10):
 
 def parse_sadlsa_aln_file(fn, count=10):
     """ translate given SAdLSA alignment file into pandas dataframe
+
+    TODO consider splitting this into two dataframes, one for the alignment
+    block header, and the other for the rows of alignment data; that should
+    save redundant column information.
 
     :param fn: string filename of score file
     :param count: how many of the top scores we want to get
@@ -64,30 +69,44 @@ def parse_sadlsa_aln_file(fn, count=10):
         with gzip.open(fn) as f:
             lines = f.readlines()
     else:
+        # Someone manually uncompressed the file, probably to look at it
         with open(fn, mode='rt') as f:
             lines = f.readlines()
 
-    i = 0
     for line in lines:
-        if i == count:
-            break
 
-        res = prog.search(line)
-        if res:
-            i += 1
-            res = list(res.groups())
-            for subline in itertools.islice(lines, int(res[2])):
-                rec = res + subline.strip().replace('*', '').split()
-                series = pd.Series(rec, index=df.columns)
-                df = df.append(series, ignore_index=True)
+        search_results = prog.search(line)
+        if search_results:
+            # We have a hit on the start of an alignment block
+            if len(df) == count:
+                # We're done if we have the user's target number of rows
+                break
+            alignment_header_data = list(search_results.groups())
+        elif '#Ind' == line[0:4]:
+            # This is the header for the alignment block, so we can skip it
+            continue
+        elif line.strip() == '':
+            # This is a line between blocks, so we can just skip it
+            continue
+        else:
+            # We have a row of actual data, so split out the data (after
+            # stripping out any '*' in the line) and append that to the
+            # alignment block info
+            rec = alignment_header_data + line.strip().replace('*', '').split()
+            series = pd.Series(rec, index=df.columns)
+            df = df.append(series, ignore_index=True)
 
     return df
 
 
 if __name__ == '__main__':
-    # Where the score and alignment files of interest are.
-    base_path = Path('/Users/may/Projects/data/PSP/desulfovibrio_vulgaris/out/WP_164928147.1/sadlsa_pdb70_210310')
-
     # test harness for these functions
+
+    # Where the score and alignment files of interest are.
+    base_path = Path('/Users/may/Projects/data/PSP/desulfovibrio_vulgaris/out/'
+                     'WP_164928147.1/sadlsa_pdb70_210310')
+
     score_df = parse_sadlsa_score_file(str(base_path / 'WP_164928147.1_sco.dat'))
     align_df = parse_sadlsa_aln_file(str(base_path / 'WP_164928147.1_aln.dat'))
+
+    pass
