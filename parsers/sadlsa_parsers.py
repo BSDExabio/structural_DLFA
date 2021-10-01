@@ -48,7 +48,7 @@ def parse_sadlsa_aln_file(fn, count=10):
     block header, and the other for the rows of alignment data; that should
     save redundant column information.
 
-    :param fn: string filename of score file
+    :param fn: string filename of alignment file
     :param count: how many of the top scores we want to get
     :return: pandas dataframe of
     """
