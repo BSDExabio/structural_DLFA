@@ -4,7 +4,7 @@
 
     This is used by another utility for importing into sqlite3 database.
 """
-
+from pathlib import Path
 import pandas as pd
 
 
@@ -21,8 +21,13 @@ def parse_sadlsa_score_file(fn, count=10):
                "alnscore", "seq_id", "desc"]
     df = pd.DataFrame(columns=columns)
 
-    with gzip.open(fn, mode='rt') as f:
-        lines = f.readlines()
+    if fn[-1] == 'z':
+        # compressed file names should end in 'z'
+        with gzip.open(fn, mode='rt') as f:
+            lines = f.readlines()
+    else:
+        with open(fn, mode='rt') as f:
+            lines = f.readlines()
 
     for line in lines[3:count + 3]:
         temp = line.strip().split('\t|')
@@ -54,8 +59,13 @@ def parse_sadlsa_aln_file(fn, count=10):
                "Prob<5", "Prob<8"]
     df = pd.DataFrame(columns=columns)
 
-    with gzip.open(fn) as f:
-        lines = f.readlines()
+    if fn[-1] == 'z':
+        # compressed file names should end in 'z'
+        with gzip.open(fn) as f:
+            lines = f.readlines()
+    else:
+        with open(fn, mode='rt') as f:
+            lines = f.readlines()
 
     i = 0
     for line in lines:
@@ -75,4 +85,9 @@ def parse_sadlsa_aln_file(fn, count=10):
 
 
 if __name__ == '__main__':
-# test harness for these functions
+    # Where the score and alignment files of interest are.
+    base_path = Path('/Users/may/Projects/data/PSP/desulfovibrio_vulgaris/out/WP_164928147.1/sadlsa_pdb70_210310')
+
+    # test harness for these functions
+    score_df = parse_sadlsa_score_file(str(base_path / 'WP_164928147.1_sco.dat'))
+    align_df = parse_sadlsa_aln_file(str(base_path / 'WP_164928147.1_aln.dat'))
