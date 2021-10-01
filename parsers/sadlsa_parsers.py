@@ -8,6 +8,17 @@ from pathlib import Path
 import pandas as pd
 
 
+def _get_protein(fn):
+    """ return the protein name, which is part of the filename
+
+        E.g. 'WP_164928147.1_aln.dat' -> 'WP_164928147.1'
+    """
+    # Just work backwards to the first '_' in just the file name, and there's
+    # your snipping point
+    name = Path(fn).name
+    return name[:name.rfind('_')]
+
+
 def parse_sadlsa_score_file(fn, count=10):
     """ translate given SAdLSA score file into pandas dataframe
 
@@ -17,9 +28,12 @@ def parse_sadlsa_score_file(fn, count=10):
     """
     import gzip
 
-    columns = ["seqname", "alnlen", "range1", "tmscore1", "range2", "tmscore2",
-               "alnscore", "seq_id", "desc"]
+    columns = ["protein", "seqname", "alnlen", "range1", "tmscore1", "range2",
+               "tmscore2", "alnscore", "seq_id", "desc"]
     df = pd.DataFrame(columns=columns)
+
+    # extract the protein name from the filename
+    protein = _get_protein(fn)
 
     if fn[-1] == 'z':
         # compressed file names should end in 'z'
@@ -32,7 +46,7 @@ def parse_sadlsa_score_file(fn, count=10):
 
     for line in lines[3:count + 3]:
         temp = line.strip().split('\t|')
-        rec = temp[0].split()
+        rec = [protein] + temp[0].split()
         rec.append(temp[1])
 
         series = pd.Series(rec, index=df.columns)
@@ -59,10 +73,13 @@ def parse_sadlsa_aln_file(fn, count=10):
     prog = re.compile(
         r'### Alignment (\d+) to: (......) naln=(\d+) score=(\d+\.\d*) tms1=(\d+\.\d*) tms2=(\d+\.\d*) sid=(\d+\.\d*)')
 
-    columns = ["Aln_num", "Prot_ID", "naln", "score", "tms1", "tms2", "sid",
-               "Ind", "Res1", "AA1", "Res2", "AA2", "MeanDist", "Bin", "Prob<3",
-               "Prob<5", "Prob<8"]
+    columns = ["protein", "Aln_num", "Prot_ID", "naln", "score", "tms1", "tms2",
+               "sid", "Ind", "Res1", "AA1", "Res2", "AA2", "MeanDist", "Bin",
+               "Prob<3", "Prob<5", "Prob<8"]
     df = pd.DataFrame(columns=columns)
+
+    # extract the protein name from the filename
+    protein = _get_protein(fn)
 
     if fn[-1] == 'z':
         # compressed file names should end in 'z'
@@ -92,7 +109,8 @@ def parse_sadlsa_aln_file(fn, count=10):
             # We have a row of actual data, so split out the data (after
             # stripping out any '*' in the line) and append that to the
             # alignment block info
-            rec = alignment_header_data + line.strip().replace('*', '').split()
+            rec = [protein] + alignment_header_data + \
+                  line.strip().replace('*', '').split()
             series = pd.Series(rec, index=df.columns)
             df = df.append(series, ignore_index=True)
 
@@ -106,7 +124,11 @@ if __name__ == '__main__':
     base_path = Path('/Users/may/Projects/data/PSP/desulfovibrio_vulgaris/out/'
                      'WP_164928147.1/sadlsa_pdb70_210310')
 
-    score_df = parse_sadlsa_score_file(str(base_path / 'WP_164928147.1_sco.dat'))
+    print('Reading score file')
+    score_df = parse_sadlsa_score_file(
+        str(base_path / 'WP_164928147.1_sco.dat'))
+
+    print('Reading alignment file')
     align_df = parse_sadlsa_aln_file(str(base_path / 'WP_164928147.1_aln.dat'))
 
     pass
