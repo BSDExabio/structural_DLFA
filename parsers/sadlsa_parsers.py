@@ -15,7 +15,7 @@ def _get_protein(fn):
     """
     # Just work backwards to the first '_' in just the file name, and there's
     # your snipping point
-    name = Path(fn).name
+    name = Path(fn).name # We do this to snip any leading directory paths
     return name[:name.rfind('_')]
 
 
