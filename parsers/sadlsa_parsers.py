@@ -68,7 +68,6 @@ def parse_sadlsa_aln_file(fn, count=10):
     """
     import gzip
     import re
-    import itertools
 
     prog = re.compile(
         r'### Alignment (\d+) to: (......) naln=(\d+) score=(\d+\.\d*) tms1=(\d+\.\d*) tms2=(\d+\.\d*) sid=(\d+\.\d*)')
