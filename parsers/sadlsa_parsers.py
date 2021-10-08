@@ -82,34 +82,37 @@ def parse_sadlsa_aln_file(fn, count=10):
 
     if fn[-1] == 'z':
         # compressed file names should end in 'z'
-        with gzip.open(fn) as f:
+        with gzip.open(fn, mode='rt') as f:
             lines = f.readlines()
     else:
         # Someone manually uncompressed the file, probably to look at it
         with open(fn, mode='rt') as f:
             lines = f.readlines()
 
+    alignment_count = 0
+    old_rec = 0
     for line in lines:
 
         search_results = prog.search(line)  # returns a re.Match object if regex is in line; returns nothing if regex is not in line
         if search_results:
             # We have a hit on the start of an alignment block
-            if len(df) == count:
-                # We're done if we have the user's target number of rows
-                break
             alignment_header_data = list(search_results.groups())
-        elif '#Ind' == line[0:4]:
-            # This is the header for the alignment block, so we can skip it
-            continue
-        elif line.strip() == '':
-            # This is a line between blocks, so we can just skip it
-            continue
-        else:
+            if int(alignment_header_data[0]) == count+1:
+                # We're done if we've analyzed the target number of alignments
+                break
+        #elif '#Ind' == line[0:4]:
+        #    # This is the header for the alignment block, so we can skip it
+        #    continue
+        #elif line.strip() == '':
+        #    # This is a line between blocks, so we can just skip it
+        #    continue
+        #else:
+        elif len(line.strip()) == 56:
             # We have a row of actual data, so split out the data, convert the 23rd element of line to a binary value (0 if ' ' and 1 if '*'), and append that to the alignment block info
             if line[23] == '*':
-                line[23] = 1
-            else:
-                line[23] = 0
+                line = line[:23] + '1' + line[24:]
+            else:                        
+                line = line[:23] + '0' + line[24:]
             rec = [protein] + alignment_header_data + line.strip().split() # every element in this dataframe holds the protein information, the alignment target information, and the sequence position alignment results; a bit redundant but necessary when all alignment data is stored in the same dataframe...
             series = pd.Series(rec, index=df.columns)
             df = df.append(series, ignore_index=True)
