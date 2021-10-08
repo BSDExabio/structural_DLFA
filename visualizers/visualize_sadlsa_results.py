@@ -19,13 +19,11 @@ def query_alignment_dataframe():
 
 def grab_structure(pdbid,working_dir='./'):
     """
-    Pull the structure from the RSCB database.
+    Pull the structure from the RCSB database.
 
-    :param subclass_num: subclass number of enzyme
-    :param subsubclass_num: subsubclass number of enzyme
-    :return: JSON of enzyme or None if not found
-    
-
+    :param pdbid: string; 4 character long code associated with a structure on the RCSB
+    :param working_dir: string; local or global path string pointing to where the files should be saved; option. NOTE: may not be maintained; hopefully we don't store any files long-term if at all.
+    :return: something... ideally the data structures that have been filled with relevant meta data and structural data. 
     """
 
     from urllib import request
