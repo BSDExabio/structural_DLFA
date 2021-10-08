@@ -19,12 +19,13 @@ from pathlib import Path
 
 import pandas as pd
 from rich import pretty
-from rich.logging import RichHandler
-from sqlalchemy import create_engine
 pretty.install()
+from rich.logging import RichHandler
 
 from rich.traceback import install
 install()
+
+from database import write_df_to_db
 
 rich_handler = RichHandler(rich_tracebacks=True,
                            markup=True)
@@ -52,7 +53,7 @@ def ec_file_to_df(ec_file):
     :param ec_file: EC file of nomenclature database
     :return: data frame of EC file
     """
-    rows = []  # will contain rows of dicts corresponding to EC ec_df
+    rows = []  # will contain rows of dicts corresponding to EC data_frame
 
     # Gets updated for each entry, then appended to rows
     curr_entry = {'class'           : 0,
@@ -103,29 +104,7 @@ def ec_file_to_df(ec_file):
     return ec_df
 
 
-def write_df_to_db(ec_df, database):
-    """ write the given EC dataframe to the sqlite3 db
 
-    :param ec_df: dataframe of EC nomenclature
-    :param database: name of sqlite3 database
-    :return: none.
-    """
-    # this will create the sqlite3 database if it does not already exist;
-    # echo=True to have it be noisy about what it's doing; turn that off for
-    # production, natch
-    engine = create_engine(f'sqlite:///{database}', echo=False)
-
-    with engine.connect() as sqlite_connection:
-        # if_exists='replace' means dropping the whole table first and then
-        # replacing if with new values.  See
-        # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas
-        # .DataFrame.to_sql.html for more information.  (You may want to
-        # append, instead.  Also, I was hoping there would be support for
-        # "upsert", which I don't see; i.e., add new information if not
-        # already there, but replace it if it is.)
-        ec_df.to_sql(EC_TABLE, sqlite_connection,
-                     index=False,
-                     if_exists='replace')
 
 
 if __name__ == '__main__':
@@ -147,7 +126,7 @@ if __name__ == '__main__':
 
     ec_df = ec_file_to_df(ec_file)
 
-    write_df_to_db(ec_df, args.database)
+    write_df_to_db(ec_df, EC_TABLE, args.database)
 
     logging.info(f'Done.  Added {len(ec_df)} entries to'
                  f' {args.database} table {EC_TABLE}.')

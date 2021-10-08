@@ -7,6 +7,33 @@ from sqlalchemy import create_engine, text
 import json
 import sqlite3
 
+
+def write_df_to_db(data_frame, table, database):
+    """ write the given EC dataframe to the sqlite3 db
+
+    :param data_frame: dataframe of EC nomenclature
+    :param table: to write to in database
+    :param database: name of sqlite3 database
+    :return: none.
+    """
+    # this will create the sqlite3 database if it does not already exist;
+    # echo=True to have it be noisy about what it's doing; turn that off for
+    # production, natch
+    engine = create_engine(f'sqlite:///{database}', echo=False)
+
+    with engine.connect() as sqlite_connection:
+        # if_exists='replace' means dropping the whole table first and then
+        # replacing if with new values.  See
+        # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas
+        # .DataFrame.to_sql.html for more information.  (You may want to
+        # append, instead.  Also, I was hoping there would be support for
+        # "upsert", which I don't see; i.e., add new information if not
+        # already there, but replace it if it is.)
+        data_frame.to_sql(table, sqlite_connection,
+                          index=False,
+                          if_exists='replace')
+
+
 class Database():
     """
         For managing and accessing the DLFA sqlite3 database.
