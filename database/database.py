@@ -11,6 +11,12 @@ import sqlite3
 def write_df_to_db(data_frame, table, database):
     """ write the given EC dataframe to the sqlite3 db
 
+    This will *append* data not do an upsert, so if you run this multiple
+    times you with the same protein, it will appear more than once in the
+    database.
+
+    TODO there has to be a way to do an upsert with sqlachemy and sqlite3.
+
     :param data_frame: dataframe of EC nomenclature
     :param table: to write to in database
     :param database: name of sqlite3 database
@@ -31,7 +37,7 @@ def write_df_to_db(data_frame, table, database):
         # already there, but replace it if it is.)
         data_frame.to_sql(table, sqlite_connection,
                           index=False,
-                          if_exists='replace')
+                          if_exists='append')
 
 
 class Database():
