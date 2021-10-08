@@ -73,9 +73,8 @@ def parse_sadlsa_aln_file(fn, count=10):
     prog = re.compile(
         r'### Alignment (\d+) to: (......) naln=(\d+) score=(\d+\.\d*) tms1=(\d+\.\d*) tms2=(\d+\.\d*) sid=(\d+\.\d*)')
 
-    columns = ["protein", "Aln_num", "Prot_ID", "naln", "score", "tms1", "tms2",
-               "sid", "Ind", "Res1", "AA1", "Res2", "AA2", "MeanDist", "Bin",
-               "Prob<3", "Prob<5", "Prob<8"]
+    columns = ["protein", "Aln_num", "Prot_ID", "naln", "score", "tms1", "tms2", "sid", # values pulled from alignment_header_data; fairly redundant information
+               "Ind", "Res1", "AA1", "Res2", "AA2", "cons", "MeanDist", "Bin", "Prob<3", "Prob<5", "Prob<8"] # values pulled for sequence positions w/in a specific alignment
     df = pd.DataFrame(columns=columns)
 
     # extract the protein name from the filename
@@ -92,7 +91,7 @@ def parse_sadlsa_aln_file(fn, count=10):
 
     for line in lines:
 
-        search_results = prog.search(line)
+        search_results = prog.search(line)  # returns a re.Match object if regex is in line; returns nothing if regex is not in line
         if search_results:
             # We have a hit on the start of an alignment block
             if len(df) == count:
@@ -106,11 +105,12 @@ def parse_sadlsa_aln_file(fn, count=10):
             # This is a line between blocks, so we can just skip it
             continue
         else:
-            # We have a row of actual data, so split out the data (after
-            # stripping out any '*' in the line) and append that to the
-            # alignment block info
-            rec = [protein] + alignment_header_data + \
-                  line.strip().replace('*', '').split()
+            # We have a row of actual data, so split out the data, convert the 23rd element of line to a binary value (0 if ' ' and 1 if '*'), and append that to the alignment block info
+            if line[23] == '*':
+                line[23] = 1
+            else:
+                line[23] = 0
+            rec = [protein] + alignment_header_data + line.strip().split() # every element in this dataframe holds the protein information, the alignment target information, and the sequence position alignment results; a bit redundant but necessary when all alignment data is stored in the same dataframe...
             series = pd.Series(rec, index=df.columns)
             df = df.append(series, ignore_index=True)
 
