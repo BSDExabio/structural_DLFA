@@ -16,6 +16,35 @@ SADLSA_SCORES_TABLE = 'sadlsa_scores'
 # sqlite3 table that will contain all the alignment data
 SADLSA_ALIGNMENTS_TABLE = 'sadlsa_alignments'
 
+
+def add_scores_to_db(sadlsa_dir, database):
+    """ Add SAdLSA score to database for given SAdLSA output directory
+
+    The output directory should contain two files, one for scores, and the other
+    for alignments.  We want the scores file, which should match the pattern
+    "*_sco.dat8*".
+
+    :param sadlsa_dir: output directory containing scores file
+    :param database: path to sqlite3 database to write the scores table
+    :return: None
+    """
+    # grab score file first
+    score_file = list(sadlsa_dir.glob('*_sco.dat*'))
+    if [] == score_file:
+        logging.critical(
+            f'No score file found in path {sadlsa_dir!s} ... exiting')
+        sys.exit(1)
+    # We return the first element of the glob because there should only be one
+    # score file.
+    sadlsa_score_df = parse_sadlsa_score_file(str(score_file[0]))
+    write_df_to_db(data_frame=sadlsa_score_df,
+                   table=SADLSA_SCORES_TABLE,
+                   database=database)
+
+    logging.info(f'Done.  Added {len(sadlsa_score_df)} entries to'
+                 f' {database} table {SADLSA_SCORES_TABLE}.')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='SAdLSA data importer')
@@ -33,20 +62,4 @@ if __name__ == '__main__':
 
     logging.info(f'Ingesting {args.sadlsa_dir}')
 
-    # grab score file first
-    score_file = list(sadlsa_dir.glob('*_sco.dat*'))
-
-    if [] == score_file:
-        logging.critical(f'No score file found in path {sadlsa_dir!s} ... exiting')
-        sys.exit(1)
-
-    # We return the first element of the glob because there should only be one
-    # score file.
-    sadlsa_score_df = parse_sadlsa_score_file(str(score_file[0]))
-
-    write_df_to_db(data_frame=sadlsa_score_df,
-                   table=SADLSA_SCORES_TABLE,
-                   database=args.database)
-
-    logging.info(f'Done.  Added {len(sadlsa_score_df)} entries to'
-                 f' {args.database} table {EC_TABLE}.')
+    add_scores_to_db(sadlsa_dir, args.database)
