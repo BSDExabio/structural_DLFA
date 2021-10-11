@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # Ingest SAdLSA data into the given database.
 #
@@ -25,49 +25,18 @@
 # -p protein directory
 # -d sqlite3 database
 # -s SAdLSA run directory
-# Call getopt to validate the provided input.
-options=$(getopt -o hpds: -- "$@")
-[ $? -eq 0 ] || {
-    echo "Incorrect options provided"
-    exit 1
-}
-eval set -- "$options"
-while true; do
-    case "$1" in
-    -h)
-      echo "Usage: ingest_sadlsa.sh -p <PROTEIN> -d <DATABASE> -s <SADLSA_DIR>"
-      exit 1
-      ;;
-    -p)
-      PROTEIN_DIR=$1;
-      ;;
-    -d)
-      DATABASE=$1;
-      ;;
-    -s)
-      SADLSA_DIR=$1;
-      ;;
-    --)
-      shift;
-      break
-      ;;
+
+while getopts "p:d:s:" arg; do
+    case $arg in
+    p)
+      PROTEIN_DIR=$OPTARG ;;
+    d)
+      DATABASE=$OPTARG ;;
+    s)
+      SADLSA_DIR=$OPTARG ;;
     esac
-    shift
 done
 
-if [ ${PROTEIN_DIR}x = x ]; then
-  echo "Missing protein dir option -p"
-  exit
-fi
-if [ ${DATABASE}x = x ]; then
-  echo "Missing protein dir option -d"
-  exit
-fi
-if [ ${SADLSA_DIR}x = x ]; then
-  echo "Missing protein dir option -s"
-  exit
-fi
-
 echo "PROTEIN_DIR is ${PROTEIN_DIR}"
-echo "DATABASE is ${DATABSE}"
+echo "DATABASE is ${DATABASE}"
 echo "SADLSA_DIR is ${SADLSA_DIR}"
