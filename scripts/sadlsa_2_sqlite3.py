@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 from time import time
 
-from database import write_df_to_db
+from database.database import write_df_to_db
 from parsers.sadlsa_parsers import parse_sadlsa_score_file, \
     parse_sadlsa_aln_file
 
