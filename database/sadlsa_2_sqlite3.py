@@ -2,8 +2,19 @@
 """
     Imports SAdLSA data into an sqlite3 table
 """
+import argparse
+import logging
+import sys
+from pathlib import Path
 
+from database import write_df_to_db
+from parsers.sadlsa_parsers import parse_sadlsa_score_file, parse_sadlsa_aln_file
 
+# sqlite3 table that will contain all the scores
+SADLSA_SCORES_TABLE = 'sadlsa_scores'
+
+# sqlite3 table that will contain all the alignment data
+SADLSA_ALIGNMENTS_TABLE = 'sadlsa_alignments'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -22,9 +33,20 @@ if __name__ == '__main__':
 
     logging.info(f'Ingesting {args.sadlsa_dir}')
 
-    ec_df = score_to_sqlite3(sadlsa_dir)
+    # grab score file first
+    score_file = list(sadlsa_dir.glob('*_sco.dat*'))
 
-    write_df_to_db(ec_df, args.database)
+    if [] == score_file:
+        logging.critical(f'No score file found in path {sadlsa_dir!s} ... exiting')
+        sys.exit(1)
 
-    logging.info(f'Done.  Added {len(ec_df)} entries to'
+    # We return the first element of the glob because there should only be one
+    # score file.
+    sadlsa_score_df = parse_sadlsa_score_file(str(score_file[0]))
+
+    write_df_to_db(data_frame=sadlsa_score_df,
+                   table=SADLSA_SCORES_TABLE,
+                   database=args.database)
+
+    logging.info(f'Done.  Added {len(sadlsa_score_df)} entries to'
                  f' {args.database} table {EC_TABLE}.')
