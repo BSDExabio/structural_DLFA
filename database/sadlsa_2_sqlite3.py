@@ -4,7 +4,7 @@
 """
 import argparse
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', level=logging.INFO)
 
 import sys
 from pathlib import Path
@@ -43,11 +43,12 @@ def add_scores_to_db(sadlsa_dir, database):
     # score file.
     logging.info(f'Reading {score_file[0]}')
     sadlsa_score_df = parse_sadlsa_score_file(str(score_file[0]))
+
     write_df_to_db(data_frame=sadlsa_score_df,
                    table=SADLSA_SCORES_TABLE,
                    database=database)
 
-    logging.info(f'Done.  Added {len(sadlsa_score_df)} entries to'
+    logging.info(f'Added {len(sadlsa_score_df)} entries to'
                  f' {database} table {SADLSA_SCORES_TABLE}.')
 
 
@@ -73,11 +74,12 @@ def add_alignments_to_db(sadlsa_dir, database):
     # score file.
     logging.info(f'Reading {alignments_file[0]}')
     sadlsa_align_df = parse_sadlsa_aln_file(str(alignments_file[0]))
+
     write_df_to_db(data_frame=sadlsa_align_df,
                    table=SADLSA_ALIGNMENTS_TABLE,
                    database=database)
 
-    logging.info(f'Done.  Added {len(sadlsa_align_df)} entries to'
+    logging.info(f'Added {len(sadlsa_align_df)} entries to'
                  f' {database} table {SADLSA_ALIGNMENTS_TABLE}.')
 
 

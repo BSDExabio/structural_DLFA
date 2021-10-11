@@ -82,7 +82,7 @@ def parse_sadlsa_aln_file(fn, count=10):
 
     if fn[-1] == 'z':
         # compressed file names should end in 'z'
-        with gzip.open(fn) as f:
+        with gzip.open(fn, mode='rt') as f:
             lines = f.readlines()
     else:
         # Someone manually uncompressed the file, probably to look at it
