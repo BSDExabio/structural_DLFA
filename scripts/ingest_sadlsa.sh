@@ -26,8 +26,15 @@
 # -d sqlite3 database
 # -s SAdLSA run directory
 
-while getopts "p:d:s:" arg; do
+usage() {
+  echo "ingest_sadlsa.sh -p <protein data directory> -d <sqlite3 database> -s <SAdLSA run directory>"
+  exit 2
+}
+
+while getopts "hp:d:s:" arg; do
     case $arg in
+    h)
+      usage ;;
     p)
       PROTEIN_DIR=$OPTARG ;;
     d)
@@ -40,3 +47,5 @@ done
 echo "PROTEIN_DIR is ${PROTEIN_DIR}"
 echo "DATABASE is ${DATABASE}"
 echo "SADLSA_DIR is ${SADLSA_DIR}"
+
+# TODO use GNU parallel to signicantly speed this up
