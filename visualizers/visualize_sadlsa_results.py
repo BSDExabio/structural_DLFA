@@ -51,12 +51,15 @@ def grab_structure(pdbid,working_dir='./'):
     urls = [pdb_urls]
     #urls = [pdb_urls,fasta_urls,cif_urls]
     for url in urls:
-        if url[:-3] == 'pdb':
+        if url[-3:] == 'pdb':
             extension = 'pdb'
-        elif url[:-3] == 'cif':
+        elif url[-3:] == 'cif':
             extension = 'cif'
         elif "viewFastaFiles" in url:
             extension = 'fasta'
+        else:
+            print('something wrong is going on, %s'%(pdbid))
+            return
 
         try:
             # grab the url object associated with the url string 
@@ -74,7 +77,7 @@ def grab_structure(pdbid,working_dir='./'):
         # parse the file's lines
         #currently only saving the file to storage.
         # in the pdb or mmcif file, I should instead grab specific REMARK lines and all the ATOM lines associated with the protein chain of interest, store them into a data structure for use later.
-        with open(working_dir+pdb_code+'.'+extension,'w') as W:
+        with open(working_dir + '/' + pdbid + '.' + extension,'w') as W:
             for line in response_list:
                 W.write(line+'\n')
 
@@ -91,23 +94,23 @@ def edit_pdb(atom_data, metric_data, metric_type, string_type='file_path', defau
     A new .pdb file that contains the metric of interest in the b-factor column. 
     """
 
-    if string_type == 'file_path':
-        import MDAnalysis
-        file_name = atom_data[:-4] + '_' + metric_type + '.pdb'
-        u = MDAnalysis.Universe(atom_data)
-        prot = u.select_atoms('protein')
-        nRes = prot.n_residues
-        for i in range(nRes):
-            if prot.residues[i].resid in metric_data[:,0]:
-                idx = np.argwhere(prot.residues[i].resid == metric_data[:,0])
-                prot.residues[i].tempfactors = float(metric_data[idx,1])   # will be printed with 2 decimal points; 
-            else:
-                prot.residues[i].tempfactors = default_value
-        prot.write(file_name)
+    ### MAJOR MAPPING ERROR BETWEEN SEQUENCE POSITION REPORTED IN SADLSA ALIGNMENT RESULTS AND THE RESID COLUMN OF THE PDB... AAAAAAHHHHHHHHHH
 
-    elif string_type == "something_else":
-        print('work with the string object yet to be coded up')
-        break
+    import MDAnalysis
+    file_name = atom_data + '_' + metric_type + '.pdb'
+    u = MDAnalysis.Universe(atom_data)
+    prot = u.select_atoms('protein and chainID %s'%(atom_data[-1])
+    _all = u.select_atoms('chainID %s'%(atom_data[-1])
+    _all.translate(-prot.center_of_mass())
+    nRes = prot.n_residues
+    for i in range(nRes):
+        if prot.residues[i].resid in metric_data[:,0]:
+            idx = np.argwhere(prot.residues[i].resid == metric_data[:,0])
+            prot.residues[i].tempfactors = float(metric_data[idx,1])   # will be printed with 2 decimal points; 
+        else:
+            prot.residues[i].tempfactors = default_value
+    prot.write(file_name)
+
 
 def create_vmd_vis_state(vis_state_file_name, pdb_file_name, max_color, min_color='lightgray'):
     """
