@@ -145,21 +145,25 @@ def parse_sadlsa_aln_file(fn, count=10):
             # This is a line between blocks, so we can just skip it
             continue
         else:
-            # We have a row of actual data, so split out the data (after
-            # stripping out any '*' in the line) and append that to the
-            # alignment block info
-            curr_record = line.strip().replace('*', '').split()
+            # We have a row of actual data, so split out the data, convert the 23rd elelemnt of line to a binary value (0 if ' ' and 1 if '*'), and append that to the alignment block info
+            if line[23] == '*':
+                line = line[:23] + '1' + line[24:]
+            else:                        
+                line = line[:23] + '0' + line[24:]
+            
+            curr_record = line.strip().split()
 
             curr_entry['Ind'] = curr_record[0]
             curr_entry['Res1'] = curr_record[1]
             curr_entry['AA1'] = curr_record[2]
             curr_entry['Res2'] = curr_record[3]
             curr_entry['AA2'] = curr_record[4]
-            curr_entry['MeanDist'] = curr_record[5]
-            curr_entry['Bin'] = curr_record[6]
-            curr_entry['Prob<3'] = curr_record[7]
-            curr_entry['Prob<5'] = curr_record[8]
-            curr_entry['Prob<8'] = curr_record[9]
+            curr_entry['S'] = curr_record[5]
+            curr_entry['MeanDist'] = curr_record[6]
+            curr_entry['Bin'] = curr_record[7]
+            curr_entry['Prob<3'] = curr_record[8]
+            curr_entry['Prob<5'] = curr_record[9]
+            curr_entry['Prob<8'] = curr_record[10]
 
             rows.append(curr_entry.copy())
 
@@ -170,9 +174,9 @@ def parse_sadlsa_aln_file(fn, count=10):
 
     # Convert numeric types from strings
     df[['Aln_num','naln','score','tms1','tms2','sid','Ind',
-        'Res1','Res2','MeanDist','Bin','Prob<3','Prob<5','Prob<8']] = \
-        df[['Aln_num', 'naln', 'score', 'tms1', 'tms2', 'sid', 'Ind',
-            'Res1', 'Res2', 'MeanDist', 'Bin', 'Prob<3', 'Prob<5', 'Prob<8']].apply(pd.to_numeric)
+        'Res1','Res2','S','MeanDist','Bin','Prob<3','Prob<5','Prob<8']] = \
+        df[['Aln_num','naln','score','tms1','tms2','sid','Ind',
+            'Res1','Res2','S','MeanDist','Bin','Prob<3','Prob<5','Prob<8']].apply(pd.to_numeric)
 
     return df
 
