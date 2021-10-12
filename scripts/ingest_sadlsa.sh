@@ -59,7 +59,7 @@ echo "CORES is ${CORES}"
 # So we can find database import
 export PYTHONPATH=..:../database:../parsers:$PYTHONPATH
 
-# TODO use GNU parallel to significantly speed this up
+# Replaced by GNU parallel to significantly speed this up
 #for f in ${PROTEIN_DIR}/*/${SADLSA_DIR}/ ; do
 #  python3 ./sadlsa_2_sqlite3.py --database $DATABASE --sadlsa-dir $f
 #done
