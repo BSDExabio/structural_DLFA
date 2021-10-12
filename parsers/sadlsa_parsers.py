@@ -15,7 +15,7 @@ def _get_protein(fn):
     """
     # Just work backwards to the first '_' in just the file name, and there's
     # your snipping point
-    name = Path(fn).name # We do this to snip any leading directory paths
+    name = Path(fn).name  # We do this to snip any leading directory paths
     return name[:name.rfind('_')]
 
 
@@ -72,13 +72,30 @@ def parse_sadlsa_aln_file(fn, count=10):
     prog = re.compile(
         r'### Alignment (\d+) to: (......) naln=(\d+) score=(\d+\.\d*) tms1=(\d+\.\d*) tms2=(\d+\.\d*) sid=(\d+\.\d*)')
 
-    columns = ["protein", "Aln_num", "Prot_ID", "naln", "score", "tms1", "tms2",
-               "sid", "Ind", "Res1", "AA1", "Res2", "AA2", "MeanDist", "Bin",
-               "Prob<3", "Prob<5", "Prob<8"]
-    df = pd.DataFrame(columns=columns)
-
     # extract the protein name from the filename
     protein = _get_protein(fn)
+
+    rows = []  # will contain rows of dicts corresponding to alignment data
+
+    # Gets updated for each entry, then appended to rows
+    curr_entry = {"protein" : protein,
+                  "Aln_num" : 0,
+                  "Prot_ID" : "",
+                  "naln"    : 0,
+                  "score"   : 0.0,
+                  "tms1"    : 0.0,
+                  "tms2"    : 0.0,
+                  "sid"     : "",
+                  "Ind"     : 0,
+                  "Res1"    : 0,
+                  "AA1"     : 0,
+                  "Res2"    : 0,
+                  "AA2"     : 0,
+                  "MeanDist": 0,
+                  "Bin"     : 0,
+                  "Prob<3"  : 0,
+                  "Prob<5"  : 0,
+                  "Prob<8"  : 0}
 
     if fn[-1] == 'z':
         # compressed file names should end in 'z'
@@ -89,15 +106,28 @@ def parse_sadlsa_aln_file(fn, count=10):
         with open(fn, mode='rt') as f:
             lines = f.readlines()
 
+    curr_alignment_block = 0
+
     for line in lines:
 
-        search_results = prog.search(line)
-        if search_results:
+        if '###' == line[0:3]:
             # We have a hit on the start of an alignment block
-            if len(df) == count:
+            curr_alignment_block += 1
+            if curr_alignment_block > count:
                 # We're done if we have the user's target number of rows
                 break
+
+            search_results = prog.search(line)
             alignment_header_data = list(search_results.groups())
+
+            curr_entry['Aln_num'] = alignment_header_data[0]
+            curr_entry['Prot_ID'] = alignment_header_data[1]
+            curr_entry['naln'] = alignment_header_data[2]
+            curr_entry['score'] = alignment_header_data[3]
+            curr_entry['tms1'] = alignment_header_data[4]
+            curr_entry['tms2'] = alignment_header_data[5]
+            curr_entry['sid'] = alignment_header_data[6]
+
         elif '#Ind' == line[0:4]:
             # This is the header for the alignment block, so we can skip it
             continue
@@ -108,12 +138,25 @@ def parse_sadlsa_aln_file(fn, count=10):
             # We have a row of actual data, so split out the data (after
             # stripping out any '*' in the line) and append that to the
             # alignment block info
-            rec = [protein] + alignment_header_data + \
-                  line.strip().replace('*', '').split()
-            series = pd.Series(rec, index=df.columns)
-            df = df.append(series, ignore_index=True)
+            curr_record = line.strip().replace('*', '').split()
+
+            curr_entry['Ind'] = curr_record[0]
+            curr_entry['Res1'] = curr_record[1]
+            curr_entry['AA1'] = curr_record[2]
+            curr_entry['Res2'] = curr_record[3]
+            curr_entry['AA2'] = curr_record[4]
+            curr_entry['MeanDist'] = curr_record[5]
+            curr_entry['Bin'] = curr_record[6]
+            curr_entry['Prob<3'] = curr_record[7]
+            curr_entry['Prob<5'] = curr_record[8]
+            curr_entry['Prob<8'] = curr_record[9]
+
+            rows.append(curr_entry.copy())
+
+    df = pd.DataFrame(rows)
 
     return df
+
 
 
 if __name__ == '__main__':
