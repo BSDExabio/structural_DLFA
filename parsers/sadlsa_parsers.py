@@ -30,7 +30,8 @@ def parse_sadlsa_score_file(fn, count=10):
 
     columns = ["protein", "seqname", "alnlen", "range1", "tmscore1", "range2",
                "tmscore2", "alnscore", "seq_id", "desc"]
-    df = pd.DataFrame(columns=columns)
+
+    rows = [] # will contain rows of dicts corresponding to alignment data
 
     # extract the protein name from the filename
     protein = _get_protein(fn)
@@ -47,10 +48,21 @@ def parse_sadlsa_score_file(fn, count=10):
     for line in lines[3:count + 3]:
         temp = line.strip().split('\t|')
         rec = [protein] + temp[0].split()
-        rec.append(temp[1])
 
-        series = pd.Series(rec, index=df.columns)
-        df = df.append(series, ignore_index=True)
+        # This is just a fast way of mapping the column names to each
+        # successive list element.  We could have laboriously assigned each
+        # dictionary element, instead, but why do that?  :P
+        temp_dict = {index: value for index, value in zip(columns, rec)}
+
+        # Drop the noisome '%' so that later we can do numeric operations on it
+        temp_dict['seq_id'] = temp_dict['seq_id'][:-1]
+        rows.append(temp_dict.copy())
+
+    df = pd.DataFrame(rows)
+
+    # Convert to numeric those things that are numeric
+    df[['alnlen','tmscore1','tmscore2','alnscore','seq_id']] = \
+        df[['alnlen', 'tmscore1', 'tmscore2', 'alnscore', 'seq_id']].apply(pd.to_numeric)
 
     return df
 
