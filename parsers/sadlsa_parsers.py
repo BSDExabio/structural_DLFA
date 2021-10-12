@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
     For importing SAdLSA data into pandas dataframes.
-
     This is used by another utility for importing into sqlite3 database.
 """
 from pathlib import Path
@@ -10,7 +9,6 @@ import pandas as pd
 
 def _get_protein(fn):
     """ return the protein name, which is part of the filename
-
         E.g. 'WP_164928147.1_aln.dat' -> 'WP_164928147.1'
     """
     # Just work backwards to the first '_' in just the file name, and there's
@@ -21,7 +19,6 @@ def _get_protein(fn):
 
 def parse_sadlsa_score_file(fn, count=10):
     """ translate given SAdLSA score file into pandas dataframe
-
     :param fn: string filename of score file
     :param count: how many of the top scores we want to get
     :return: pandas dataframe of
@@ -72,11 +69,9 @@ def parse_sadlsa_score_file(fn, count=10):
 
 def parse_sadlsa_aln_file(fn, count=10):
     """ translate given SAdLSA alignment file into pandas dataframe
-
     TODO consider splitting this into two dataframes, one for the alignment
     block header, and the other for the rows of alignment data; that should
     save redundant column information.
-
     :param fn: string filename of alignment file
     :param count: how many of the top scores we want to get
     :return: pandas dataframe of
@@ -198,3 +193,4 @@ if __name__ == '__main__':
     align_df = parse_sadlsa_aln_file(str(base_path / 'WP_010938264.1_aln.dat'))
 
     pass
+
