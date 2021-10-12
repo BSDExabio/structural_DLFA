@@ -68,8 +68,13 @@ export PYTHONPATH=..:../database:../parsers:$PYTHONPATH
 # created.  Then we can run parallel on the rest.
 ls -d ${PROTEIN_DIR}/*/${SADLSA_DIR}/ > /tmp/FILES
 
-# Just do the first to build the tables
+# Just do the first to build the tables; if we didn't do this and tried to do
+# everything in a single parallel call, the first $CORE processes would try
+# to build any new tables a the same time, which is bad.  So just let one
+# create any needed database tables so that we can then later run parallel
+# safely since then all those tables are guaranteed to exist.
 python3 ./sadlsa_2_sqlite3.py --database $DATABASE --sadlsa-dir `head -1 /tmp/FILES`
 
-# Then crank on all the rest
+# Then crank on all the rest with no worries of creating tables, which were done
+# in the previous line.
 tail -n +2 /tmp/FILES | parallel -j $CORES python3 ./sadlsa_2_sqlite3.py --database $DATABASE --sadlsa-dir {1}
