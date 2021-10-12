@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 """
     For pulling information out of SAdLSA pandas dataframes and visualizing results.
 
@@ -9,11 +10,27 @@
     4) visualize in a molecular visualizer code... I have code to save files for VMD but I don't think this is what we want...
 """
 
-def query_alignment_dataframe():
+
+def query_score_df(score_df):
     """
-    IGNORE THIS FOR NOW...
-    Code to pull information from a sqlite database or pandas dataframe or loading a cvs file into memory and reading from that... how should we go about doing this?
+    Code to pull information from a pandas dataframe created from the sadlsa score file
+    :param score_df: pandas dataframe object; filled with the score results
+    :return: an array of lists; each element in the array is a list containing the pdb_chainID string ("seqname" column), predicted tmscore ("tmscore1"; float), alignment score ("alnscore"; float), alignment length ("alnlen"; float), and sequence identity ("seq_id"; float) data.
     """
+    grab_columns = ["seqname","tmscore1","alnscore","alnlen","seq_id"]
+    return score_df.filter(grab_columns).values
+
+
+def query_alignment_df(align_df, seqname, metric_string):
+    """
+    Code to pull information from a pandas dataframe created from the sadlsa alignment file
+    :param align_df: pandas dataframe object; filled with the alignment results
+    :param seqname: string; associated with a specific target protein structure, specified in the "seqname" column of the score results. 
+    :return: a 2d numpy array; 0th column corresponds to the target protein structure's residue index, 1st column corresponds to the metric of interest 
+    """
+    temp_df = align_df[align_df['Prot_ID'].str.contains(seqname)]
+    grab_columns = ["Res2",metric_string]
+    return temp_df.filter(grab_columns).values
 
 
 def grab_structure(pdbid,working_dir='./'):
@@ -23,9 +40,6 @@ def grab_structure(pdbid,working_dir='./'):
     INPUT:
     :param pdbid: string; 4 character long code associated with a structure on the RCSB
     :param working_dir: string; local or global path string pointing to where the files should be saved; option. TEMPORARY or NOTE: may not be maintained; hopefully we don't store any files long-term if at all.
-    
-    OUTPUT:
-    :return: something probably should be sent back... ideally the data structures that have been filled with relevant meta information and atomic information and coordinates. 
     """
 
     from urllib import request
@@ -33,9 +47,17 @@ def grab_structure(pdbid,working_dir='./'):
     pdb_urls = 'https://files.rcsb.org/view/%s.pdb' # static url for the pdb file associated with pdb ids; %s is replaced with the pdb id.
     fasta_urls = 'https://www.rcsb.org/pdb/download/viewFastaFiles.do?structureIdList=%s&compressionType=uncompressed' # static url for the fasta file associated with pdb ids; %s is replaced with the pdb id.
     cif_urls = 'https://files.rcsb.org/view/%s.cif' # static url for the mmcif file assocaited with pdb ids; %s is replaced with the pdb id.
-
-    urls = [pdb_urls,fasta_urls,cif_urls]
+    
+    urls = [pdb_urls]
+    #urls = [pdb_urls,fasta_urls,cif_urls]
     for url in urls:
+        if url[:-3] == 'pdb':
+            extension = 'pdb'
+        elif url[:-3] == 'cif':
+            extension = 'cif'
+        elif "viewFastaFiles" in url:
+            extension = 'fasta'
+
         try:
             # grab the url object associated with the url string 
             response = request.urlopen(url%(pdbid))
