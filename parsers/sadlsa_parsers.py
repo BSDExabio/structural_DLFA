@@ -155,6 +155,15 @@ def parse_sadlsa_aln_file(fn, count=10):
 
     df = pd.DataFrame(rows)
 
+    # Converts from objects to strings
+    df = df.convert_dtypes()
+
+    # Convert numeric types from strings
+    df[['Aln_num','naln','score','tms1','tms2','sid','Ind',
+        'Res1','Res2','MeanDist','Bin','Prob<3','Prob<5','Prob<8']] = \
+        df[['Aln_num', 'naln', 'score', 'tms1', 'tms2', 'sid', 'Ind',
+            'Res1', 'Res2', 'MeanDist', 'Bin', 'Prob<3', 'Prob<5', 'Prob<8']].apply(pd.to_numeric)
+
     return df
 
 
