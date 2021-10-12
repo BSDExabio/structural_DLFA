@@ -25,11 +25,16 @@
 # -p protein directory
 # -d sqlite3 database
 # -s SAdLSA run directory
+# -c number of cores to use in parallel
 
 usage() {
   echo "ingest_sadlsa.sh -p <protein data directory> -d <sqlite3 database> -s <SAdLSA run directory>"
   exit 2
 }
+
+# Default to 8 cores; parallel normally figures out the correct number of
+# cores, but not on Macs, apparently.  :P
+CORES=8
 
 while getopts "hp:d:s:" arg; do
     case $arg in
@@ -39,6 +44,8 @@ while getopts "hp:d:s:" arg; do
       PROTEIN_DIR=$OPTARG ;;
     d)
       DATABASE=$OPTARG ;;
+    c)
+      CORES=$OPTARG ;;
     s)
       SADLSA_DIR=$OPTARG ;;
     esac
@@ -47,11 +54,22 @@ done
 echo "PROTEIN_DIR is ${PROTEIN_DIR}"
 echo "DATABASE is ${DATABASE}"
 echo "SADLSA_DIR is ${SADLSA_DIR}"
+echo "CORES is ${CORES}"
 
 # So we can find database import
 export PYTHONPATH=..:../database:../parsers:$PYTHONPATH
 
 # TODO use GNU parallel to significantly speed this up
-for f in ${PROTEIN_DIR}/*/${SADLSA_DIR}/ ; do
-  python3 ./sadlsa_2_sqlite3.py --database $DATABASE --sadlsa-dir $f
-done
+#for f in ${PROTEIN_DIR}/*/${SADLSA_DIR}/ ; do
+#  python3 ./sadlsa_2_sqlite3.py --database $DATABASE --sadlsa-dir $f
+#done
+
+# We need to run the first job solo so that any sqlite3 database tables are
+# created.  Then we can run parallel on the rest.
+ls -d ${PROTEIN_DIR}/*/${SADLSA_DIR}/ > /tmp/FILES
+
+# Just do the first to build the tables
+python3 ./sadlsa_2_sqlite3.py --database $DATABASE --sadlsa-dir `head -1 /tmp/FILES`
+
+# Then crank on all the rest
+tail -n +2 /tmp/FILES | parallel -j $CORES python3 ./sadlsa_2_sqlite3.py --database $DATABASE --sadlsa-dir {1}
