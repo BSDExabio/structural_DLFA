@@ -31,7 +31,7 @@ def parse_sadlsa_score_file(fn, count=10):
     columns = ["protein", "seqname", "alnlen", "range1", "tmscore1", "range2",
                "tmscore2", "alnscore", "seq_id", "desc"]
 
-    rows = [] # will contain rows of dicts corresponding to alignment data
+    rows = [] # will contain rows of dicts corresponding to score data
 
     # extract the protein name from the filename
     protein = _get_protein(fn)
