@@ -60,6 +60,9 @@ def parse_sadlsa_score_file(fn, count=10):
 
     df = pd.DataFrame(rows)
 
+    # Converts from objects to strings
+    df = df.convert_dtypes()
+
     # Convert to numeric those things that are numeric
     df[['alnlen','tmscore1','tmscore2','alnscore','seq_id']] = \
         df[['alnlen', 'tmscore1', 'tmscore2', 'alnscore', 'seq_id']].apply(pd.to_numeric)
@@ -82,7 +85,7 @@ def parse_sadlsa_aln_file(fn, count=10):
     import re
 
     prog = re.compile(
-        r'### Alignment (\d+) to: (......) naln=(\d+) score=(\d+\.\d*) tms1=(\d+\.\d*) tms2=(\d+\.\d*) sid=(\d+\.\d*)')
+        r'### Alignment (\d+) to: (\w+) naln=(\d+) score=(\d+\.\d*) tms1=(\d+\.\d*) tms2=(\d+\.\d*) sid=(\d+\.\d*)')
 
     # extract the protein name from the filename
     protein = _get_protein(fn)
@@ -185,13 +188,13 @@ if __name__ == '__main__':
 
     # Where the score and alignment files of interest are.
     base_path = Path('/Users/may/Projects/data/PSP/desulfovibrio_vulgaris/out/'
-                     'WP_164928147.1/sadlsa_pdb70_210310')
+                     'WP_010938264.1/sadlsa_pdb70_210310')
 
     print('Reading score file')
     score_df = parse_sadlsa_score_file(
-        str(base_path / 'WP_164928147.1_sco.dat'))
+        str(base_path / 'WP_010938264.1_sco.dat.gz'))
 
     print('Reading alignment file')
-    align_df = parse_sadlsa_aln_file(str(base_path / 'WP_164928147.1_aln.dat'))
+    align_df = parse_sadlsa_aln_file(str(base_path / 'WP_010938264.1_aln.dat'))
 
     pass
