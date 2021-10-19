@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env python3
 """
     This script will take a file that contains one or more columns of locus tags
     and will add columns for the corresponding protein IDs.
