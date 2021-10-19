@@ -51,6 +51,9 @@ if __name__ == '__main__':
 
     df = pd.read_csv(str(infile), delim_whitespace=True)
 
+    # Get two dicts, one for looking up locus tags, and the other for looking
+    # up protein IDs.  We're only going to use the latter for this script,
+    # though.
     protein_to_locus, locus_to_protein = protein_locus_dicts(str(genbank_file))
 
     # Now add columns for each locus tag column
