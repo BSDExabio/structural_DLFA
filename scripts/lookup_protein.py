@@ -2,6 +2,20 @@
 """
     This script will take a file that contains one or more columns of locus tags
     and will add columns for the corresponding protein IDs.
+
+    usage: lookup_protein.py [-h] --infile INFILE --genbank GENBANK tag_columns [tag_columns ...]
+
+    Look up protein IDs from locus tags
+
+    positional arguments:
+      tag_columns           Identify what columns are for locust tags
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --infile INFILE, -f INFILE
+                            File contains locus tags to be looked up
+      --genbank GENBANK, -g GENBANK
+                            Genbank file that contain protein IDs and locust tags
 """
 import argparse
 import sys
