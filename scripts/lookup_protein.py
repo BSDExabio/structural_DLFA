@@ -11,6 +11,7 @@ import pandas as pd
 
 from parsers.genbank import protein_locus_dicts
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Look up protein IDs from locus tags')
@@ -18,7 +19,7 @@ if __name__ == '__main__':
                         help='File contains locus tags to be looked up')
     parser.add_argument('--genbank', '-g', required=True,
                         help='Genbank file that contain protein IDs and locust tags')
-    parser.add_argument('tag-columns', nargs='+',
+    parser.add_argument('tag_columns', nargs='+',
                         help='Identify what columns are for locust tags')
 
     args = parser.parse_args()
@@ -34,8 +35,15 @@ if __name__ == '__main__':
         print(f'{args.genbank} does not exist ... exiting')
         sys.exit(1)
 
-    data = pd.read_csv(str(infile), delim_whitespace=True)
+    df = pd.read_csv(str(infile), delim_whitespace=True)
 
     protein_to_locus, locus_to_protein = protein_locus_dicts(str(genbank_file))
 
-    pass
+    # Now add columns for each locus tag column
+    for locus_tag in args.tag_columns:
+        protein_column = locus_tag + '_protein'
+
+        df[protein_column] = \
+            df[locus_tag].apply(lambda x: locus_to_protein.setdefault(x, pd.NA))
+
+    print(df.to_csv(na_rep='No match', index=False))
