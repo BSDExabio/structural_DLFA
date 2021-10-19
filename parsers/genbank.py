@@ -9,6 +9,10 @@ def protein_locus_dicts(infile):
     """ This returns dicts for mapping between protein ID and locus tags from
         a Genbank file
 
+    Note that we ignore the mapping from protein to locus tag for the old locus
+    tags because then there would be multiple possible locus tags per protein.
+    And, generally, we lookup locus tags for proteins, not the other way round.
+
     :param infile: is the Genbank file from which we want to read
     :returns: two dicts, protein ID -> locus tag and locus tag -> protein ID
     """
@@ -33,6 +37,15 @@ def protein_locus_dicts(infile):
                             feature.qualifiers['protein_id'][0]
                         protein_to_locus[feature.qualifiers['protein_id'][0]] = \
                             locus_tag.replace('_','')
+
+                if 'old_locus_tag' in feature.qualifiers:
+                    for locus_tag in feature.qualifiers['old_locus_tag']:
+                        locus_to_protein[locus_tag.replace('_','')] = \
+                            feature.qualifiers['protein_id'][0]
+                        # This will *over-write* any previous mappings from
+                        # the protein ID to locus tag, which we do not want.
+                        # protein_to_locus[feature.qualifiers['protein_id'][0]] = \
+                        #     locus_tag.replace('_','')
 
     return protein_to_locus, locus_to_protein
 
