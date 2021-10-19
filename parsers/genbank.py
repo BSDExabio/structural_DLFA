@@ -58,7 +58,3 @@ if __name__ == '__main__':
 
     assert protein_to_locus['WP_010937312.1'] == 'DVURS00005'
     assert locus_to_protein['DVURS00005'] == 'WP_010937312.1'
-
-    # Catch stupid edge case
-    # assert locus_to_protein['DVURS05145'] == 'COORDINATES: similar to AA sequence:RefSeq:WP_011792536.1'
-    # assert locus_to_protein['DVU1087'] == 'COORDINATES: similar to AA sequence:RefSeq:WP_011792536.1'
