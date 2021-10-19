@@ -16,6 +16,9 @@
                             File contains locus tags to be looked up
       --genbank GENBANK, -g GENBANK
                             Genbank file that contain protein IDs and locust tags
+
+    Example:
+        lookup_protein.py --infile interacting_pairs_tap.txt --genbank GCF_000195755.1_ASM19575v1_genomic.gbff g1 g2 > interacting_pairs_tap.csv
 """
 import argparse
 import sys
