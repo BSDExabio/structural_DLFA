@@ -5,7 +5,7 @@
 from Bio import SeqIO
 
 
-def protein_locus_dicts(infile):
+def protein_locus_dicts(genbank_file):
     """ This returns dicts for mapping between protein ID and locus tags from
         a Genbank file
 
@@ -13,10 +13,10 @@ def protein_locus_dicts(infile):
     tags because then there would be multiple possible locus tags per protein.
     And, generally, we lookup locus tags for proteins, not the other way round.
 
-    :param infile: is the Genbank file from which we want to read
+    :param genbank_file: is the Genbank file from which we want to read
     :returns: two dicts, protein ID -> locus tag and locus tag -> protein ID
     """
-    records = SeqIO.parse(infile, "genbank")
+    records = SeqIO.parse(genbank_file, "genbank")
 
     locus_to_protein = {}
     protein_to_locus = {}
@@ -39,13 +39,13 @@ def protein_locus_dicts(infile):
                             locus_tag.replace('_','')
 
                 if 'old_locus_tag' in feature.qualifiers:
-                    for locus_tag in feature.qualifiers['old_locus_tag']:
-                        locus_to_protein[locus_tag.replace('_','')] = \
+                    for old_locus_tag in feature.qualifiers['old_locus_tag']:
+                        locus_to_protein[old_locus_tag.replace('_','')] = \
                             feature.qualifiers['protein_id'][0]
                         # This will *over-write* any previous mappings from
                         # the protein ID to locus tag, which we do not want.
                         # protein_to_locus[feature.qualifiers['protein_id'][0]] = \
-                        #     locus_tag.replace('_','')
+                        #     old_locus_tag.replace('_','')
 
     return protein_to_locus, locus_to_protein
 
