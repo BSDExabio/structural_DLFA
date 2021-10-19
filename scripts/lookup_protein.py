@@ -10,8 +10,12 @@ from pathlib import Path
 import pandas as pd
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Look up protein IDs from locus tags')
-    parser.add_argument('infile', help='File contains locus tags to be looked up')
+    parser = argparse.ArgumentParser(
+        description='Look up protein IDs from locus tags')
+    parser.add_argument('--infile', '-f',
+                        help='File contains locus tags to be looked up')
+    parser.add_argument('tag-columns', nargs='+',
+                        help='Identify what columns are for locust tags')
 
     args = parser.parse_args()
 
