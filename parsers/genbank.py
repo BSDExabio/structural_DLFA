@@ -20,14 +20,19 @@ def protein_locus_dicts(infile):
     for record in records:
         for feature in record.features:
 
-            if 'protein_id' in feature.qualifiers and \
-                    'locus_tag' in feature.qualifiers:
-                # Update the dicts with both the protein ID and locus tag; we
-                # also strip out the bothersome underscore from the locus tag.
-                locus_to_protein[feature.qualifiers['locus_tag'][0].replace('_','')] = \
-                    feature.qualifiers['protein_id'][0]
-                protein_to_locus[feature.qualifiers['protein_id'][0]] = \
-                    feature.qualifiers['locus_tag'][0].replace('_','')
+            if 'protein_id' in feature.qualifiers:
+                # We have a protein ID, but there may be multiple incarnations
+                # for a corresponding locus tag in this record.  We try
+                # all the possible combos and create corresponding look-up
+                # entries for every single one of them.  Oh, and we strip out
+                # any locus tag underscores so that we have a consistent,
+                # universal standard for matching locus tags with their proteins
+                if 'locus_tag' in feature.qualifiers:
+                    for locus_tag in feature.qualifiers['locus_tag']:
+                        locus_to_protein[locus_tag.replace('_','')] = \
+                            feature.qualifiers['protein_id'][0]
+                        protein_to_locus[feature.qualifiers['protein_id'][0]] = \
+                            locus_tag.replace('_','')
 
     return protein_to_locus, locus_to_protein
 
