@@ -96,6 +96,8 @@ def edit_pdb(atom_data, metric_data, metric_type, string_type='file_path', defau
 
     ### MAJOR MAPPING ERROR BETWEEN SEQUENCE POSITION REPORTED IN SADLSA ALIGNMENT RESULTS AND THE RESID COLUMN OF THE PDB... AAAAAAHHHHHHHHHH
 
+    # starting to figure this out...
+
     import MDAnalysis
     file_name = atom_data + '_' + metric_type + '.pdb'
     u = MDAnalysis.Universe(atom_data)
