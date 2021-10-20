@@ -5,14 +5,18 @@
 from Bio import SeqIO
 
 
-def protein_locus_dicts(infile):
+def protein_locus_dicts(genbank_file):
     """ This returns dicts for mapping between protein ID and locus tags from
         a Genbank file
 
-    :param infile: is the Genbank file from which we want to read
+    Note that we ignore the mapping from protein to locus tag for the old locus
+    tags because then there would be multiple possible locus tags per protein.
+    And, generally, we lookup locus tags for proteins, not the other way round.
+
+    :param genbank_file: is the Genbank file from which we want to read
     :returns: two dicts, protein ID -> locus tag and locus tag -> protein ID
     """
-    records = SeqIO.parse(infile, "genbank")
+    records = list(SeqIO.parse(genbank_file, "genbank"))
 
     locus_to_protein = {}
     protein_to_locus = {}
@@ -20,14 +24,28 @@ def protein_locus_dicts(infile):
     for record in records:
         for feature in record.features:
 
-            if 'protein_id' in feature.qualifiers and \
-                    'locus_tag' in feature.qualifiers:
-                # Update the dicts with both the protein ID and locus tag; we
-                # also strip out the bothersome underscore from the locus tag.
-                locus_to_protein[feature.qualifiers['locus_tag'][0].replace('_','')] = \
-                    feature.qualifiers['protein_id'][0]
-                protein_to_locus[feature.qualifiers['protein_id'][0]] = \
-                    feature.qualifiers['locus_tag'][0].replace('_','')
+            if 'protein_id' in feature.qualifiers:
+                # We have a protein ID, but there may be multiple incarnations
+                # for a corresponding locus tag in this record.  We try
+                # all the possible combos and create corresponding look-up
+                # entries for every single one of them.  Oh, and we strip out
+                # any locus tag underscores so that we have a consistent,
+                # universal standard for matching locus tags with their proteins
+                if 'locus_tag' in feature.qualifiers:
+                    for locus_tag in feature.qualifiers['locus_tag']:
+                        locus_to_protein[locus_tag.replace('_','')] = \
+                            feature.qualifiers['protein_id'][0]
+                        protein_to_locus[feature.qualifiers['protein_id'][0]] = \
+                            locus_tag.replace('_','')
+
+                if 'old_locus_tag' in feature.qualifiers:
+                    for old_locus_tag in feature.qualifiers['old_locus_tag']:
+                        locus_to_protein[old_locus_tag.replace('_','')] = \
+                            feature.qualifiers['protein_id'][0]
+                        # This will *over-write* any previous mappings from
+                        # the protein ID to locus tag, which we do not want.
+                        # protein_to_locus[feature.qualifiers['protein_id'][0]] = \
+                        #     old_locus_tag.replace('_','')
 
     return protein_to_locus, locus_to_protein
 
