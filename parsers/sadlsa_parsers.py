@@ -21,7 +21,7 @@ def parse_sadlsa_score_file(fn, count=10):
     """ translate given SAdLSA score file into pandas dataframe
     :param fn: string filename of score file
     :param count: how many of the top scores we want to get
-    :return: pandas dataframe of
+    :return: pandas dataframe of score results for top count results
     """
     import gzip
 

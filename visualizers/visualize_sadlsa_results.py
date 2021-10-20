@@ -97,28 +97,31 @@ def edit_pdb(target_structure, chainID, metric_data, metric_type, string_type='f
 
     import MDAnalysis
     import numpy as np
+    import warnings
 
     # setting output file name
-    file_name = target_structure[:-4]+'_'+metric_type+'.pdb'
+    file_name = target_structure[:-4]+'_'+chainID+'_'+metric_type+'.pdb'
     # loading the pdb file into an MDAnalysis universe object
-    u = MDAnalysis.Universe(target_structure)
-    # creating the atom selection groups for the structure
-    prot = u.select_atoms('protein and chainID %s'%(chainID))
-    _all = u.select_atoms('chainID %s'%(chainID))
-    # moving all atoms of chain of interest to have the CoM to be the origin
-    _all.translate(-prot.center_of_mass())
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore',UserWarning)
+        u = MDAnalysis.Universe(target_structure)
+        # creating the atom selection groups for the structure
+        prot = u.select_atoms('protein and chainID %s'%(chainID))
+        _all = u.select_atoms('chainID %s'%(chainID))
+        # moving all atoms of chain of interest to have the CoM to be the origin
+        _all.translate(-prot.center_of_mass())
 
-    # creating the one-indexed array of protein residue indices of resolved 
-    # residues; used to mirror the one-indexed SAdLSA resid column
-    nRes_range = range(1,prot.n_residues+1)
-    for i in nRes_range:
-        if i in metric_data[:,0]:
-            idx = np.argwhere(i == metric_data[:,0])
-            prot.residues[i-1].atoms.tempfactors = float(metric_data[idx,1])   # will be printed with 2 decimal points; 
-        else:
-            prot.residues[i-1].atoms.tempfactors = default_value
-    # saving pdb file, now with desired values in the b-factor column
-    prot.write(file_name)
+        # creating the one-indexed array of protein residue indices of resolved 
+        # residues; used to mirror the one-indexed SAdLSA resid column
+        nRes_range = range(1,prot.n_residues+1)
+        for i in nRes_range:
+            if i in metric_data[:,0]:
+                idx = np.argwhere(i == metric_data[:,0])
+                prot.residues[i-1].atoms.tempfactors = float(metric_data[idx,1])   # will be printed with 2 decimal points; 
+            else:
+                prot.residues[i-1].atoms.tempfactors = default_value
+        # saving pdb file, now with desired values in the b-factor column
+        prot.write(file_name)
 
 
 def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name, metric_max, max_color, metric_min=0., min_color='lightgray', under_color='white',colorbar_label='Metric'):
@@ -226,6 +229,8 @@ def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name,
     cb.set_ticklabels([str(metric_min),str(0.25*metric_range),str(0.50*metric_range),str(0.75*metric_range),str(metric_max)])
     plt.savefig(colorbar_file_name,dpi=600,transparent=True)
     plt.close()
+    
+    print('Finished creating colorbar figure', colorbar_file_name)
 
     return
 
