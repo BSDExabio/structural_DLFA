@@ -40,46 +40,40 @@ def grab_structure(pdbid,working_dir='./'):
     INPUT:
     :param pdbid: string; 4 character long code associated with a structure on the RCSB
     :param working_dir: string; local or global path string pointing to where the files should be saved; option. TEMPORARY or NOTE: may not be maintained; hopefully we don't store any files long-term if at all.
+    :return: a path string pointing to the saved structural file. this should change
     """
 
     from urllib import request
-
-    pdb_urls = 'https://files.rcsb.org/view/%s.pdb' # static url for the pdb file associated with pdb ids; %s is replaced with the pdb id.
-    fasta_urls = 'https://www.rcsb.org/pdb/download/viewFastaFiles.do?structureIdList=%s&compressionType=uncompressed' # static url for the fasta file associated with pdb ids; %s is replaced with the pdb id.
-    cif_urls = 'https://files.rcsb.org/view/%s.cif' # static url for the mmcif file assocaited with pdb ids; %s is replaced with the pdb id.
     
-    urls = [pdb_urls]
-    #urls = [pdb_urls,fasta_urls,cif_urls]
-    for url in urls:
-        if url[-3:] == 'pdb':
-            extension = 'pdb'
-        elif url[-3:] == 'cif':
-            extension = 'cif'
-        elif "viewFastaFiles" in url:
-            extension = 'fasta'
-        else:
-            print('something wrong is going on, %s'%(pdbid))
-            return
+    try:
+        # grab the url object associated with the url string 
+        response = request.urlopen('https://files.rcsb.org/view/%s.pdb'%(pdbid))
+        extension = '.pdb'
+    except:
+        print('https://files.rcsb.org/view/%s.cif'%(pdbid) + ' returns an error. No pdb file written out. Grabbing the cif file.')
+        response = request.urlopen('https://files.rcsb.org/view/%s.cif'%(pdbid))
+        extension = '.cif'
+    
+    # convert the url object to a string for reading
+    response_str = str(response.read())
+    if 'Error Page' in response_str:
+        print(url%(pdbid) + ' returns an error. No ' + extension + ' written out.')
+        return 0
+    
+    # split the long string into a list of strings associated with each line of the file
+    response_list = response_str[2:-1].split('\\n')
+    
+    # better to parse the file's lines into a data structure rather than save the structure to a 
+    # temporary file; currently only saving the file to storage 
+    # in the pdb or mmcif file, should instead grab specific REMARK lines and all the ATOM lines 
+    # associated with the protein chain of interest, store them into a data structure for use later.
 
-        try:
-            # grab the url object associated with the url string 
-            response = request.urlopen(url%(pdbid))
-        except:
-            print(url%(pdbid) + ' returns an error. No ' + extension + ' written out.')
-            return
-        # convert the url object to a string for reading
-        response_str = str(response.read())
-        if 'Error Page' in response_str:
-            print(url%(pdbid) + ' returns an error. No ' + extension + ' written out.')
-            return
-        # split the long string into a list of strings associated with each line of the file
-        response_list = response_str[2:-1].split('\\n')
-        # parse the file's lines
-        #currently only saving the file to storage.
-        # in the pdb or mmcif file, I should instead grab specific REMARK lines and all the ATOM lines associated with the protein chain of interest, store them into a data structure for use later.
-        with open(working_dir + '/' + pdbid + '.' + extension,'w') as W:
-            for line in response_list:
-                W.write(line+'\n')
+    file_ = working_dir + '/' + pdbid + extension
+    with open(file_,'w') as W:
+        for line in response_list:
+            W.write(line+'\n')
+    return file_
+
 
 def edit_pdb(target_structure, chainID, metric_data, metric_type, string_type='file_path', default_value = -1.00):
     """
@@ -103,7 +97,7 @@ def edit_pdb(target_structure, chainID, metric_data, metric_type, string_type='f
     file_name = target_structure[:-4]+'_'+chainID+'_'+metric_type+'.pdb'
     # loading the pdb file into an MDAnalysis universe object
     with warnings.catch_warnings():
-        warnings.simplefilter('ignore',UserWarning)
+        #warnings.simplefilter('ignore',UserWarning)
         u = MDAnalysis.Universe(target_structure)
         # creating the atom selection groups for the structure
         prot = u.select_atoms('protein and chainID %s'%(chainID))
