@@ -33,66 +33,33 @@ def query_alignment_df(align_df, seqname, metric_string):
     return temp_df.filter(grab_columns).values
 
 
-def grab_structure(pdbid,working_dir='./'):
+def grab_structure(pdbID):
     """
     Pull the structure from the RCSB database.
     
     INPUT:
-    :param pdbid: string; 4 character long code associated with a structure on the RCSB
-    :param working_dir: string; local or global path string pointing to where the files should be saved; option. TEMPORARY or NOTE: may not be maintained; hopefully we don't store any files long-term if at all.
+    :param pdbID: string; 4 character long code associated with a structure on the RCSB
+    :return: a path string pointing to the saved structural file
     """
 
-    from urllib import request
+    import mmtf
 
-    pdb_urls = 'https://files.rcsb.org/view/%s.pdb' # static url for the pdb file associated with pdb ids; %s is replaced with the pdb id.
-    fasta_urls = 'https://www.rcsb.org/pdb/download/viewFastaFiles.do?structureIdList=%s&compressionType=uncompressed' # static url for the fasta file associated with pdb ids; %s is replaced with the pdb id.
-    cif_urls = 'https://files.rcsb.org/view/%s.cif' # static url for the mmcif file assocaited with pdb ids; %s is replaced with the pdb id.
-    
-    urls = [pdb_urls]
-    #urls = [pdb_urls,fasta_urls,cif_urls]
-    for url in urls:
-        if url[-3:] == 'pdb':
-            extension = 'pdb'
-        elif url[-3:] == 'cif':
-            extension = 'cif'
-        elif "viewFastaFiles" in url:
-            extension = 'fasta'
-        else:
-            print('something wrong is going on, %s'%(pdbid))
-            return
+    return mmtf.fetch(pdbID)
 
-        try:
-            # grab the url object associated with the url string 
-            response = request.urlopen(url%(pdbid))
-        except:
-            print(url%(pdbid) + ' returns an error. No ' + extension + ' written out.')
-            return
-        # convert the url object to a string for reading
-        response_str = str(response.read())
-        if 'Error Page' in response_str:
-            print(url%(pdbid) + ' returns an error. No ' + extension + ' written out.')
-            return
-        # split the long string into a list of strings associated with each line of the file
-        response_list = response_str[2:-1].split('\\n')
-        # parse the file's lines
-        #currently only saving the file to storage.
-        # in the pdb or mmcif file, I should instead grab specific REMARK lines and all the ATOM lines associated with the protein chain of interest, store them into a data structure for use later.
-        with open(working_dir + '/' + pdbid + '.' + extension,'w') as W:
-            for line in response_list:
-                W.write(line+'\n')
 
-def edit_pdb(target_structure, chainID, metric_data, metric_type, string_type='file_path', default_value = -1.00):
+def edit_pdb(target_structure, pdbchainID, metric_data, metric_type, default_value = -1.00, working_dir = './'):
     """
     Editing the atom data of a pdb-formatted data set; filling the 61-66 columns of the pdb to the float values of the metric_data.
 
     INPUTS:
-    :param target_structure: string of a global or local path to the structure to be visualized and was used as the alignment target.
-    :param chainID: string (assumed to be length of 1) that denotes the chainID of the protein chain used as the alignment target.
-    :param metric_data: a 2d array the contains the metric of interest; first column corresponds to the resids; 2nd column corresponds to the float values associated with the metric of interest. 
-    :param metric_type: a string that acts as a descriptor for the metric; should not contain any spaces. TEMPORARY  
-    
+    :param target_structure: mmtf structure object.
+    :param pdbchainID: string that denotes the pdb and chain ID of the protein chain used as the alignment target.
+    :param metric_data: a 2d array the contains the metric of interest; first column corresponds to the one-indexed residue ids; 2nd column corresponds to the float values associated with the metric of interest. 
+    :param metric_type: a string that acts as a descriptor for the metric; should not contain any spaces.
+    :return: a string associated with the path to the new saved pdb file; if no file is saved, returns 0 (int).
+
     OUTPUTS: 
-    A new .pdb file that contains the metric of interest in the b-factor column. 
+    A new .pdb file that contains the metric of interest in the b-factor column. If the system is too large, no file is written. 
     """
 
     import MDAnalysis
@@ -100,28 +67,35 @@ def edit_pdb(target_structure, chainID, metric_data, metric_type, string_type='f
     import warnings
 
     # setting output file name
-    file_name = target_structure[:-4]+'_'+chainID+'_'+metric_type+'.pdb'
-    # loading the pdb file into an MDAnalysis universe object
+    file_name = working_dir + pdbchainID + '_' + metric_type + '.pdb'
+    chainID = pdbchainID.split('_')[1]
+    # loading the mmtf structure object into an MDAnalysis universe object
+    u = MDAnalysis.Universe(target_structure)
+    # creating the atom selection groups for the structure
+    prot = u.select_atoms('protein and segid %s'%(chainID))
+    _all = u.select_atoms('segid %s'%(chainID))
+    # moving all atoms of chain of interest to have the CoM to be the origin
+    _all.translate(-prot.center_of_mass())
+    
+    # creating the one-indexed array of protein residue indices of resolved 
+    # residues; used to mirror the one-indexed SAdLSA resid column
+    nRes_range = range(1,prot.n_residues+1)
+    for i in nRes_range:
+        if i in metric_data[:,0]:
+            idx = np.argwhere(i == metric_data[:,0])
+            prot.residues[i-1].atoms.tempfactors = float(metric_data[idx,1])   # will be printed with 2 decimal points; 
+        else:
+            prot.residues[i-1].atoms.tempfactors = default_value
+    
     with warnings.catch_warnings():
+        # ignore some annoying warnings from sel.write line due to missing information (chainIDs, elements, and record_types). 
         warnings.simplefilter('ignore',UserWarning)
-        u = MDAnalysis.Universe(target_structure)
-        # creating the atom selection groups for the structure
-        prot = u.select_atoms('protein and chainID %s'%(chainID))
-        _all = u.select_atoms('chainID %s'%(chainID))
-        # moving all atoms of chain of interest to have the CoM to be the origin
-        _all.translate(-prot.center_of_mass())
-
-        # creating the one-indexed array of protein residue indices of resolved 
-        # residues; used to mirror the one-indexed SAdLSA resid column
-        nRes_range = range(1,prot.n_residues+1)
-        for i in nRes_range:
-            if i in metric_data[:,0]:
-                idx = np.argwhere(i == metric_data[:,0])
-                prot.residues[i-1].atoms.tempfactors = float(metric_data[idx,1])   # will be printed with 2 decimal points; 
-            else:
-                prot.residues[i-1].atoms.tempfactors = default_value
-        # saving pdb file, now with desired values in the b-factor column
-        prot.write(file_name)
+        if prot.n_atoms > 99999.:
+            print('Number of atoms is too large for pdb file format; need to visualize these results without writing to file.')
+            return 0
+        else:
+            prot.write(file_name)
+            return file_name
 
 
 def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name, metric_max, max_color, metric_min=0., min_color='lightgray', under_color='white',colorbar_label='Metric'):
