@@ -86,12 +86,16 @@ def edit_pdb(target_structure, pdbchainID, metric_data, metric_type, default_val
             prot.residues[i-1].atoms.tempfactors = float(metric_data[idx,1])   # will be printed with 2 decimal points; 
         else:
             prot.residues[i-1].atoms.tempfactors = default_value
-    if prot.n_atoms > 99999.:
-        print('Number of atoms is too large for pdb file format; need to visualize these results without writing to file.')
-        return 0
-    else:
-        prot.write(file_name)
-        return file_name
+    
+    with warnings.catch_warnings():
+        # ignore some annoying warnings from sel.write line due to missing information (chainIDs, elements, and record_types). 
+        warnings.simplefilter('ignore',UserWarning)
+        if prot.n_atoms > 99999.:
+            print('Number of atoms is too large for pdb file format; need to visualize these results without writing to file.')
+            return 0
+        else:
+            prot.write(file_name)
+            return file_name
 
 
 def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name, metric_max, max_color, metric_min=0., min_color='lightgray', under_color='white',colorbar_label='Metric'):
