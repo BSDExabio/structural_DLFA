@@ -82,6 +82,10 @@ class Database():
 
         We return a JSON object because that works well with web sites.
 
+        >>> dlfa_db = Database('/tmp/dlfa.db')
+        >>> enzyme = dlfa_db.query_enzyme(1, 1, 1)
+        >>> print(enzyme)
+
         :param class_num: class number of enzyme
         :param subclass_num: subclass number of enzyme
         :param subsubclass_num: subsubclass number of enzyme
@@ -89,7 +93,7 @@ class Database():
         :return: JSON of enzyme or None if not found
         """
         with self.engine.connect() as conn:
-            result = conn.execute(text("SELECT class_name, "
+            rows = conn.execute(text("SELECT class_name, "
                                        "subclass_desc, "
                                        "subsubclass_desc "
                                        "FROM enzyme_desciptions "
@@ -98,15 +102,24 @@ class Database():
                                        "subsubclass = :subsubclass_num" ),
                                   {'class_num' : class_num,
                                    'subclass_num' : subclass_num,
-                                   'subsubclass_num' : subsubclass_num})
+                                   'subsubclass_num' : subsubclass_num}).fetchall()
 
-            for class_name, subclass_desc, subsubclass_desc in result:
+            if rows != []:
+                # We should only get a single row for this kind of query
+                class_name, subclass_desc, subsubclass_desc = rows[0]
                 return json.dumps({'class_name' : class_name,
                                    'subclass_desc' : subclass_desc,
                                    'subsubclass_desc' : subsubclass_desc})
 
             # If we got this far, then there were no hits.
             return None
+
+    def query(self, sql):
+        """ Do SQL query on database
+        :param sql: SQL query
+        :returns: JSON formatted query results
+        """
+
 
 
 if __name__ == '__main__':
@@ -116,6 +129,8 @@ if __name__ == '__main__':
 
     try:
         enzyme = dlfa_db.query_enzyme(1, 1, 1)
+        print(f'Got {enzyme}')
+        enzyme = dlfa_db.query_enzyme(99, 99, 99)
         print(f'Got {enzyme}')
     except sqlite3.OperationalError as e:
         print(f'{e}')
