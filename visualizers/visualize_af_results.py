@@ -1,41 +1,29 @@
 #!/usr/bin/env python3
 
 """
-    Functions for pulling information out of SAdLSA pandas dataframes and visualizing results.
+    For pulling information out of AF pandas dataframes. 
 """
 
+def query_af_df(af_df,model_num):
+    """
+    Pull a specific column of data out of a pandas dataframe containing AlphaFold's pLDDT results for numerous models
 
-def query_score_df(score_df):
+    :param af_df: pandas dataframe object; filled with pLDDT results for numerous AF models
+    :param model_num: string associated with columns in the dataframe; usd to pull a specific model's data
+    :return: 1d pandas series object of a single model's pLDDT array; array indices are equivalent to the zero-indexed residue indices of the model. 
     """
-    Code to pull information from a pandas dataframe created from the sadlsa score file
-    :param score_df: pandas dataframe object; filled with the score results
-    :return: an array of lists; each element in the array is a list containing the pdb_chainID string ("seqname" column), predicted tmscore ("tmscore1"; float), alignment score ("alnscore"; float), alignment length ("alnlen"; float), and sequence identity ("seq_id"; float) data.
-    """
-    grab_columns = ["seqname","tmscore1","alnscore","alnlen","seq_id"]
-    return score_df.filter(grab_columns).values
-
-
-def query_alignment_df(align_df, seqname, metric_string):
-    """
-    Code to pull information from a pandas dataframe created from the sadlsa alignment file
-    :param align_df: pandas dataframe object; filled with the alignment results
-    :param seqname: string; associated with a specific target protein structure, specified in the "seqname" column of the score results. 
-    :return: a 2d numpy array; 0th column corresponds to the target protein structure's residue index, 1st column corresponds to the metric of interest 
-    """
-    temp_df = align_df[align_df['Prot_ID'].str.contains(seqname)]
-    grab_columns = ["Res2",metric_string]
-    return temp_df.filter(grab_columns).values
+    return af_df[model_num]
 
 
-def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name, metric_max, max_color, metric_min=0., min_color='lightgray', under_color='white',colorbar_label='Metric'):
+def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_names_list, metric_max, max_color, metric_min=0., min_color='lightgray', under_color='white',colorbar_label='Metric'):
     """
-    Writing the VMD visualization state file to view the protein structure with the metric values in the b-factor column of the pdb
+    Writing the VMD visualization state file to view the aligned protein structures with the metric values in the b-factor columns of the pdbs
     Also, creating a colorbar figure that mirrors the color range used in the VMD vis state. 
 
     INPUTS:
     :param vis_state_file_name: string of a global or local path that the vis state file will be saved as
     :param colorbar_file_name: string of a global or local path that the colorbar will be saved as
-    :param colorbar_file_name: string of a global or local path of the pdb to be visualized
+    :param pdb_file_names_list: list of strings of a global or local path to the .pdb files that will be visualized
     :param metric_max: float that sets the maximum value of the color scale
     :param max_color: string of a color to be used to label the maximum value; must be a color accepted by matplotlib.colors
     :param metric_min: float that sets the minimum value of the color scale; default is 0.0
@@ -95,23 +83,24 @@ def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name,
         W.write(color_defs[33])
         for i in possible_colorids:
             W.write(color_defs[i])
+   
+        # loop through pdbs, load them, and prep their representations. 
+        for pdb in pdb_file_names_list:
+            W.write('mol new ' + pdb + ' type pdb first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n')
+            W.write('mol delrep 0 top\n')
+            W.write('mol representation NewCartoon 0.160000 50.000000 4.100000 0\n')
+            W.write('mol color Beta\n')
+            W.write('mol selection {all}\n')
+            W.write('mol material AOEdgy\n')
+            W.write('mol addrep top\n')
+            W.write('mol scaleminmax top 0 %f %f\n'%(metric_min,metric_max))    # applies the correct colorbar scale to the newcartoon rep; must come after the "mol addrep top" line
+            W.write('mol representation Licorice 0.150000 85.000000 85.000000\n')
+            W.write('mol color Name\n')
+            W.write('mol selection { protein }\n')
+            W.write('mol material AOEdgy\n')
+            W.write('mol addrep top\n\n')
     
-        ### prepping the molecule and reps
-        W.write('mol new ' + pdb_file_name + ' type pdb first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all\n')
-        W.write('mol delrep 0 top\n')
-        W.write('mol representation NewCartoon 0.160000 50.000000 4.100000 0\n')
-        W.write('mol color Beta\n')
-        W.write('mol selection {all}\n')
-        W.write('mol material AOEdgy\n')
-        W.write('mol addrep top\n')
-        W.write('mol scaleminmax top 0 %f %f\n'%(metric_min,metric_max))    # applies the correct colorbar scale to the newcartoon rep; must come after the "mol addrep top" line
-        W.write('mol representation Licorice 0.150000 85.000000 85.000000\n')
-        W.write('mol color Name\n')
-        W.write('mol selection { protein }\n')
-        W.write('mol material AOEdgy\n')
-        W.write('mol addrep top\n\n')
-    
-        W.write('### setting viewpoints\n#REPLACE BELOW WITH NEW VIEWPOINTS LINE\nset viewpoints([molinfo top]) {{{1 0 0 0} {0 1 0 0} {0 0 1 0} {0 0 0 1}} {{0 0 0 0} {0 0 0 0} {0 0 0 0} {0 0 0 1}} {{0 0 0 0} {0 0 0 0} {0 0 0 0} {0 0 0 1}} {{1 0 0 0} {0 1 0 0} {0 0 1 0} {0 0 0 1}}}\nlappend viewplist [molinfo top]\nset topmol [molinfo top]\n\nforeach v $viewplist { \n  molinfo $v set {center_matrix rotate_matrix scale_matrix global_matrix} $viewpoints($v)\n}\nforeach v $fixedlist {\n  molinfo $v set fixed 1\n}\nunset viewplist\nunset fixedlist\n')
+            W.write('### setting viewpoints\n#REPLACE BELOW WITH NEW VIEWPOINTS LINE\nset viewpoints([molinfo top]) {{{1 0 0 0} {0 1 0 0} {0 0 1 0} {0 0 0 1}} {{0 0 0 0} {0 0 0 0} {0 0 0 0} {0 0 0 1}} {{0 0 0 0} {0 0 0 0} {0 0 0 0} {0 0 0 1}} {{1 0 0 0} {0 1 0 0} {0 0 1 0} {0 0 0 1}}}\nlappend viewplist [molinfo top]\nset topmol [molinfo top]\n\nforeach v $viewplist { \n  molinfo $v set {center_matrix rotate_matrix scale_matrix global_matrix} $viewpoints($v)\n}\nforeach v $fixedlist {\n  molinfo $v set fixed 1\n}\nunset viewplist\nunset fixedlist\n')
     
     print('Finished creating vis-state file', vis_state_file_name)
 
