@@ -117,9 +117,22 @@ class Database():
 
     def query(self, sql):
         """ Do SQL query on database
+
+        >>> dlfa_db = Database('/tmp/dlfa.db')
+        >>> results = dlfa_db.query('select class_name, subsubclass_desc from enzyme_desciptions where class = 1 and subclass = 1 and subsubclass = 1;')
+        >>> print(results)
+        [["Oxidoreductases", "With NAD(+) or NADP(+) as acceptor"]]
+
         :param sql: SQL query
         :returns: JSON formatted query results
         """
+        with self.engine.connect() as conn:
+            rows = conn.execute(text(sql))
+
+            if rows == []:
+                return None
+            else:
+                return json.dumps([tuple(row) for row in rows])
 
 
 
