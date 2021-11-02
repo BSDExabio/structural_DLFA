@@ -25,7 +25,7 @@ from rich.logging import RichHandler
 from rich.traceback import install
 install()
 
-from database import write_df_to_db
+from database.database import write_df_to_db
 
 rich_handler = RichHandler(rich_tracebacks=True,
                            markup=True)
