@@ -85,6 +85,7 @@ class Database():
         >>> dlfa_db = Database('/tmp/dlfa.db')
         >>> enzyme = dlfa_db.query_enzyme(1, 1, 1)
         >>> print(enzyme)
+        {"class_name": "Oxidoreductases", "subclass_desc": "Acting on the CH-OH group of donors", "subsubclass_desc": "With NAD(+) or NADP(+) as acceptor"}
 
         :param class_num: class number of enzyme
         :param subclass_num: subclass number of enzyme
