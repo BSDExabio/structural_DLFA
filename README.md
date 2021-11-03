@@ -19,3 +19,5 @@ protein structure.
 * `seq` -- data saved from an earlier SAdLSA run
 * `snippets` -- example code from which to crib
 * `visualizers` -- code for visualizing Alphafold and SAdLSA data
+* `website` -- support for our Missouri web site for querying and 
+  visualizing `sqlite3` data.
