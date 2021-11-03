@@ -70,7 +70,7 @@ class Database():
             # one row of information each time.  I.e., we don't want to keep
             # accumulating redundant rows of data.
             conn.execute(text('DROP TABLE IF EXISTS info'))
-            conn.execute(text('CREATE TABLE IF NOT EXISTS '
+            conn.execute(text('CREATE TABLE '
                               'info (institution TEXT, '
                               'date TEXT, '
                               'version TEXT)'))
