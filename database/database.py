@@ -66,6 +66,10 @@ class Database():
         if not version:
             version = '0.0'
         with self.engine.connect() as conn:
+            # Drop table because we want to over-write it with just this
+            # one row of information each time.  I.e., we don't want to keep
+            # accumulating redundant rows of data.
+            conn.execute(text('DROP TABLE IF EXISTS info'))
             conn.execute(text('CREATE TABLE IF NOT EXISTS '
                               'info (institution TEXT, '
                               'date TEXT, '
