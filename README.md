@@ -8,6 +8,7 @@ protein structure.
 
 * `database` -- contains `Database`, which is a wrapper for our `sqlite3` 
   database
+* `db` -- where the actual `sqlite3` database will be kept
 * `notebooks` -- jupyter notebooks that demonstrate how to use some this 
   software as well as create various visualizations; also some notebooks are 
   for working out various issues.
