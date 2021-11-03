@@ -181,7 +181,7 @@ class Database():
 
 if __name__ == '__main__':
     # test harness
-    dlfa_db = Database('/tmp/dlfa.db')
+    dlfa_db = Database('../db/dlfa.db')
     dlfa_db.add_info_table()
 
     try:
