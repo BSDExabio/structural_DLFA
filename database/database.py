@@ -115,6 +115,45 @@ class Database():
             # If we got this far, then there were no hits.
             return None
 
+
+    def query_sadlsa_score(self, protein):
+        """ query SAdLSA score for given protein
+
+        >>> dlfa_db = Database('/tmp/dlfa.db')
+        >>> results = dlfa_db.query_sadlsa_score('WP_010937346.1')
+
+        :param protein: for which we want to do the query
+        :returns: JSON of matches or None if no match
+        """
+        with self.engine.connect() as conn:
+            rows = conn.execute(text("SELECT * FROM sadlsa_scores WHERE protein = :protein"),
+                                {'protein' : protein})
+
+            if rows != []:
+                return json.dumps([tuple(row) for row in rows])
+            else:
+                return None
+
+
+    def query_sadlsa_alignments(self, protein):
+        """ query SAdLSA score for given protein
+
+        >>> dlfa_db = Database('/tmp/dlfa.db')
+        >>> results = dlfa_db.query_sadlsa_alignments('WP_010937346.1')
+
+        :param protein: for which we want to do the query
+        :returns: JSON of matches or None if no match
+        """
+        with self.engine.connect() as conn:
+            rows = conn.execute(text("SELECT * FROM sadlsa_alignments WHERE protein = :protein"),
+                                {'protein' : protein})
+
+            if rows != []:
+                return json.dumps([tuple(row) for row in rows])
+            else:
+                return None
+
+
     def query(self, sql):
         """ Do SQL query on database
 
