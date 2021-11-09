@@ -25,12 +25,12 @@ install()
 
 from Bio import SeqIO
 
-DESCRIPTION = """find hypothetical proteins in Genbank files
+DESCRIPTION = """Find hypothetical proteins in Genbank files
 
 Find hypothetical proteins in Genbank files and either write them to a 
 corresponding FASTA file, or echo the protein IDs to stdout.  I.e., 
-if a FASTA output file name is not given, assume that giving just the protein 
-IDs to stdout is wanted. 
+if a FASTA output file name is not given, then just print the protein 
+IDs to stdout. 
 """
 
 def find_hypothetical_proteins(genbank_file):
@@ -54,19 +54,25 @@ def find_hypothetical_proteins(genbank_file):
                     matches.append(feature)
     return matches
 
+
 def print_matches(matches):
     """ Blat out matches to stdout """
     for match in matches:
         print(match.qualifiers['protein_id'][0])
 
 
+def write_to_fasta(matches, fasta_filename):
+    """ Write matches to FASTA file """
+    pass
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument('genbank_file',
                         help='Genbank file in which we want to find '
-                             'hypotheticals')
+                             'hypothetical proteins')
     parser.add_argument('--fasta-file',
-                        help='Where we optionally want to write a '
+                        help='Where we optionally want to write '
                              'hypothetical proteins in FASTA format')
 
     args = parser.parse_args()
