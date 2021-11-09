@@ -59,10 +59,7 @@ def write_stdout(genbank_file):
 
 def write_to_fasta(genbank_file, fasta_filename):
     """ Write matches to FASTA file """
-    # First pull everything into a dictionary, and then splice out all the
-    # feature records that DON'T have hypothetical proteins.  We'll later
-    # write that dictionary to a FASTA file.
-    records = SeqIO.to_dict(SeqIO.parse(genbank_file, "genbank"))
+    records = list(SeqIO.parse(genbank_file, "genbank"))
 
     for record in records:
         # Filter for features that just have hypothetical proteins that are
