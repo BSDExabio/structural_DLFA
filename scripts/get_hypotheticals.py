@@ -69,7 +69,10 @@ def print_matches(matches):
 
 def write_to_fasta(matches, fasta_filename):
     """ Write matches to FASTA file """
-    pass
+    with open(fasta_filename, 'w') as fasta_file:
+        count = SeqIO.write(matches, fasta_file, 'fasta')
+
+    logger.info(f'Wrote {count} records to {fasta_filename}')
 
 
 if __name__ == '__main__':
@@ -100,4 +103,4 @@ if __name__ == '__main__':
         print_matches(matches)
     else:
         # TODO implement writing to FASTA file
-        pass
+        write_to_fasta(matches, args.fasta_file)
