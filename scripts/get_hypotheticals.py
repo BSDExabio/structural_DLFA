@@ -85,7 +85,10 @@ def write_to_fasta(genbank_file, fasta_filename):
         for record in records:
             for feature in record.features:
                 if _is_hypothetical_protein(feature):
-                    fasta_file.write(f">{feature.qualifiers['protein_id'][0]} from {feature.qualifiers['locus_tag'][0]}\n{feature.qualifiers['translation'][0]}\n")
+                    fasta_file.write(f">{feature.qualifiers['protein_id'][0]} "
+                                     f"from "
+                                     f"{feature.qualifiers['locus_tag'][0]}\n"
+                                     f"{feature.qualifiers['translation'][0]}\n")
                     count += 1
 
     logger.info(f'Wrote {count} records to {fasta_filename}')
