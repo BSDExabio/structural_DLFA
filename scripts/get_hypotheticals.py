@@ -37,40 +37,42 @@ IDs to stdout.
 """
 
 
-def find_hypothetical_proteins(genbank_file):
-    """ Return any hypothetical proteins that are NOT psuedo-genes in the given
-        Genbank file.
+def _is_hypothetical_protein(feature):
+    """ returns True if hypothetical protein """
+    return 'protein_id' in feature.qualifiers and \
+           'product' in feature.qualifiers and \
+           re.search(r'hypothetical', feature.qualifiers['product'][0])
 
-    :param genbank_file: in which we'll be looking for hypothetical proteins
-    :return: list of matching records
-    """
-    records = list(SeqIO.parse(genbank_file, "genbank"))
 
-    matches = []
+def write_stdout(genbank_file):
+    """ Blat out matches to stdout """
+
+    def print_id(feature):
+        print(feature.qualifiers['protein_id'][0])
+
+    records = SeqIO.parse(genbank_file, "genbank")
 
     for record in records:
-        for feature in record.features:
-
-            if 'protein_id' in feature.qualifiers and \
-                    'product' in feature.qualifiers:
-                # We look for the work "hypothetical" anywhere in the product
-                # description.  Note this implicitly filters out pseudo-genes
-                # since those do not have a `protein_id`.
-                if re.search(r'hypothetical', feature.qualifiers['product'][0]):
-                    matches.append(feature)
-    return matches
+        [print_id(feature) for feature in record.features
+         if _is_hypothetical_protein(feature)]
 
 
-def print_matches(matches):
-    """ Blat out matches to stdout """
-    for match in matches:
-        print(match.qualifiers['protein_id'][0])
-
-
-def write_to_fasta(matches, fasta_filename):
+def write_to_fasta(genbank_file, fasta_filename):
     """ Write matches to FASTA file """
+    # First pull everything into a dictionary, and then splice out all the
+    # feature records that DON'T have hypothetical proteins.  We'll later
+    # write that dictionary to a FASTA file.
+    records = SeqIO.to_dict(SeqIO.parse(genbank_file, "genbank"))
+
+    for record in records:
+        # Filter for features that just have hypothetical proteins that are
+        # NOT pseudo-genes.
+        new_features = [feature for feature in record.features
+                        if _is_hypothetical_protein(feature)]
+        record.features = new_features
+
     with open(fasta_filename, 'w') as fasta_file:
-        count = SeqIO.write(matches, fasta_file, 'fasta')
+        count = SeqIO.write(records, fasta_file, 'fasta')
 
     logger.info(f'Wrote {count} records to {fasta_filename}')
 
@@ -91,16 +93,15 @@ if __name__ == '__main__':
     if not genbank_file.exists():
         logger.critical(f'{args.genbank_file} does not exist')
 
-    matches = find_hypothetical_proteins(genbank_file)
+    # matches = find_hypothetical_proteins(genbank_file)
 
-    if matches == []:
-        logger.warning(f'No hypothetical proteins found in {args.genbank_file}')
-        sys.exit(1)
+    # if matches == []:
+    #     logger.warning(f'No hypothetical proteins found in {args.genbank_file}')
+    #     sys.exit(1)
 
     if args.fasta_file is None:
         # Just blat out the protein IDs to stdout since we didn't specify
         # a FASTA file
-        print_matches(matches)
+        write_stdout(genbank_file)
     else:
-        # TODO implement writing to FASTA file
-        write_to_fasta(matches, args.fasta_file)
+        write_to_fasta(genbank_file, args.fasta_file)
