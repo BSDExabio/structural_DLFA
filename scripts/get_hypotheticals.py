@@ -20,12 +20,11 @@ optional arguments:
 """
 import argparse
 import logging
-import string
-import sys
 import re
 from pathlib import Path
 
 from rich import pretty
+
 pretty.install()
 
 from rich.logging import RichHandler
