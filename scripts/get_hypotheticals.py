@@ -38,7 +38,7 @@ IDs to stdout.
 
 
 def _is_hypothetical_protein(feature):
-    """ returns True if hypothetical protein """
+    """ returns True if given GenBank feature is for a hypothetical protein """
     return 'protein_id' in feature.qualifiers and \
            'product' in feature.qualifiers and \
            re.search(r'hypothetical', feature.qualifiers['product'][0])
@@ -58,18 +58,22 @@ def write_stdout(genbank_file):
 
 
 def write_to_fasta(genbank_file, fasta_filename):
-    """ Write matches to FASTA file """
+    """ Write Genbank hypothetical proteins to FASTA file
+
+        :param genbank_file: for which we are looking for hypothetical proteins
+        :param fasta_filename: that we want to write to in FASTA format
+        :returns: None
+    """
     records = list(SeqIO.parse(genbank_file, "genbank"))
 
-    for record in records:
-        # Filter for features that just have hypothetical proteins that are
-        # NOT pseudo-genes.
-        new_features = [feature for feature in record.features
-                        if _is_hypothetical_protein(feature)]
-        record.features = new_features
+    count = 0
 
     with open(fasta_filename, 'w') as fasta_file:
-        count = SeqIO.write(records, fasta_file, 'fasta')
+        for record in records:
+            for feature in record.features:
+                if _is_hypothetical_protein(feature):
+                    fasta_file.write(f">{feature.qualifiers['protein_id'][0]} from {feature.qualifiers['locus_tag'][0]}\n{feature.qualifiers['translation'][0]}\n")
+                    count += 1
 
     logger.info(f'Wrote {count} records to {fasta_filename}')
 
