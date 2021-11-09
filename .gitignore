@@ -68,3 +68,6 @@ dask-worker-space
 notebooks/.ipynb_checkpoints/DLFA\ Sankey\ Diagram-checkpoint.ipynb
 .ipynb_checkpoints/DLFA\ Sankey\ Diagram-checkpoint.ipynb
 DLFA\ Sankey\ Diagram-checkpoint.ipynb
+
+# ignore database files
+*.db
