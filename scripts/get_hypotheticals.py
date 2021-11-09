@@ -57,7 +57,7 @@ def _is_hypothetical_protein(feature):
 
 
 def write_stdout(genbank_file):
-    """ Blat out matches to stdout """
+    """ Blat out hypothetical protein IDs to stdout """
 
     def print_id(feature):
         print(feature.qualifiers['protein_id'][0])
