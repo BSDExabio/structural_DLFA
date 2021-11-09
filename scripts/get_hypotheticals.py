@@ -10,9 +10,11 @@ import re
 from pathlib import Path
 
 from rich import pretty
+
 pretty.install()
 
 from rich.logging import RichHandler
+
 rich_handler = RichHandler(rich_tracebacks=True,
                            markup=True)
 logging.basicConfig(level='INFO', format='%(message)s',
@@ -21,6 +23,7 @@ logging.basicConfig(level='INFO', format='%(message)s',
 logger = logging.getLogger(__name__)
 
 from rich.traceback import install
+
 install()
 
 from Bio import SeqIO
@@ -33,8 +36,10 @@ if a FASTA output file name is not given, then just print the protein
 IDs to stdout. 
 """
 
+
 def find_hypothetical_proteins(genbank_file):
-    """
+    """ Return any hypothetical proteins that are NOT psuedo-genes in the given
+        Genbank file.
 
     :param genbank_file: in which we'll be looking for hypothetical proteins
     :return: list of matching records
@@ -47,9 +52,10 @@ def find_hypothetical_proteins(genbank_file):
         for feature in record.features:
 
             if 'protein_id' in feature.qualifiers and \
-                'product' in feature.qualifiers:
+                    'product' in feature.qualifiers:
                 # We look for the work "hypothetical" anywhere in the product
-                # description.
+                # description.  Note this implicitly filters out pseudo-genes
+                # since those do not have a `protein_id`.
                 if re.search(r'hypothetical', feature.qualifiers['product'][0]):
                     matches.append(feature)
     return matches
