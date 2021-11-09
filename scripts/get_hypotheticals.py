@@ -1,6 +1,22 @@
 #!/usr/bin/env python3
 """ This will extract any hypothetical proteins from a given Genbank file.
 
+usage: get_hypotheticals.py [-h] [--fasta-file FASTA_FILE] genbank_file
+
+Find hypothetical proteins in Genbank files Find hypothetical proteins in
+Genbank files and either write them to a corresponding FASTA file, or echo
+the protein IDs to stdout. I.e., if a FASTA output file name is not given,
+then just print the protein IDs to stdout.
+
+positional arguments:
+  genbank_file          Genbank file in which we want to find hypothetical
+                        proteins
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --fasta-file FASTA_FILE
+                        Where we optionally want to write hypothetical proteins
+                        in FASTA format
 """
 import argparse
 import logging
@@ -10,11 +26,9 @@ import re
 from pathlib import Path
 
 from rich import pretty
-
 pretty.install()
 
 from rich.logging import RichHandler
-
 rich_handler = RichHandler(rich_tracebacks=True,
                            markup=True)
 logging.basicConfig(level='INFO', format='%(message)s',
@@ -23,7 +37,6 @@ logging.basicConfig(level='INFO', format='%(message)s',
 logger = logging.getLogger(__name__)
 
 from rich.traceback import install
-
 install()
 
 from Bio import SeqIO
@@ -64,7 +77,8 @@ def write_to_fasta(genbank_file, fasta_filename):
         :param fasta_filename: that we want to write to in FASTA format
         :returns: None
     """
-    records = list(SeqIO.parse(genbank_file, "genbank"))
+    logger.info(f'Reading {genbank_file}')
+    records = SeqIO.parse(genbank_file, "genbank")
 
     count = 0
 
@@ -93,12 +107,6 @@ if __name__ == '__main__':
 
     if not genbank_file.exists():
         logger.critical(f'{args.genbank_file} does not exist')
-
-    # matches = find_hypothetical_proteins(genbank_file)
-
-    # if matches == []:
-    #     logger.warning(f'No hypothetical proteins found in {args.genbank_file}')
-    #     sys.exit(1)
 
     if args.fasta_file is None:
         # Just blat out the protein IDs to stdout since we didn't specify
