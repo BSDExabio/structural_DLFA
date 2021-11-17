@@ -98,6 +98,8 @@ class Database():
         :return: JSON of enzyme or None if not found
         """
         with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
             rows = conn.execute(text("SELECT class_name, "
                                        "subclass_desc, "
                                        "subsubclass_desc "
@@ -130,13 +132,12 @@ class Database():
         :returns: JSON of matches or None if no match
         """
         with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
             rows = conn.execute(text("SELECT * FROM sadlsa_scores WHERE protein = :protein"),
                                 {'protein' : protein})
 
-            if rows != []:
-                return json.dumps([tuple(row) for row in rows])
-            else:
-                return None
+            return rows
 
 
     def query_sadlsa_alignments(self, protein):
@@ -149,13 +150,12 @@ class Database():
         :returns: JSON of matches or None if no match
         """
         with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
             rows = conn.execute(text("SELECT * FROM sadlsa_alignments WHERE protein = :protein"),
                                 {'protein' : protein})
 
-            if rows != []:
-                return json.dumps([tuple(row) for row in rows])
-            else:
-                return None
+            return rows
 
 
     def query(self, sql):
@@ -170,6 +170,8 @@ class Database():
         :returns: JSON formatted query results
         """
         with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
             rows = conn.execute(text(sql))
 
             if rows == []:
