@@ -4,13 +4,33 @@
 """
 import sys
 from pathlib import Path
-
+from markupsafe import escape
 from database.database import Database
 
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
 sqlite3_db = Path('../db/dlfa.db')
+
+@app.route('/')
+def index():
+    return 'Index Page'
+
+@app.route('/hello')
+def hello():
+    return '<p>Hello, world!</p>'
+
+@app.route('/user/<username>')
+def show_user_profile(username):
+    return f'User {escape(username)}'
+
+@app.route('/post/<int:post_id>')
+def show_post(post_id):
+    return f'Post {post_id}'
+
+@app.route('/path/<path:subpath>')
+def show_subpath(subpath):
+    return f'Subpath {escape(subpath)}'
 
 # @app.route('/', methods = ['POST', 'GET'])
 # def query():
