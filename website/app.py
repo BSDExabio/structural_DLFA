@@ -2,7 +2,6 @@
 """
     Main support for the website
 """
-import sqlite3
 import sys
 from pathlib import Path
 
@@ -13,15 +12,15 @@ app = Flask(__name__)
 
 sqlite3_db = Path('../db/dlfa.db')
 
-@app.route('/', methods = ['POST', 'GET'])
-def query():
-    return render_template('query.html')
-
-@app.route('/list', methods = ['POST'])
-def list():
-    protein_id = request.form['protein']
-
-    rows = Database.query_sadlsa_alignments(protein_id)
+# @app.route('/', methods = ['POST', 'GET'])
+# def query():
+#     return render_template('query.html')
+#
+# @app.route('/list', methods = ['POST'])
+# def list():
+#     protein_id = request.form['protein']
+#
+#     rows = Database.query_sadlsa_alignments(protein_id)
 
 
 

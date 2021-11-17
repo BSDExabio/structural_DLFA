@@ -7,7 +7,7 @@ RUN mkdir /app
 WORKDIR /app
 
 ADD requirements.txt .
-ADD main.py .
+ADD app.py .
 
 RUN pip install --no-cache-dir --upgrade pip && \
       pip install --no-cache-dir -r requirements.txt
