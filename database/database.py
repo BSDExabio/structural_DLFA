@@ -80,6 +80,17 @@ class Database():
                            'date' : date,
                            'version' : version}])
 
+    def get_info_table(self):
+        """ Return current info table database metadata """
+        with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
+            rows = conn.execute(
+                text("SELECT * FROM info"),
+                {})
+
+            return rows.fetchall()
+
 
     def query_enzyme(self, class_num, subclass_num, subsubclass_num):
         """ Queries the enzyme table
@@ -185,6 +196,9 @@ if __name__ == '__main__':
     # test harness
     dlfa_db = Database('../db/dlfa.db')
     dlfa_db.add_info_table()
+
+    info = dlfa_db.get_info_table()
+    print(f'info: {info}')
 
     try:
         enzyme = dlfa_db.query_enzyme(1, 1, 1)

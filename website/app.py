@@ -11,11 +11,12 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 sqlite3_db = Path('../db/dlfa.db')
+db = Database(sqlite3_db)
 
 @app.route('/')
 def index():
-    # TODO put in dump of info table
-    return render_template('index.html')
+    info = db.get_info_table()
+    return render_template('index.html', info=info)
 
 @app.route('/hello')
 def hello():
