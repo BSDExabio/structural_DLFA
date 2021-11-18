@@ -14,7 +14,8 @@ sqlite3_db = Path('../db/dlfa.db')
 
 @app.route('/')
 def index():
-    return 'Index Page'
+    # TODO put in dump of info table
+    return render_template('index.html')
 
 @app.route('/hello')
 def hello():
