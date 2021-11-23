@@ -22,11 +22,11 @@ def index():
                            num_score_proteins=len(score_proteins),
                            num_alignment_proteins=len(alignment_proteins))
 
-@app.route('/output', methods=['POST'])
-def output():
+@app.route('/align_output', methods=['POST'])
+def align_output():
     protein = request.form.get('protein')
     results = db.query_sadlsa_alignments(protein)
-    return render_template('output.html', results=results)
+    return render_template('align_output.html', results=results)
 
 @app.route('/user/<username>')
 def show_user_profile(username):
