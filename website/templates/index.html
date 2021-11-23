@@ -19,19 +19,11 @@
   </head>
   <body>
     <div class="container">
-      <div class="heading"><h1>ORNL SAdLSA Alignment Database</h1></div>
+      <div class="heading"><h1>ORNL SAdLSA and Alphafold Database</h1></div>
     </div>
     <div class="container">
       <div class="heading"><h2>Database Version Information</h2></div>
       <br/>
-
-    </div>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
-
-    <div class="container">
       <table class="table table-bordered">
         <thead class="thead-light">
           <th scope="col">Institution</th>
@@ -42,6 +34,33 @@
         <tr><td>{{ row.institution }}</td><td>{{ row.date }}</td><td>{{ row.version }}</td></tr>
         {% endfor %}
       </table>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+    <div class="container">
+      <div class="heading">
+        <h2>Accessing the Database</h2>
+      </div>
+      There are a number of ways of accessing the database.
+      <ul>
+        <li>Directly downloading the <a href="file:../db/dlfa.db">sqlite3 database</a></li>
+        <li>Performing one of the queries below</li>
+        <li>Using the API to query the database</li>
+      </ul>
+    </div>
+
+    <div class="container">
+      <div class="heading">
+        <h2>SAdLSA Alignment Database</h2>
+        <ul>
+          <li>Currently num_score_proteins in the SAdLSA score table</li>
+          <li>Currently num_alignment_proteins in the SAdLSA alignments table</li>
+        </ul>
+      </div>
     </div>
 
   </body>
