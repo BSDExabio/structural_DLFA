@@ -28,6 +28,12 @@ def align_output():
     results = db.query_sadlsa_alignments(protein)
     return render_template('align_output.html', results=results)
 
+@app.route('/scores_output', methods=['POST'])
+def scores_output():
+    protein = request.form.get('protein')
+    results = db.query_sadlsa_score(protein)
+    return render_template('scores_output.html', results=results)
+
 @app.route('/user/<username>')
 def show_user_profile(username):
     return f'User {escape(username)}'

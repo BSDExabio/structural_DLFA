@@ -152,7 +152,7 @@ class Database():
 
             rows = conn.execute(text("SELECT * FROM sadlsa_scores WHERE protein = :protein"),
                                 {'protein' : protein})
-            return rows
+            return rows.fetchall()
 
 
     def query_unique_sadlsa_score_proteins(self):
