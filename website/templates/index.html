@@ -46,7 +46,7 @@
         <h2>Accessing the Database</h2>
       </div>
       Here are the ways of accessing the database:
-      <br><br>
+      <br/><br/>
       <ul>
         <li>Directly downloading the <a href="{{ url_for('static', filename='dlfa.db') }}">sqlite3 database</a></li>
         <li>Performing one of the queries below</li>
@@ -62,6 +62,22 @@
           <li>Currently {{num_alignment_proteins}} proteins in the SAdLSA alignments table</li>
         </ul>
       </div>
+
+      <br/><br/>
+
+      <form class="form-inline">
+        <div class="form-group mb-2">
+          <input type="text" readonly class="form-control-plaintext"
+                 id="protein_label" value="Enter protein ID:">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+          <input type="text" class="form-control" id="protein"
+                 placeholder="Protein ID" name="protein">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Submit Query
+        </button>
+      </form>
+
     </div>
 
   </body>
