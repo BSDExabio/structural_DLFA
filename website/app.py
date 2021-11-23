@@ -16,7 +16,11 @@ db = Database(sqlite3_db)
 @app.route('/')
 def index():
     info = db.get_info_table()
-    return render_template('index.html', info=info)
+    score_proteins = db.query_unique_sadlsa_score_proteins()
+    alignment_proteins = db.query_unique_sadlsa_alignments_proteins()
+    return render_template('index.html', info=info,
+                           num_score_proteins=len(score_proteins),
+                           num_alignment_proteins=len(alignment_proteins))
 
 @app.route('/hello')
 def hello():
