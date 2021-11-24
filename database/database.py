@@ -2,6 +2,7 @@
 """
     Database class for managing and accessing sqlite3 database.
 """
+from pathlib import Path
 from datetime import datetime
 from sqlalchemy import create_engine, text
 import json
@@ -48,6 +49,10 @@ class Database():
         """
         :param db_filename: file for sqlite3 database
         """
+
+        if not Path(db_filename).exists():
+            raise FileNotFoundError(f'{db_filename} does not exist')
+
         self.db_filename = db_filename
 
         self.engine = create_engine(f'sqlite:///{db_filename}')
@@ -66,7 +71,11 @@ class Database():
         if not version:
             version = '0.0'
         with self.engine.connect() as conn:
-            conn.execute(text('CREATE TABLE IF NOT EXISTS '
+            # Drop table because we want to over-write it with just this
+            # one row of information each time.  I.e., we don't want to keep
+            # accumulating redundant rows of data.
+            conn.execute(text('DROP TABLE IF EXISTS info'))
+            conn.execute(text('CREATE TABLE '
                               'info (institution TEXT, '
                               'date TEXT, '
                               'version TEXT)'))
@@ -76,13 +85,24 @@ class Database():
                            'date' : date,
                            'version' : version}])
 
+    def get_info_table(self):
+        """ Return current info table database metadata """
+        with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
+            rows = conn.execute(
+                text("SELECT * FROM info"),
+                {})
+
+            return rows.fetchall()
+
 
     def query_enzyme(self, class_num, subclass_num, subsubclass_num):
         """ Queries the enzyme table
 
         We return a JSON object because that works well with web sites.
 
-        >>> dlfa_db = Database('/tmp/dlfa.db')
+        >>> dlfa_db = Database('../db/dlfa.db')
         >>> enzyme = dlfa_db.query_enzyme(1, 1, 1)
         >>> print(enzyme)
         {"class_name": "Oxidoreductases", "subclass_desc": "Acting on the CH-OH group of donors", "subsubclass_desc": "With NAD(+) or NADP(+) as acceptor"}
@@ -94,6 +114,8 @@ class Database():
         :return: JSON of enzyme or None if not found
         """
         with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
             rows = conn.execute(text("SELECT class_name, "
                                        "subclass_desc, "
                                        "subsubclass_desc "
@@ -119,39 +141,71 @@ class Database():
     def query_sadlsa_score(self, protein):
         """ query SAdLSA score for given protein
 
-        >>> dlfa_db = Database('/tmp/dlfa.db')
+        >>> dlfa_db = Database('../db/dlfa.db')
         >>> results = dlfa_db.query_sadlsa_score('WP_010937346.1')
 
         :param protein: for which we want to do the query
         :returns: JSON of matches or None if no match
         """
         with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
             rows = conn.execute(text("SELECT * FROM sadlsa_scores WHERE protein = :protein"),
                                 {'protein' : protein})
+            return rows.fetchall()
 
-            if rows != []:
-                return json.dumps([tuple(row) for row in rows])
-            else:
-                return None
+
+    def query_unique_sadlsa_score_proteins(self):
+        """ query unique proteins in SAdLSA score table
+
+        >>> dlfa_db = Database('../db/dlfa.db')
+        >>> results = dlfa_db.query_unique_sadlsa_score_proteins()
+
+        :returns: list of the proteins that have SAdLSA scores
+        """
+        with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
+            rows = conn.execute(text("SELECT DISTINCT protein FROM sadlsa_scores"),
+                                {})
+            # pull out the proteins from the list of tuples and return that
+            return [x[0] for x in rows.fetchall()]
 
 
     def query_sadlsa_alignments(self, protein):
-        """ query SAdLSA score for given protein
+        """ query SAdLSA alignments for given protein
 
-        >>> dlfa_db = Database('/tmp/dlfa.db')
+        >>> dlfa_db = Database('../db/dlfa.db')
         >>> results = dlfa_db.query_sadlsa_alignments('WP_010937346.1')
+
+        :param protein: for which we want to do the query
+        :returns: list of SAdLSA aligments for given protein; empty list if
+            protein not found
+        """
+        with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
+            rows = conn.execute(text("SELECT * FROM sadlsa_alignments WHERE protein = :protein"),
+                                {'protein' : protein})
+            return rows.fetchall()
+
+
+    def query_unique_sadlsa_alignments_proteins(self):
+        """ query u SAdLSA score for given protein
+
+        >>> dlfa_db = Database('../db/dlfa.db')
+        >>> results = dlfa_db.query_unique_sadlsa_alignments_proteins()
 
         :param protein: for which we want to do the query
         :returns: JSON of matches or None if no match
         """
         with self.engine.connect() as conn:
-            rows = conn.execute(text("SELECT * FROM sadlsa_alignments WHERE protein = :protein"),
-                                {'protein' : protein})
+            conn.row_factory = sqlite3.Row
 
-            if rows != []:
-                return json.dumps([tuple(row) for row in rows])
-            else:
-                return None
+            rows = conn.execute(text("SELECT DISTINCT protein FROM sadlsa_alignments"),
+                                {})
+            # pull out the proteins from the list of tuples and return that
+            return [x[0] for x in rows.fetchall()]
 
 
     def query(self, sql):
@@ -166,19 +220,24 @@ class Database():
         :returns: JSON formatted query results
         """
         with self.engine.connect() as conn:
+            conn.row_factory = sqlite3.Row
+
             rows = conn.execute(text(sql))
 
             if rows == []:
                 return None
             else:
-                return json.dumps([tuple(row) for row in rows])
+                return rows.fetchall()
 
 
 
 if __name__ == '__main__':
     # test harness
-    dlfa_db = Database('/tmp/dlfa.db')
+    dlfa_db = Database('../db/dlfa.db')
     dlfa_db.add_info_table()
+
+    info = dlfa_db.get_info_table()
+    print(f'info: {info}')
 
     try:
         enzyme = dlfa_db.query_enzyme(1, 1, 1)

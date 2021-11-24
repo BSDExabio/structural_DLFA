@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>SAdLSA and Alphafold Database</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="heading"><h1>Online SAdLSA and Alphafold Database</h1></div>
+      <div class="heading"><h3>A joint effort between Georgia Tech, University of Missouri, and the Oak Ridge National Laboratory</h3></div>
+    </div>
+    <div class="container">
+      <div class="heading"><h2>Database Version Information</h2></div>
+      <br/>
+      <table class="table table-bordered">
+        <thead class="thead-light">
+          <th scope="col">Institution</th>
+          <th scope="col">Date Updated</th>
+          <th scope="col">Version</th>
+        </thead>
+        <tbody
+        {% for row in info %}
+        <tr><td>{{ row.institution }}</td><td>{{ row.date }}</td><td>{{ row.version }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+    <div class="container">
+      <div class="heading">
+        <h2>Accessing the Database</h2>
+      </div>
+      Here are the ways of accessing the database:
+      <br/><br/>
+      <ul>
+        <li>Directly downloading the <a href="{{ url_for('static', filename='dlfa.db') }}">sqlite3 database</a></li>
+        <li>Performing one of the queries below</li>
+        <li>Using the API to remotely query the database</li>
+      </ul>
+    </div>
+
+    <div class="container">
+      <div class="heading">
+        <h2>SAdLSA Tables</h2>
+      </div>
+
+      <ul>
+        <li>Currently {{num_score_proteins}} proteins in the SAdLSA score table</li>
+        <li>Currently {{num_alignment_proteins}} proteins in the SAdLSA alignments table</li>
+      </ul>
+
+      <div class="heading">
+        <h3>SAdLSA Alignment Table Query</h3>
+      </div>
+
+      <form class="form-inline" action="/align_output" method="POST">
+        <div class="form-group mb-2">
+          <input type="text" readonly class="form-control-plaintext"
+                 id="protein_label" value="Enter protein ID:">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+          <input type="text" class="form-control" id="protein"
+                 placeholder="Protein ID" name="protein">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Submit Query
+        </button>
+      </form>
+
+      <div class="heading">
+        <h3>SAdLSA Scores Table Query</h3>
+      </div>
+
+      <form class="form-inline" action="/scores_output" method="POST">
+        <div class="form-group mb-2">
+          <input type="text" readonly class="form-control-plaintext"
+                 id="protein_label" value="Enter protein ID:">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+          <input type="text" class="form-control" id="protein"
+                 placeholder="Protein ID" name="protein">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Submit Query
+        </button>
+      </form>
+
+    </div>
+
+  </body>
+</html>

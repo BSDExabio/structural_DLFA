@@ -9,3 +9,4 @@ This directory contains general purpose scripts.
   sqlite3 database
 * `lookup_protein.py` -- reads a CSV or space delimited file and will add 
   columns for the protein IDs for any specified column of locus tags
+* `make_info_table.py` -- will create or update `sqlite3` info table
