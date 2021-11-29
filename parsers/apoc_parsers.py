@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-    For importing SAdLSA data into pandas dataframes.
+    For importing APOC data into pandas dataframes.
     This is used by another utility for importing into sqlite3 database.
 """
 import pandas as pd
@@ -16,16 +16,15 @@ def _get_protein(fn):
     return name[:name.rfind('_')]
 
 
-def parse_sadlsa_score_file(fn, count=10):
-    """ translate given SAdLSA score file into pandas dataframe
+def parse_apoc_score_file(fn, count=10):
+    """ translate given APOC score file into pandas dataframe
     :param fn: string filename of score file
     :param count: how many of the top scores we want to get
     :return: pandas dataframe of score results for top count results
     """
     import gzip
 
-    columns = ["protein", "seqname", "alnlen", "range1", "tmscore1", "range2",
-               "tmscore2", "alnscore", "seq_id", "desc"]
+    columns = ["protein", "seqname", "tmalnlen", "tmrmsd", "tmscore", "seq_id", "desc"]
 
     rows = [] # will contain rows of dicts corresponding to score data
 
@@ -41,9 +40,9 @@ def parse_sadlsa_score_file(fn, count=10):
         with open(fn, mode='rt') as f:
             lines = f.readlines()
 
-    for line in lines[3:count + 3]:
+    for line in lines[1:count + 1]:
         temp = line.strip().split('\t|')
-        rec = [protein] + temp[0].split()
+        rec = [protein] + temp[0].split() + [temp[1]]   # prepping the list of alignment result elements
 
         # This is just a fast way of mapping the column names to each
         # successive list element.  We could have laboriously assigned each
@@ -60,14 +59,13 @@ def parse_sadlsa_score_file(fn, count=10):
     df = df.convert_dtypes()
 
     # Convert to numeric those things that are numeric
-    df[['alnlen','tmscore1','tmscore2','alnscore','seq_id']] = \
-        df[['alnlen', 'tmscore1', 'tmscore2', 'alnscore', 'seq_id']].apply(pd.to_numeric)
+    df[["tmalnlen", "tmrmsd", "tmscore", "seq_id"]] = df[["tmalnlen", "tmrmsd", "tmscore", "seq_id"]].apply(pd.to_numeric)
 
     return df
 
 
-def parse_sadlsa_aln_file(fn, count=10):
-    """ translate given SAdLSA alignment file into pandas dataframe
+def parse_apoc_aln_file(fn, count=10):
+    """ translate given APOC alignment file into pandas dataframe
     TODO consider splitting this into two dataframes, one for the alignment
     block header, and the other for the rows of alignment data; that should
     save redundant column information.
@@ -79,7 +77,7 @@ def parse_sadlsa_aln_file(fn, count=10):
     import re
 
     prog = re.compile(
-        r'### Alignment (\d+) to: (\w+) naln=(\d+) score=(\d+\.\d*) tms1=(\d+\.\d*) tms2=(\d+\.\d*) sid=(\d+\.\d*)')
+        r'### Alignment (\d+) to: (\w+) naln=(\d+) score=(\d+\.\d*) sid=(\d+\.\d*)')
 
     # extract the protein name from the filename
     protein = _get_protein(fn)
@@ -92,19 +90,17 @@ def parse_sadlsa_aln_file(fn, count=10):
                   "Prot_ID" : "",
                   "naln"    : 0,
                   "score"   : 0.0,
-                  "tms1"    : 0.0,
-                  "tms2"    : 0.0,
                   "sid"     : "",
                   "Ind"     : 0,
+                  "Ch1"     : 0,
                   "Res1"    : 0,
                   "AA1"     : 0,
+                  "Ch2"     : 0,
                   "Res2"    : 0,
                   "AA2"     : 0,
-                  "MeanDist": 0,
-                  "Bin"     : 0,
-                  "Prob<3"  : 0,
-                  "Prob<5"  : 0,
-                  "Prob<8"  : 0}
+                  "Dist"    : 0,
+                  "Cos"     : 0,
+                  "S"       : 0}
 
     if fn[-1] == 'z':
         # compressed file names should end in 'z'
@@ -133,36 +129,39 @@ def parse_sadlsa_aln_file(fn, count=10):
             curr_entry['Prot_ID'] = alignment_header_data[1]
             curr_entry['naln'] = alignment_header_data[2]
             curr_entry['score'] = alignment_header_data[3]
-            curr_entry['tms1'] = alignment_header_data[4]
-            curr_entry['tms2'] = alignment_header_data[5]
-            curr_entry['sid'] = alignment_header_data[6]
+            curr_entry['sid'] = alignment_header_data[4]
 
-        elif '#Ind' == line[0:4]:
-            # This is the header for the alignment block, so we can skip it
+        elif 'Translation:' in line:
+            # This is one of the header lines for the alignment block, so we can skip it
             continue
-        elif line.strip() == '':
-            # This is a line between blocks, so we can just skip it
+        elif 'Rotation:' in line:
+            # This is one of the header lines for the alignment block, so we can skip it
+            continue
+        elif 'Index ' in line:
+            # This is one of the header lines for the alignment block, so we can skip it
             continue
         else:
             # We have a row of actual data, so split out the data, convert the 23rd elelemnt of line to a binary value (0 if ' ' and 1 if '*'), and append that to the alignment block info
-            if line[23] == '*':
-                line = line[:23] + '1' + line[24:]
+            # converting conservation symbols (* is identical restype; : is similar restype) to float values for visualization purposes
+            if line[59] == '*':
+                line = line[:59] + '1.0'
+            elif line[59] == ':':
+                line = line[:59] + '0.5'
             else:                        
-                line = line[:23] + '0' + line[24:]
+                line = line[:59] + '0.0'
             
             curr_record = line.strip().split()
 
-            curr_entry['Ind'] = curr_record[0]
-            curr_entry['Res1'] = curr_record[1]
-            curr_entry['AA1'] = curr_record[2]
-            curr_entry['Res2'] = curr_record[3]
-            curr_entry['AA2'] = curr_record[4]
-            curr_entry['S'] = curr_record[5]
-            curr_entry['MeanDist'] = curr_record[6]
-            curr_entry['Bin'] = curr_record[7]
-            curr_entry['Prob<3'] = curr_record[8]
-            curr_entry['Prob<5'] = curr_record[9]
-            curr_entry['Prob<8'] = curr_record[10]
+            curr_entry['Ind']   = curr_record[0]
+            curr_entry['Ch1']   = curr_record[1]
+            curr_entry['Res1']  = curr_record[2]
+            curr_entry['AA1']   = curr_record[3]
+            curr_entry['Ch2']   = curr_record[4]
+            curr_entry['Res2']  = curr_record[5]
+            curr_entry['AA2']   = curr_record[6]
+            curr_entry['Dist']  = curr_record[7]
+            curr_entry['Cos']   = curr_record[8]
+            curr_entry['S']     = curr_record[9]
 
             rows.append(curr_entry.copy())
 
@@ -172,13 +171,10 @@ def parse_sadlsa_aln_file(fn, count=10):
     df = df.convert_dtypes()
 
     # Convert numeric types from strings
-    df[['Aln_num','naln','score','tms1','tms2','sid','Ind',
-        'Res1','Res2','S','MeanDist','Bin','Prob<3','Prob<5','Prob<8']] = \
-        df[['Aln_num','naln','score','tms1','tms2','sid','Ind',
-            'Res1','Res2','S','MeanDist','Bin','Prob<3','Prob<5','Prob<8']].apply(pd.to_numeric)
+    df[['Aln_num','naln','score','sid','Ind','Res1','Res2','S','Dist','Cos']] = \
+        df[['Aln_num','naln','score','sid','Ind','Res1','Res2','S','Dist','Cos']].apply(pd.to_numeric)
 
     return df
-
 
 
 if __name__ == '__main__':

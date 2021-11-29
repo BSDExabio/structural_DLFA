@@ -3,7 +3,6 @@
     For importing AlphaFold data into pandas dataframes.
     This is used by another utility for importing into sqlite3 database.
 """
-from pathlib import Path
 import pandas as pd
 
 def parse_af_pickle_files(fn_list):
