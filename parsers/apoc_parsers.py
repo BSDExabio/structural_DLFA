@@ -4,7 +4,7 @@
     This is used by another utility for importing into sqlite3 database.
 """
 import pandas as pd
-
+from pathlib import Path
 
 def _get_protein(fn):
     """ return the protein name, which is part of the filename

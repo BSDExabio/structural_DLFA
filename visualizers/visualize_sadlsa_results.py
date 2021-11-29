@@ -128,7 +128,7 @@ def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name,
     norm = mpl.colors.Normalize(vmin=metric_min,vmax=metric_max)
     cb = mpl.colorbar.ColorbarBase(ax,cmap=cmap,extend='min',spacing='uniform',orientation='vertical',norm=norm,ticks=[metric_min,0.25*metric_range,0.50*metric_range,0.75*metric_range,metric_max])
     cb.set_label(r'%s'%(colorbar_label),size=16)
-    cb.set_ticklabels([str(metric_min),str(0.25*metric_range),str(0.50*metric_range),str(0.75*metric_range),str(metric_max)])
+    cb.set_ticklabels([metric_min,'%.3f'%(0.25*metric_range),'%.3f'%(0.50*metric_range),'%.3f'%(0.75*metric_range),'%.3f'%(metric_max)])
     plt.savefig(colorbar_file_name,dpi=600,transparent=True)
     plt.close()
     
