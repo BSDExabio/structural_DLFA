@@ -3,7 +3,6 @@
     For importing APOC data into pandas dataframes.
     This is used by another utility for importing into sqlite3 database.
 """
-from pathlib import Path
 import pandas as pd
 
 
