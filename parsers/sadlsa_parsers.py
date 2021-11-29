@@ -16,6 +16,29 @@ def _get_protein(fn):
     return name[:name.rfind('_')]
 
 
+def _get_uniprot(pdbid,chainid):
+    """ return the uniprot ID as a string
+    :param pdbid: string, 4 character length PDBID
+    :param chainid: string, numerical index number of the relevant chain
+    :return: uniprot ID string
+    """
+    from urllib import request
+    try:
+        url = 'https://data.rcsb.org/rest/v1/core/uniprot/%s/%s'%(pdbid,chainid)
+        response = request.urlopen(url)
+    except:
+        print(url+' returns an error. No UNIPROT code collected.')
+        return ''
+    response_str = str(response.read())
+    if 'Error Page' in response_str:
+        print(url+' returns an error. No UNIPROT code collected.')
+        return ''
+
+    temp_str = [string for string in response_str.split('[{') if "uniprot_id:" in string][0]
+    uniprot_id = temp_str[temp_str.rfind(':')+1:].strip('"')
+    return uniprot_id
+
+
 def parse_sadlsa_score_file(fn, count=10):
     """ translate given SAdLSA score file into pandas dataframe
     :param fn: string filename of score file
