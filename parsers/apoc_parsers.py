@@ -16,15 +16,29 @@ def _get_protein(fn):
     return name[:name.rfind('_')]
 
 
-def _get_uniprot(pdbid,chainid):
+def _get_uniprot(pdbid,chainid,mmtf_univ):
     """ return the uniprot ID as a string
     :param pdbid: string, 4 character length PDBID
     :param chainid: string, numerical index number of the relevant chain
+    :param mmtf_univ: a mmtf MMTFDecoder object; contains all relevant information
     :return: uniprot ID string
     """
     from urllib import request
+    import re
+    
     try:
-        url = 'https://data.rcsb.org/rest/v1/core/uniprot/%s/%s'%(pdbid,chainid)
+        chain_idx = mmtf_univ.chain_id_list.index(chainid)  # get the 0 indexed element index of the chainid
+        for i, entity in enumerate(mmtf_univ.entity_list):  # search through all entity dictionaries for the chain_idx
+            if chain_idx in entity['chainIndexList']:       # if chain_idx in the entity dictionary's 'chainIndexList' key, then grab the entity_idx number to be used to access the RCSB RESTful API 
+                entity_idx = i + 1  # api expects 1 indexed entity numbering
+                break   # stop searching
+    except:
+        print(chainid+" not in the mmtf.chain_id_list. Won't be able to access the RCSB API due to this.")
+        return ''
+    
+    # grabbing the API results associated with pdbid/entity_idx
+    try:
+        url = 'https://data.rcsb.org/rest/v1/core/uniprot/%s/%s'%(pdbid,entity_idx)
         response = request.urlopen(url)
     except:
         print(url+' returns an error. No UNIPROT code collected.')
@@ -34,8 +48,7 @@ def _get_uniprot(pdbid,chainid):
         print(url+' returns an error. No UNIPROT code collected.')
         return ''
 
-    temp_str = [string for string in response_str.split('[{') if "uniprot_id:" in string][0]
-    uniprot_id = temp_str[temp_str.rfind(':')+1:].strip('"')
+    uniprot_id = re.search('"uniprot_id":"(.+?)"',response_str).group(1)
     return uniprot_id
 
 
