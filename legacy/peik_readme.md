@@ -1,3 +1,6 @@
+(These are all files original in the top-level directory that have been 
+moved out of the way since they're largely deprecated.)
+
 Scripts to get alignment information including alignment quality and conserved 
 residues for SAdLSA outputs.
 
