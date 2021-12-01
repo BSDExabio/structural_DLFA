@@ -10,7 +10,7 @@ from database.database import Database
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-sqlite3_db = Path('../db/dlfa.db')
+sqlite3_db = Path('static/dlfa.db')
 db = Database(sqlite3_db)
 
 @app.route('/')
