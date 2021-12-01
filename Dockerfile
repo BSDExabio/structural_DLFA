@@ -11,4 +11,4 @@ COPY website/ /usr/src/website/
 COPY database/ /usr/src/database/
 
 WORKDIR /usr/src/website
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
