@@ -6,9 +6,10 @@ protein structure.
 
 ----
 
+## Directories
+
 * `database` -- contains `Database`, which is a wrapper for our `sqlite3` 
   database
-* `db` -- where the actual `sqlite3` database will be kept
 * `notebooks` -- jupyter notebooks that demonstrate how to use some this 
   software as well as create various visualizations; also some notebooks are 
   for working out various issues.
@@ -22,3 +23,22 @@ protein structure.
 * `visualizers` -- code for visualizing Alphafold and SAdLSA data
 * `website` -- support for our Missouri web site for querying and 
   visualizing `sqlite3` data.
+
+## Files
+
+* `requirements.txt` -- python dependencies for `database`, `scripts`, and 
+  `parsers`
+* `Dockerfile` -- for building web site container
+* `docker-compose.yml` -- for spinning up the container
+
+----
+
+## Spinning up web site
+
+1. Ensure docker is installed
+2. `docker-compose up`
+   > You will see logging messages in your terminal for all GET and POST 
+   > transactions
+3. Surf to `https://0.0.0.0:5000`
+
+(Yes, eventually the port and host IP will change.)
