@@ -1,15 +1,13 @@
-FROM python:3.8-alpine
+FROM python:3.8-slim
 
-RUN apk update && apk upgrade
+ENV FLASK_APP=/usr/src/app.py
 
-RUN mkdir /app
+WORKDIR /usr/src/
 
-WORKDIR /app
-
-ADD requirements.txt .
-ADD app.py .
-
+COPY requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
-      pip install --no-cache-dir -r requirements.txt
+      pip install --prefer-binary --no-cache-dir -r requirements.txt
 
-CMD ["gunicorn", "-w 4", "-b", "0.0.0.0:8000", "main:app"]
+COPY . .
+
+CMD ["flask", "run", "--host=0.0.0.0"]
