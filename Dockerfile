@@ -7,8 +7,8 @@ COPY website/requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
       pip install --prefer-binary --no-cache-dir -r requirements.txt
 
-COPY website .
-COPY database .
+COPY website/ /usr/src/website/
+COPY database/ /usr/src/database/
 
 WORKDIR /usr/src/website
 CMD ["flask", "run", "--host=0.0.0.0"]
