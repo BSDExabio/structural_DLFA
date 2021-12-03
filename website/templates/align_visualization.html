@@ -8,10 +8,7 @@
     <title>Visualization Test</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
-          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -21,17 +18,27 @@
     <![endif]-->
 </head>
 <body>
-<div class="container">
-    <div class="heading"><h1>Visualization Test - SeqID - Aligned ProteinID - Metric Name </h1></div>
-</div>
-<script src="https://raw.githubusercontent.com/nglviewer/ngl/master/dist/ngl.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var stage = new NGL.Stage("viewport");
-    stage.loadFile("rcsb://1crn", {defaultRepresentation: true});
-  });
-</script>
-<div id="viewport" style="width:400px; height:300px;"></div>
+	<div class="container">
+		<div class="heading"><h1>Visualization Test - SeqID - Aligned ProteinID - Metric Name </h1></div>
+	</div>
+
+	<!-- Load ngl.js file that contains the relevant nglview functions -->
+	
+	<!-- ngl.js downloaded from https://github.com/nglviewer/ngl/tree/master/dist -->
+	<script src="js/ngl.js"></script>
+	
+	<!-- ngl.js file associated with a working example online -->
+	<!-- <script type='text/javascript' src="https://www.mdanalysis.org/js/build/ngl.embedded.min.js"></script>  -->
+
+	<!-- Just some text to show that flask is passing arguments to the html -->
+	<ul><li>Visualizing {{pdb}} with NGLview</li></ul>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			var stage = new NGL.Stage("viewport");
+			stage.loadFile("rcsb://{{pdb}}", {defaultRepresentation: true});
+		});
+	</script>
+	<div id="viewport" style="width:800px; height:600px;"></div>
 </body>
 </html>
 

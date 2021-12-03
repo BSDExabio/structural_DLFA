@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	    	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	    	<title>Visualization Test</title>
+	
+	    	<!-- Bootstrap -->
+	    	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+	
+	    	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	    	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	    	<!--[if lt IE 9]>
+	    	<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+	    	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	    	<![endif]-->
+	</head>
+	<body>
+		<!--<div class="container">-->
+	      	<div class="heading"><h1>Visualization with 3Dmol </h1></div>
+		<!--</div>-->
+	      	<ul><li>Visualizing {{pdb}}</li></ul>
+		<!-- <script src="https://raw.githubusercontent.com/nglviewer/ngl/master/dist/ngl.js"></script> --> 
+		<script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+		<div style="height: 300px; width: 500px; position: relative" class='viewer_3Dmoljs' data-pdb='{{pdb}}' data-backgroundcolor='0xffffff' data-style='stick'>
+		</div>
+	</body>
+</html>
