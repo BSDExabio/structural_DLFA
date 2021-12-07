@@ -19,8 +19,10 @@
 </head>
 <body>
 	<div class="container">
-		<div class="heading"><h1>Visualization Test - SeqID - Aligned ProteinID - Metric Name </h1></div>
+		<div class="heading"><h1> {{align_type}} results for {{seqid}} - {{pdb}} colored by {{metric}} </h1></div>
 	</div>
+
+	<!-- add more information? -->
 
 	<!-- Load ngl.js file that contains the relevant nglview functions -->
 	
@@ -32,15 +34,29 @@
 
 	<!-- ngl.js file associated with a working example online -->
 	<script type='text/javascript' src="https://ambermd.org/tutorials/analysis/tutorial_notebooks/nglview_notebook/ngl.embedded.min.js"></script>
-
 	<!-- Just some text to show that flask is passing arguments to the html -->
-	<ul><li>Visualizing {{pdb}} with NGLview</li></ul>
+	<ul><li>Visualizing {{pdb}} colored by {{metric}}</li></ul>
+	<!-- Add a shortcut to file positions... -->
 	<script>
+		
+		// trying to point to files on the local computer; just testing
+
+		NGL.DatasourceRegistry.add( "local", new NGL.StaticDatasource( "file:///home/rbdavid/Scripts/git/structural_DLFA/website/templates/test_data/" ));
+		
+		// setting up the NGL viewer stage, called viewport	
+		
 		document.addEventListener("DOMContentLoaded", function () {
 			var stage = new NGL.Stage("viewport");
-			stage.loadFile("rcsb://{{pdb}}", {defaultRepresentation: true});
+			//stage.loadFile("local://{{pdb_file}}").then(function (o) {
+			stage.loadFile("rcsb://{{pdb}}").then(function (o) {
+				o.addRepresentation("cartoon", {color: "bfactor"})
+				//o.autoView()
+			})
+				//{defaultRepresentation: true});
+			// stage.loadFile("local://{{pdb_file}}", {defaultRepresentation: true});
 		});
 	</script>
+	<!-- html to create the viewport object-->
 	<div id="viewport" style="width:800px; height:600px;"></div>
 </body>
 </html>

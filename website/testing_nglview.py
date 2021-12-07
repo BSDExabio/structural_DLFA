@@ -10,7 +10,7 @@ from database.database import Database
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-pdb_file = 'test_data/2HW4_A_S.pdb'
+pdb_file = '2HW4_A_S.pdb'
 
 #@app.route('/')
 #def index():
@@ -46,7 +46,7 @@ def nglv_visualize():
     #w.clear_representations()
     #w.add_representation('cartoon',color='bfactor')
     #w.camera = 'orthographic'
-    return render_template("align_visualization.html", pdb = pdb_file.split('/')[-1][:4], pdb_file = pdb_file)    # view=w, 
+    return render_template("align_visualization.html", align_type = 'SAdLSA', seqid = 'Test', pdb = pdb_file.split('/')[-1][:4], metric = 'S', pdb_file = pdb_file)    # view=w, 
 
 
 
