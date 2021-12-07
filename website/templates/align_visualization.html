@@ -41,50 +41,28 @@
 		
 		// trying to point to files on the local computer; just testing
 
-		NGL.DatasourceRegistry.add( "local", new NGL.StaticDatasource( "file:///home/rbdavid/Scripts/git/structural_DLFA/website/templates/test_data/" ));
+		//NGL.DatasourceRegistry.add( "local", new NGL.StaticDatasource( "file:///home/rbdavid/Scripts/git/structural_DLFA/website/templates/test_data/" ));
 		
 		// setting up the NGL viewer stage, called viewport	
-		
 		document.addEventListener("DOMContentLoaded", function () {
 			var stage = new NGL.Stage("viewport");
-			//stage.loadFile("local://{{pdb_file}}").then(function (o) {
+			// loading {{pdb}} file
 			stage.loadFile("rcsb://{{pdb}}").then(function (o) {
 				o.addRepresentation("cartoon", {color: "bfactor"})
-				//o.autoView()
 			})
-				//{defaultRepresentation: true});
-			// stage.loadFile("local://{{pdb_file}}", {defaultRepresentation: true});
+			// loading a second file just as an example
+			stage.loadFile("rcsb://1UBQ").then(function (o) {
+				o.addRepresentation("cartoon", {color: "occupancy"})
+			})
+			stage.setTheme( "light" )
+      			stage.viewer.container.addEventListener( "dblclick", function(){
+      			   stage.toggleFullscreen();
+      			} );
 		});
 	</script>
 	<!-- html to create the viewport object-->
-	<div id="viewport" style="width:800px; height:600px;"></div>
+	<div id="viewport" style="width:800px; height:600px; margin:0 auto;"></div>
 </body>
 </html>
 
-
-
-
-
-<!--  if( !Detector.webgl ) Detector.addGetWebGLMessage();
-
-  NGL.mainScriptFilePath = "/js/build/ngl.embedded.min.js";
-
-  function onInit(){
-	  var stage = new NGL.Stage( "viewport" );
-	  stage.loadFile( "/public/data/md_1u19.pdb", { defaultRepresentation: true } );
-	  stage.setTheme( "light" )
-
-      window.addEventListener( "resize", function( event ){
-         stage.handleResize();
-      }, false );
-
-      stage.viewer.container.addEventListener( "dblclick", function(){
-         stage.toggleFullscreen();
-      } );
-  }
-
-  document.addEventListener( "DOMContentLoaded", function() {
-	  NGL.init( onInit );
-  } );
--->
 
