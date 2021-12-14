@@ -27,6 +27,110 @@ def query_alignment_df(align_df, seqname, metric_string):
     return temp_df.filter(grab_columns).values
 
 
+def ngl_colorscale(max_color, min_color, metric_max, metric_min, colorbar_label, nColors = 256, metric_string = 'bfactor', under_color = None, over_color = None):
+    """ create the colorbar and dictionary to be used for visualization of structural data through nglview or ngl (as a webpage embedded app/widget). 
+    :param      max_color: color, expects a string (e.g. "blue", "green", "red", etc); used as the higher color 
+    :param      min_color: color, expects a string (e.g. "blue", "green", "red", etc); used as the lower color 
+    :param     metric_max: float; number used to set the max value of the colorbar and ngl scheme_func string
+    :param     metric_min: float; number used to set the min value of the colorbar and ngl scheme_func string
+    :param colorbar_label: string; text to be used as the label
+    :param        nColors:
+    :param    under_color: default none; used to set an under color when needed
+    :param     over_color: default none; used to set an under color when needed
+    :param        nColors: integer; default 256 colors to be scaled through; 256 is max number of colors for a single color scale between two colors. 
+    :return: number of colors in the scale, int
+    :return: a string to be used for creating ngl.ColormakerRegistry.add_scheme_func; just one long 'if elif else' statement
+    """
+    import numpy as np
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+    from matplotlib import colors
+
+    start_string = 'this.atomColor = function (atom) {if'
+    end_string = '}'
+
+    # ----------------------------------------
+    # SETTING COLORS
+    # ----------------------------------------
+    # min_color used for the minimum metric value; need rgb color to perform the scaling
+    min_color_rgba = np.array(colors.to_rgba(min_color))
+    # max_color used for the maximum metric value; need rgb color to perform the scaling
+    max_color_rgba = np.array(colors.to_rgba(max_color))
+    # color difference
+    max_min_diff = max_color_rgba - min_color_rgba
+
+    # ----------------------------------------
+    # CREATING/FILLING COLOR DICTIONARIES
+    # ----------------------------------------
+    cdict = {'red':[], 'green':[], 'blue':[]}
+    cmap_positions = np.linspace(0,1,nColors) # equally spaced colors within the range
+    metric_positions = np.linspace(metric_min,metric_max,nColors+1) # equally spaced metric values within the metric range
+
+    ngl_color_string = start_string
+    for colorid in range(nColors):
+        # calculate the rgb values for this iteration of color
+        thiscolor = np.abs(min_color_rgba + colorid * max_min_diff/(nColors-1))
+        ### MATPLOTLIB Stuff
+        cdict['red'].append((  cmap_positions[colorid],thiscolor[0],thiscolor[0]))
+        cdict['green'].append((cmap_positions[colorid],thiscolor[1],thiscolor[1]))
+        cdict['blue'].append(( cmap_positions[colorid],thiscolor[2],thiscolor[2]))
+        # get the hex color code 
+        hexcolor = colors.to_hex(thiscolor)
+        # add if statement associated with a metric range and its respective color
+        if ngl_color_string[-2:] != 'if':
+            ngl_color_string += ' else if'
+        ngl_color_string += ' (atom.'+metric_string+' > '+str(metric_positions[colorid])+' && atom.'+metric_string+' <= '+str(metric_positions[colorid+1])+') {return '+hexcolor+'}'
+   
+    if under_color:
+        ngl_color_string += 'else if (atom.'+metric_string+' < '+str(metric_min)+') {return '+colors.to_hex(under_color)+'}'
+    if over_color:
+        ngl_color_string += 'else if (atom.'+metric_string+' > '+str(metric_min)+') {return '+colors.to_hex(over_color)+'}'
+    ngl_color_string += end_string
+
+    # ----------------------------------------
+    # MATPLOTLIB Stuff
+    # ----------------------------------------
+    # creating a colorbar figure to accompany the VMD vis state colorbar;
+    # depending on your renderer, the colors may not match with matplotlib's colorbar
+    cmap = colors.LinearSegmentedColormap('my_cmap',cdict,nColors)
+    metric_range = metric_max - metric_min
+
+    if under_color:
+        cmap.set_under(colors.to_hex(under_color))
+    if over_color:
+        cmap.set_over(colors.to_hex(over_color))
+
+    fig, ax = plt.subplots(figsize=(2,8))
+    fig.subplots_adjust(right=0.5)
+    norm = colors.Normalize(vmin=metric_min,vmax=metric_max)
+
+
+    if over_color and under_color:
+        cb = mpl.colorbar.ColorbarBase(ax,cmap=cmap,extend='both',spacing='uniform',orientation='vertical',norm=norm)
+    elif under_color:
+        cb = mpl.colorbar.ColorbarBase(ax,cmap=cmap,extend='min',spacing='uniform',orientation='vertical',norm=norm)
+    elif over_color:
+        cb = mpl.colorbar.ColorbarBase(ax,cmap=cmap,extend='max',spacing='uniform',orientation='vertical',norm=norm)
+    else:
+        cb = mpl.colorbar.ColorbarBase(ax,cmap=cmap,spacing='uniform',orientation='vertical',norm=norm)
+
+
+    cb.set_label(r'%s'%(colorbar_label),size=16)
+    if nColors < 4:
+        cb.set_ticks([metric_min,0.50*metric_range,metric_max])
+        cb.set_ticklabels([metric_min,'%.3f'%(0.50*metric_range+metric_min),'%.3f'%(metric_max)])
+    else:
+        cb.set_ticks([metric_min,0.25*metric_range+metric_min,0.50*metric_range+metric_min,0.75*metric_range+metric_min,metric_max])
+        cb.set_ticklabels([metric_min,'%.3f'%(0.25*metric_range),'%.3f'%(0.50*metric_range),'%.3f'%(0.75*metric_range),'%.3f'%(metric_max)])
+    #plt.savefig(colorbar_file_name,dpi=600,transparent=True)
+    #plt.close()
+    plt.show()
+    
+    print('Finished creating colorbar figure')
+
+    return nColors, ngl_color_string
+
+
 def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name, metric_max, max_color, metric_min=0., min_color='lightgray', under_color='white',colorbar_label='Metric'):
     """
     Writing the VMD visualization state file to view the protein structure with the metric values in the b-factor column of the pdb
