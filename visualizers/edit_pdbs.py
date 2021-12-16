@@ -42,18 +42,6 @@ def create_2d_array(array):
     return np.c_[np.arange(array.shape[0]),array]
 
 
-def make_zero_indexed(array):
-    """
-    subtract one from every element in array; used to change the array from one-indexing to zero-indexing to make uniform with python indexing.
-    used to fix residue indices in the SAdLSA arrays so they can be used to index residues in MDAnalysis Universes
-    INPUT:
-    :param array: 1d array
-    OUTPUT:
-    :return: 1d array with one subtracted from every element
-    """
-    return array - 1
-
-
 def edit_pdb(target_structure, metric_data, out_filename, default_value = -1.00, working_dir = './', sel_string = 'protein'):
     """
     Editing the atom data of a pdb-formatted data set; filling the 61-66 columns of the pdb to the float values of the metric_data.
@@ -77,25 +65,29 @@ def edit_pdb(target_structure, metric_data, out_filename, default_value = -1.00,
 
     # setting output file name
     file_name = working_dir + out_filename
+
+    # grabbing the true resids from the mmtf structure object
+    true_resids = structure_file.sequence_index_list
     # loading the mmtf structure object into an MDAnalysis universe object
     u = MDAnalysis.Universe(target_structure)
-    # creating the atom selection groups for the structure
-    sel = make_atm_sel(u,sel_string)
-    #_all = make_atm_sel(u,'all')
+    # fixing residue indicing miscommunications
+    u_all = u.select_atoms('all')
+    u_all.residues.resids = structure_file.sequence_index_list  # grabs the true residue index list from the mmtf structure object and assigns them to the atom group's residue index list
 
-    # moving all atoms of chain of interest to have the CoM to be the origin
-    #_all.translate(-sel.center_of_mass())
+    # creating the atom selection for the substructure of interest
+    sel = u.select_atoms(sel_string)
+
+    # moving all atoms of substructure of interest to have the CoM to be the origin
     sel.translate(-sel.center_of_mass())
     
-    # creating the one-indexed array of sel's residue indices of resolved 
-    # residues; used to mirror the one-indexed SAdLSA resid column
-    nRes_range = range(0,sel.n_residues)
-    for i in nRes_range:
-        if i in metric_data[:,0]:
-            idx = np.argwhere(i == metric_data[:,0])
-            sel.residues[i].atoms.tempfactors = float(metric_data[idx,1])   # will be printed with 2 decimal points; 
+    # getting resid list from structure, matching structure resid with alignment resid, then assigning metric_data to the bfactor column
+    resid_list = sel.residues.resids
+    for x, resid in enumerate(resid_list):
+        if resid in metric_data[:,0]:
+            idx = np.argwhere(resid == metric_data[:,0])
+            sel.residues[x].atoms.tempfactors = float(metric_data[idx,1])
         else:
-            sel.residues[i].atoms.tempfactors = default_value
+            sel.residues[x].atoms.tempfactors = default_value
     
     with warnings.catch_warnings():
         # ignore some annoying warnings from sel.write line due to missing information (chainIDs, elements, and record_types). 
@@ -104,7 +96,6 @@ def edit_pdb(target_structure, metric_data, out_filename, default_value = -1.00,
             print('Number of atoms is too large for pdb file format; need to visualize these results without writing to file.')
             return 0
         else:
-            #_all.write(file_name)
             sel.write(file_name)
             return file_name
 
