@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.9-slim
 
 ENV FLASK_APP=/usr/src/website/app.py
 ENV PYTHONPATH=/usr/src/
@@ -11,4 +11,4 @@ COPY website/ /usr/src/website/
 COPY database/ /usr/src/database/
 
 WORKDIR /usr/src/website
-CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port", "8000"]
