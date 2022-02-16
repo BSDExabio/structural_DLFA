@@ -38,7 +38,7 @@ protein structure.
 1. Ensure your environment is setup
    1. docker is installed
       > We recommned installing via the website and not via home brew or a 
-      > linux package manager.
+      linux package manager.
    2. git lfs is installed
    3. you have checked out `website/static/dlfa.db` via `git lfs`
 2. `docker-compose up`
