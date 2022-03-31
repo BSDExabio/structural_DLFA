@@ -177,16 +177,29 @@ def parse_apoc_aln_file(fn, count=10):
             # This is one of the header lines for the alignment block, so we can skip it
             continue
         else:
+            # We may have instances where a chain ID is missing from the Ch1 column due to a number of different reasons.
+            # In these instances, we need to provide some text just as a placeholder...
+            if line[9] == ' ':
+                line = line[:8] + '!' + line[10:]
             # We have a row of actual data, so split out the data, convert the 23rd elelemnt of line to a binary value (0 if ' ' and 1 if '*'), and append that to the alignment block info
             # converting conservation symbols (* is identical restype; : is similar restype) to float values for visualization purposes
-            if line[59] == '*':
-                line = line[:59] + '1.0'
-            elif line[59] == ':':
-                line = line[:59] + '0.5'
-            else:                        
-                line = line[:59] + '0.0'
-            
             curr_record = line.strip().split()
+            if len(curr_record) != 10:
+                curr_record.append('0.0')
+            elif curr_record[9] == '*':
+                curr_record[9] = '1.0'
+            elif curr_record[9] == ':':
+                curr_record[9] = '0.5'
+
+            #if line[59] == '*':
+            #    line = line[:59] + '1.0'
+            #elif line[59] == ':':
+            #    line = line[:59] + '0.5'
+            #else:                        
+            #    line = line[:59] + '0.0'
+            #
+            #curr_record = line.strip().split()
+            #print(curr_record)
 
             curr_entry['Ind']   = curr_record[0]
             curr_entry['Ch1']   = curr_record[1]
@@ -200,7 +213,7 @@ def parse_apoc_aln_file(fn, count=10):
             curr_entry['S']     = curr_record[9]
 
             rows.append(curr_entry.copy())
-
+    
     df = pd.DataFrame(rows)
 
     # Converts from objects to strings
