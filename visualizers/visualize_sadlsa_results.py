@@ -27,31 +27,32 @@ def query_alignment_df(align_df, seqname, metric_string):
     return temp_df.filter(grab_columns).values
 
 
-def ngl_colorscale(max_color, min_color, metric_max, metric_min, colorbar_label, nColors = 256, metric_string = 'bfactor', under_color = None, over_color = None):
-    """ create the colorbar and dictionary to be used for visualization of structural data through nglview or ngl (as a webpage embedded app/widget). 
-    :param      max_color: color, expects a string (e.g. "blue", "green", "red", etc); used as the higher color 
-    :param      min_color: color, expects a string (e.g. "blue", "green", "red", etc); used as the lower color 
-    :param     metric_max: float; number used to set the max value of the colorbar and ngl scheme_func string
-    :param     metric_min: float; number used to set the min value of the colorbar and ngl scheme_func string
-    :param colorbar_label: string; text to be used as the label
-    :param        nColors:
-    :param    under_color: default none; used to set an under color when needed
-    :param     over_color: default none; used to set an under color when needed
-    :param        nColors: integer; default 256 colors to be scaled through; 256 is max number of colors for a single color scale between two colors. 
+def ngl_colorscale(min_color, max_color, metric_max, metric_min, nColors = 1024, under_color = None, over_color = None):
+    """
+    :param     min_color:
+    :param     max_color:
+    :param   under_color:
+    :param    over_color:
+    :param       nColors: integer; default 1024 colors to be scaled through
     :return: number of colors in the scale, int
-    :return: a string to be used for creating ngl.ColormakerRegistry.add_scheme_func; just one long 'if elif else' statement
+    :return: a list of hex codes
+    :return: a matplotlib plot object
     """
     import numpy as np
     import matplotlib as mpl
     import matplotlib.pyplot as plt
     from matplotlib import colors
 
-    start_string = 'this.atomColor = function (atom) {if'
-    end_string = '}'
-
     # ----------------------------------------
     # SETTING COLORS
     # ----------------------------------------
+    color_defs = {}
+    # set under and over colors
+    if under_color:
+        color_defs['under'] = colors.to_hex(under_color)
+    if over_color:
+        color_defs['over']  = colors.to_hex(over_color)
+    
     # min_color used for the minimum metric value; need rgb color to perform the scaling
     min_color_rgba = np.array(colors.to_rgba(min_color))
     # max_color used for the maximum metric value; need rgb color to perform the scaling
@@ -62,25 +63,91 @@ def ngl_colorscale(max_color, min_color, metric_max, metric_min, colorbar_label,
     # ----------------------------------------
     # CREATING/FILLING COLOR DICTIONARIES
     # ----------------------------------------
-    cdict = {'red':[], 'green':[], 'blue':[]}
-    cmap_positions = np.linspace(0,1,nColors) # equally spaced colors within the range
-    metric_positions = np.linspace(metric_min,metric_max,nColors+1) # equally spaced metric values within the metric range
-
-    ngl_color_string = start_string
+    cmap_positions = np.linspace(0,1,nColorids) # equally spaced colors within the range
     for colorid in range(nColors):
-        # calculate the rgb values for this iteration of color
-        thiscolor = np.abs(min_color_rgba + colorid * max_min_diff/(nColors-1))
+        thiscolor = np.abs(min_color_rgba + colorid * max_min_diff/(nColorids-1))   # calculate the rgb values for this iteration of color
+        color_defs[colorid] = colors.to_hex(thiscolor)
         ### MATPLOTLIB Stuff
         cdict['red'].append((  cmap_positions[colorid],thiscolor[0],thiscolor[0]))
         cdict['green'].append((cmap_positions[colorid],thiscolor[1],thiscolor[1]))
         cdict['blue'].append(( cmap_positions[colorid],thiscolor[2],thiscolor[2]))
-        # get the hex color code 
-        hexcolor = colors.to_hex(thiscolor)
-        # add if statement associated with a metric range and its respective color
-        if ngl_color_string[-2:] != 'if':
-            ngl_color_string += ' else if'
-        ngl_color_string += ' (atom.'+metric_string+' > '+str(metric_positions[colorid])+' && atom.'+metric_string+' <= '+str(metric_positions[colorid+1])+') {return '+hexcolor+'}'
-   
+    
+    # ----------------------------------------
+    # MATPLOTLIB Stuff
+    # ----------------------------------------
+    # creating a colorbar figure to accompany the VMD vis state colorbar;
+    # depending on your renderer, the colors may not match with matplotlib's colorbar
+    metric_range = metric_max - metric_min
+    cmap = colors.LinearSegmentedColormap('my_cmap',cdict,nColorids)
+    if under_color:
+        cmap.set_under(color_defs['under'])
+    fig, ax = plt.subplots(figsize=(2,8))
+    fig.subplots_adjust(right=0.5)
+    norm = mpl.colors.Normalize(vmin=metric_min,vmax=metric_max)
+    cb = mpl.colorbar.ColorbarBase(ax,cmap=cmap,extend='min',spacing='uniform',orientation='vertical',norm=norm,ticks=[metric_min,0.25*metric_range,0.50*metric_range,0.75*metric_range,metric_max])
+    cb.set_label(r'%s'%(colorbar_label),size=16)
+    cb.set_ticklabels([metric_min,'%.3f'%(0.25*metric_range),'%.3f'%(0.50*metric_range),'%.3f'%(0.75*metric_range),'%.3f'%(metric_max)])
+    plt.savefig(colorbar_file_name,dpi=600,transparent=True)
+    plt.close()
+    
+    print('Finished creating colorbar figure', colorbar_file_name)
+
+    return nColors, color_defs, cdict
+
+
+def vmd_colorscale(min_color, max_color, under_color = None, over_color = None):
+    """
+    :param     min_color:
+    :param     max_color:
+    :param   under_color:
+    :param    over_color:
+    :return: a list of colorids
+    :return: a dictionary of r, g, and b values
+    """
+    import numpy as np
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+    from matplotlib import colors
+
+    # ----------------------------------------
+    # SETTING COLORS
+    # ----------------------------------------
+    color_defs = {}
+    min_color_idx = 33
+    max_color_idx = 1057
+    # set under and over colors
+    if under_color:
+        color_rgba = colors.to_rgba(under_color)
+        # colorid 33 is the first color index of the color bar used in VMD
+        color_defs[33] = "color change rgb 33 %.3f %.3f %.3f\n"%(color_rgba[0],color_rgba[1],color_rgba[2])
+        min_color_idx = 34
+    if over_color:
+        color_rgba = colors.to_rgba(over_color)
+        # colorid 1056 is the last color index of the color bar used in VMD
+        color_defs[1056] = "color change rgb 33 %.3f %.3f %.3f\n"%(color_rgba[0],color_rgba[1],color_rgba[2])
+        max_color_idx = 1056
+    
+    # min_color used for the minimum metric value
+    min_color_rgba = np.array(colors.to_rgba(min_color))
+    # max_color used for the maximum metric value
+    max_color_rgba = np.array(colors.to_rgba(max_color))
+    # color difference
+    max_min_diff = max_color_rgba - min_color_rgba
+
+    # ----------------------------------------
+    # CREATING/FILLING COLOR DICTIONARIES
+    # ----------------------------------------
+    possible_colorids = list(range(min_color_idx,max_color_idx))
+    nColorids = len(possible_colorids)
+    cmap_positions = np.linspace(0,1,nColorids) # equally spaced colors within the range
+    
+    cdict = {'red':[], 'green':[], 'blue':[]}
+    for colorid in possible_colorids:
+        idx = colorid - possible_colorids[0]
+        thiscolor = np.abs(min_color_rgba + idx * max_min_diff/(nColorids-1))
+        ### VMD Stuff
+        color_defs[colorid] = "color change rgb " + str(colorid) + " " + str(thiscolor[0]) + " " + str(thiscolor[1]) + " " + str(thiscolor[2]) + '\n'
+        ### MATPLOTLIB Stuff
     if under_color:
         ngl_color_string += 'else if (atom.'+metric_string+' < '+str(metric_min)+') {return '+colors.to_hex(under_color)+'}'
     if over_color:
@@ -149,49 +216,6 @@ def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name,
 
     OUTPUTS:
     A new vis state file and colorbar figure that can be used to visualize the metric data on the structure.
-    """
-    import numpy as np
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
-    from matplotlib import colors
-
-    # ----------------------------------------
-    # SETTING COLORS
-    # ----------------------------------------
-    # white used for residues with metric value below metric_min
-    color_rgba = colors.to_rgba(under_color)
-    color_defs = {}
-    color_defs[33] = "color change rgb 33 %.3f %.3f %.3f\n"%(color_rgba[0],color_rgba[1],color_rgba[2])
-    # min_color used for the minimum metric value
-    min_color_rgba = np.array(colors.to_rgba(min_color))
-    # max_color used for the maximum metric value
-    max_color_rgba = np.array(colors.to_rgba(max_color))
-    # color difference
-    max_min_diff = max_color_rgba - min_color_rgba
-
-    # ----------------------------------------
-    # CREATING/FILLING COLOR DICTIONARIES
-    # ----------------------------------------
-    possible_colorids = list(range(34,1057))
-    nColorids = len(possible_colorids)
-    cmap_positions = np.linspace(0,1,nColorids)
-    
-    cdict = {'red':[], 'green':[], 'blue':[]}
-    for colorid in possible_colorids:
-        idx = colorid - possible_colorids[0]
-        thiscolor = np.abs(min_color_rgba + idx * max_min_diff/(nColorids-1))
-        ### VMD Stuff
-        color_defs[colorid] = "color change rgb " + str(colorid) + " " + str(thiscolor[0]) + " " + str(thiscolor[1]) + " " + str(thiscolor[2]) + '\n'
-        ### MATPLOTLIB Stuff
-        cdict['red'].append((cmap_positions[idx],thiscolor[0],thiscolor[0]))
-        cdict['green'].append((cmap_positions[idx],thiscolor[1],thiscolor[1]))
-        cdict['blue'].append((cmap_positions[idx],thiscolor[2],thiscolor[2]))
-
-    # ----------------------------------------
-    # WRITING THE VIS STATE FILE
-    # ----------------------------------------
-    with open(vis_state_file_name,'w') as W:
-        ### starting lines
         W.write('#!/usr/local/bin/vmd\nset viewplist {}\nset fixedlist {}\n\n')
     
         ### setting colorids
