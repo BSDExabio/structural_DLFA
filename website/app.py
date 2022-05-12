@@ -63,4 +63,4 @@ if __name__ == '__main__':
         print(f'{sqlite3_db} does not exist; please create and restart')
         sys.exit(1)
 
-    app.run(debug=True)
+    app.run(debug=True, ssl_context='adhoc')
