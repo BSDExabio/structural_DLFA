@@ -11,4 +11,4 @@ COPY website/ /usr/src/website/
 COPY database/ /usr/src/database/
 
 WORKDIR /usr/src/website
-CMD ["python3", "-m", "flask", "run", "--cert=adhoc"]
+CMD ["python3", "-m", "flask", "run", "--cert=adhoc", "--host=128.219.186.120"]
