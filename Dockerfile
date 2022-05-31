@@ -1,5 +1,7 @@
 FROM python:3.9-slim
 
+LABEL maintainer="colettima@ornl.gov"
+
 ENV FLASK_APP=/usr/src/website/app.py
 ENV PYTHONPATH=/usr/src/
 
