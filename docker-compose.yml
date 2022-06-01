@@ -3,8 +3,10 @@ services:
   app:
     build: .
     volumes:
-      - .:/app
+      - dlfa_db:/dlfa_db
     ports:
-      - "60000:60000"
+      - "8080:60000"
     environment:
       - FLASK_DEBUG=1
+volumes:
+  dlfa_db:

@@ -10,7 +10,7 @@ from database.database import Database
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-sqlite3_db = Path('static/dlfa.db')
+sqlite3_db = Path('/dlfa_db/dlfa.db') # /dlfa_db is a docker volume
 db = Database(sqlite3_db)
 
 @app.route('/')
@@ -63,4 +63,4 @@ if __name__ == '__main__':
         print(f'{sqlite3_db} does not exist; please create and restart')
         sys.exit(1)
 
-    app.run(debug=True, ssl_context='adhoc')
+    app.run(debug=True, port=60000)

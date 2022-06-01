@@ -9,6 +9,10 @@ COPY website/requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
       pip install --prefer-binary --no-cache-dir -r requirements.txt
 
+VOLUME dlfa_db
+
+COPY ./db/dlfa.db dlfa_db/
+
 COPY website/ /usr/src/website/
 COPY database/ /usr/src/database/
 
