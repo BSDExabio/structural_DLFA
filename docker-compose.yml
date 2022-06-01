@@ -5,7 +5,7 @@ services:
     volumes:
       - dlfa_db:/dlfa_db
     ports:
-      - "8080:60000"
+      - "5000:5000"
     environment:
       - FLASK_DEBUG=1
 volumes:
