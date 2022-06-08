@@ -10,7 +10,12 @@ from database.database import Database
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-sqlite3_db = Path('/dlfa_db/dlfa.db') # /dlfa_db is a docker volume
+sqlite3_db = Path('/dlfa_db/dlfa.db') # docker volume
+
+if not sqlite3_db.exists():
+    # We're not running in the container, so just access db directly
+    sqlite3_db = Path('../db/dlfa.db')
+
 db = Database(sqlite3_db)
 
 @app.route('/')
