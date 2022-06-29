@@ -10,6 +10,17 @@ from pprint import pprint
 import requests
 from bs4 import BeautifulSoup
 
+def scrape_rcsb_str(protein_chain):
+    """ Get enzymes for given protein and chain
+
+    Just a convenience wrapper for scrape_rcsb().
+
+    :param protein_chain: String that contains "AAAA_C"
+    :return: list of enzymes, or None if there is no match
+    """
+    protein, chain = protein_chain.split('_')
+    return scrape_rcsb(protein, chain)
+
 
 def scrape_rcsb(protein, chain):
     """ Get enzymes for given protein and chain
@@ -60,6 +71,11 @@ def scrape_rcsb(protein, chain):
 if __name__ == '__main__':
     # Simple case of one chain to one enzyme
     results = scrape_rcsb('6lzm', 'A')
+    print(f'6lzm, chain A: {results}')
+    assert results == ['3.2.1.17']
+
+    # Test of convenience wrapper
+    results = scrape_rcsb_str('6LZM_A')
     print(f'6lzm, chain A: {results}')
     assert results == ['3.2.1.17']
 
