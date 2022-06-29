@@ -76,4 +76,5 @@ if __name__ == '__main__':
     # Scenario for which there are six enzymes for a single chain
     results = scrape_rcsb('2jlr', 'A')
     print(f'2jlr, chain A: {results}')
-    assert results == ['3.4.21.91', '3.6.1.15', '3.6.4.13', '2.1.1.56', '2.1.1.57','2.7.7.48']
+    assert results == ['3.4.21.91', '3.6.1.15', '3.6.4.13', '2.1.1.56',
+                       '2.1.1.57', '2.7.7.48']
