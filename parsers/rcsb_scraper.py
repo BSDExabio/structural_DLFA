@@ -19,12 +19,16 @@ def scrape_rcsb(protein, chain):
     :return: list of enzymes, or None if there is no match
     """
     def extract_chain_enzymes(table_row, chain):
-        extracted_chain = table_row.contents[1].a.text
+        # Snip out all the chain IDs in the first table row data cell.  They
+        # will all have HTML 'a' anchor tags.
+        found_chains = [x.text for x in table_row.contents[1].find_all('a')]
 
-        if chain not in extracted_chain:
+        if chain not in found_chains:
             # This does not contain the chain we're looking for
             return None
 
+        # Now snip out the EC, which will be an HTML anchor with the
+        # querySearchLink class.
         enzyme_content = table_row.contents[4].find('a',
                                                     class_='querySearchLink',
                                           href=re.compile('rcsb_ec_lineage'))
@@ -61,8 +65,9 @@ def scrape_rcsb(protein, chain):
 if __name__ == '__main__':
     # Simple case of one chain to one enzyme
     results = scrape_rcsb('6lzm', 'A')
-    pprint(results)
+    pprint(f'6lzm, chain A: {results}')
     assert results == ['3.2.1.17']
 
     results = scrape_rcsb('5fvk', 'B')
-    pprint(results)
+    pprint(f'5fvk, chain B: {results}')
+    assert results == ['3.6.4.6']
