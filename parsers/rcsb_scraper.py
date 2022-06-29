@@ -51,6 +51,7 @@ def scrape_rcsb(protein):
 
 
 if __name__ == '__main__':
-    results = scrape_rcsb('6lzm')
-
+    # results = scrape_rcsb('6lzm')
+    # pprint(results)
+    results = scrape_rcsb('5fvk')
     pprint(results)
