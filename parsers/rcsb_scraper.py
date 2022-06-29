@@ -68,6 +68,11 @@ if __name__ == '__main__':
     pprint(f'6lzm, chain A: {results}')
     assert results == ['3.2.1.17']
 
+    # A case where there is more than one chain for an EC; e.g., "A,B"
     results = scrape_rcsb('5fvk', 'B')
     pprint(f'5fvk, chain B: {results}')
     assert results == ['3.6.4.6']
+
+    # Now for a case where we know there are no enzymes.
+    results = scrape_rcsb('4v8m', 'C')
+    pprint(f'4v8m, chain C: {results!s}')
