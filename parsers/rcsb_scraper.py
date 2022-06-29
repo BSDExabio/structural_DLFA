@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
     Scrape RCSB site for chains and enzymes associated with a given protein.
+
+    (Written by Mark Coletti, colettima@ornl.gov.)
 """
 import re
 from pprint import pprint
@@ -9,16 +11,22 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def scrape_rcsb(protein):
-    """ Get chains and enzymes for given protein
+def scrape_rcsb(protein, chain):
+    """ Get enzymes for given protein and chain
 
-    :param protein: for which to get chains and enzymes
-    :return: chains and their enzymes, or None if none found
+    :param protein: for which we are searching
+    :param chain: specific chain of that protein
+    :return: list of enzymes, or None if there is no match
     """
-    def extract_chain(table_row):
-        chain = table_row.contents[1].a.text
+    def extract_chain_enzymes(table_row, chain):
+        extracted_chain = table_row.contents[1].a.text
 
-        enzyme_content = table_row.contents[4].find('a', class_='querySearchLink',
+        if chain not in extracted_chain:
+            # This does not contain the chain we're looking for
+            return None
+
+        enzyme_content = table_row.contents[4].find('a',
+                                                    class_='querySearchLink',
                                           href=re.compile('rcsb_ec_lineage'))
 
         if enzyme_content:
@@ -27,14 +35,14 @@ def scrape_rcsb(protein):
         else:
             return None
 
-        return chain, enzyme
+        return enzyme
 
 
     scrape_results = requests.get(f'https://www.rcsb.org/structure/{protein.upper()}')
     if scrape_results.status_code != 200:
         return None
 
-    result = {'protein' : protein, 'chains' : []}
+    result = [] # will contain zero or more enzymes
 
     soup = BeautifulSoup(scrape_results.text, 'html.parser')
 
@@ -42,16 +50,19 @@ def scrape_rcsb(protein):
     table_rows = soup.find_all(id=re.compile('macromolecule-entityId'))
 
     for table_row in table_rows:
-        new_chain = extract_chain(table_row)
-        if new_chain: # found a chain with one or more enzymes
-            result['chains'].append(new_chain)
+        new_enzymes = extract_chain_enzymes(table_row, chain)
+        if new_enzymes: # found one or more enzymes
+            result.append(new_enzymes)
 
     return result
 
 
 
 if __name__ == '__main__':
-    # results = scrape_rcsb('6lzm')
-    # pprint(results)
-    results = scrape_rcsb('5fvk')
+    # Simple case of one chain to one enzyme
+    results = scrape_rcsb('6lzm', 'A')
+    pprint(results)
+    assert results == ['3.2.1.17']
+
+    results = scrape_rcsb('5fvk', 'B')
     pprint(results)
