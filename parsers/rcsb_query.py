@@ -96,12 +96,9 @@ if __name__ == '__main__':
     results = query_uniprot('6lzm', 'ZZ')
     assert results == None
 
-    # Check for failed search for protein that does not exit
+    # Check for failed search for protein that does not exist
     results = query_uniprot('BOGUS', 'A')
     assert results == None
 
 
     print('All tests passed.')
-
-
-    pass
