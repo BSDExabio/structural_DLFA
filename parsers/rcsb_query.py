@@ -25,8 +25,22 @@ query($id: String!)
 }
 '''
 
+def query_uniprot_str(protein_chain):
+    """ Get Uniprot ID for the given protein and protein chain
+
+    Just a convenience wrapper for query_uniprot().
+
+    :param protein_chain: String that contains "AAAA_C"
+    :return: Uniprot ID or None if not found
+    """
+    protein, chain = protein_chain.split('_')
+    return query_uniprot(protein, chain)
+
+
 def query_uniprot(protein, chain):
     """ Get Uniprot ID for the given protein and protein chain
+
+    This will look for the chain ID in the current and any past chain IDs.
 
     :param protein: for which to get Uniprot ID
     :param chain: specific chain in that protein
@@ -58,8 +72,27 @@ def query_uniprot(protein, chain):
 
 
 if __name__ == '__main__':
+    # Simple single chain
     results = query_uniprot('6lzm', 'A')
     assert results == 'P00720'
+
+    # Test of convenience function
+    results = query_uniprot_str('6lzm_A')
+    assert results == 'P00720'
+
+    # More than one chain
+    results = query_uniprot('5fvk', 'B')
+    assert results == 'P52917'
+
+    # Finding among many chains
+    results = query_uniprot('4v8m', 'C')
+    assert results == 'Q385D9'
+
+    # Finding using old chain name
+    results = query_uniprot('4v8m', 'A2')
+    assert results == 'Q385D9'
+
+    print('All tests passed.')
 
 
     pass
