@@ -25,17 +25,17 @@ def _get_uniprot(pdbid,chainid,mmtf_univ):
     """
     from urllib import request
     import re
-    
+
     try:
         chain_idx = mmtf_univ.chain_id_list.index(chainid)  # get the 0 indexed element index of the chainid
         for i, entity in enumerate(mmtf_univ.entity_list):  # search through all entity dictionaries for the chain_idx
-            if chain_idx in entity['chainIndexList']:       # if chain_idx in the entity dictionary's 'chainIndexList' key, then grab the entity_idx number to be used to access the RCSB RESTful API 
+            if chain_idx in entity['chainIndexList']:       # if chain_idx in the entity dictionary's 'chainIndexList' key, then grab the entity_idx number to be used to access the RCSB RESTful API
                 entity_idx = i + 1  # api expects 1 indexed entity numbering
                 break   # stop searching
     except:
         print(chainid+" not in the mmtf.chain_id_list. Won't be able to access the RCSB API due to this.")
         return ''
-    
+
     # grabbing the API results associated with pdbid/entity_idx
     try:
         url = 'https://data.rcsb.org/rest/v1/core/uniprot/%s/%s'%(pdbid,entity_idx)
@@ -60,7 +60,7 @@ def parse_apoc_score_file(fn, count=10):
     """
     import gzip
 
-    columns = ["protein", "seqname", "tmalnlen", "tmrmsd", "tmscore", "seq_id", "desc"]
+    columns = ["protein", "Seqname", "Alnlen", "Sta1-End1", "Tmscore1", "Sta2-End2", "Tmscore2", "AlnScore", "Seq_ID", "Description"]
 
     rows = [] # will contain rows of dicts corresponding to score data
 
@@ -77,8 +77,11 @@ def parse_apoc_score_file(fn, count=10):
             lines = f.readlines()
 
     for line in lines[1:count + 1]:
-        temp = line.strip().split('\t|')
-        rec = [protein] + temp[0].split() + [temp[1]]   # prepping the list of alignment result elements
+        if '###' == line[0:3] or 'Seqname' == line[0:7]: # skip descriptive comments and header
+            continue
+
+        temp = line.strip().split('|')
+        rec = [protein] + temp[0].strip().split() + [temp[1].strip()]   # prepping the list of alignment result elements
 
         # This is just a fast way of mapping the column names to each
         # successive list element.  We could have laboriously assigned each
@@ -86,7 +89,7 @@ def parse_apoc_score_file(fn, count=10):
         temp_dict = {index: value for index, value in zip(columns, rec)}
 
         # Drop the noisome '%' so that later we can do numeric operations on it
-        temp_dict['seq_id'] = temp_dict['seq_id'][:-1]
+        temp_dict['Seq_ID'] = temp_dict['Seq_ID'][:-1]
         rows.append(temp_dict.copy())
 
     df = pd.DataFrame(rows)
@@ -95,7 +98,7 @@ def parse_apoc_score_file(fn, count=10):
     df = df.convert_dtypes()
 
     # Convert to numeric those things that are numeric
-    df[["tmalnlen", "tmrmsd", "tmscore", "seq_id"]] = df[["tmalnlen", "tmrmsd", "tmscore", "seq_id"]].apply(pd.to_numeric)
+    df[["Alnlen", "tmrmsd", "TMscore1", "TMscore2", "AlnScore", "Seq_ID"]] = df[["Alnlen", "tmrmsd", "TMscore1", "TMscore2", "AlnScore", "Seq_ID"]].apply(pd.to_numeric)
 
     return df
 
@@ -195,7 +198,7 @@ def parse_apoc_aln_file(fn, count=10):
             #    line = line[:59] + '1.0'
             #elif line[59] == ':':
             #    line = line[:59] + '0.5'
-            #else:                        
+            #else:
             #    line = line[:59] + '0.0'
             #
             #curr_record = line.strip().split()
@@ -213,7 +216,7 @@ def parse_apoc_aln_file(fn, count=10):
             curr_entry['S']     = curr_record[9]
 
             rows.append(curr_entry.copy())
-    
+
     df = pd.DataFrame(rows)
 
     # Converts from objects to strings
@@ -241,4 +244,3 @@ if __name__ == '__main__':
     align_df = parse_sadlsa_aln_file(str(base_path / 'WP_010938264.1_aln.dat'))
 
     pass
-
