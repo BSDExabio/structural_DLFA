@@ -7,6 +7,8 @@ from pathlib import Path
 from markupsafe import escape
 from database.database import Database
 
+import pandas as pd
+
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
