@@ -98,7 +98,7 @@ def parse_apoc_score_file(fn, count=10):
     df = df.convert_dtypes()
 
     # Convert to numeric those things that are numeric
-    df[["Alnlen", "tmrmsd", "TMscore1", "TMscore2", "AlnScore", "Seq_ID"]] = df[["Alnlen", "tmrmsd", "TMscore1", "TMscore2", "AlnScore", "Seq_ID"]].apply(pd.to_numeric)
+    df[["Alnlen", "Tmscore1", "Tmscore2", "AlnScore", "Seq_ID"]] = df[["Alnlen","Tmscore1", "Tmscore2", "AlnScore", "Seq_ID"]].apply(pd.to_numeric)
 
     return df
 
