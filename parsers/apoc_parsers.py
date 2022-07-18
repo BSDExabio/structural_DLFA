@@ -236,10 +236,10 @@ if __name__ == '__main__':
                      'WP_010938264.1/sadlsa_pdb70_210310')
 
     print('Reading score file')
-    score_df = parse_sadlsa_score_file(
+    score_df = parse_apoc_score_file(
         str(base_path / 'WP_010938264.1_sco.dat.gz'))
 
     print('Reading alignment file')
-    align_df = parse_sadlsa_aln_file(str(base_path / 'WP_010938264.1_aln.dat'))
+    align_df = parse_apoc_aln_file(str(base_path / 'WP_010938264.1_aln.dat'))
 
     pass
