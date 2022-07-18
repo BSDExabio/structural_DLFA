@@ -52,10 +52,9 @@ def _get_uniprot(pdbid,chainid,mmtf_univ):
     return uniprot_id
 
 
-def parse_apoc_score_file(fn, count=10):
+def parse_apoc_score_file(fn):
     """ translate given APOC score file into pandas dataframe
     :param fn: string filename of score file
-    :param count: how many of the top scores we want to get
     :return: pandas dataframe of score results for top count results
     """
     import gzip
@@ -76,7 +75,7 @@ def parse_apoc_score_file(fn, count=10):
         with open(fn, mode='rt') as f:
             lines = f.readlines()
 
-    for line in lines[1:count + 1]:
+    for line in lines:
         if '###' == line[0:3] or 'Seqname' == line[0:7]: # skip descriptive comments and header
             continue
 
