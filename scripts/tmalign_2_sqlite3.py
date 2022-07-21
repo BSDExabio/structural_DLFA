@@ -3,6 +3,15 @@
 
 TODO add support for alignment files; currently only ingests score files
 
+usage: tmalign_2_sqlite3.py [-h] --tmalign-dir TMALIGN_DIR --database DATABASE
+
+TMalign data importer
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --tmalign-dir TMALIGN_DIR
+                        directory containing TMalign alignments and scores
+  --database DATABASE   sqlite3 in which to insert TMalign data
 """
 import argparse
 import logging
