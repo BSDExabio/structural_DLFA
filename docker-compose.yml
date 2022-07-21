@@ -1,8 +1,12 @@
-version: '3'
+version: '3.8'
 services:
   app:
     build: .
     volumes:
-      - .:/app
+      - dlfa_db:/dlfa_db
     ports:
       - "5000:5000"
+    environment:
+      - FLASK_DEBUG=1
+volumes:
+  dlfa_db:

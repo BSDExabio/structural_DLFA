@@ -4,3 +4,4 @@ gunicorn==20.1.0
 rich==10.12.0
 pyopenssl==22.0.0
 sqlalchemy==1.4.27
+pyopenssl==22.0.0

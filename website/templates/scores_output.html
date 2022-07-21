@@ -22,13 +22,12 @@
 </head>
 <body>
 <div class="container">
-    <div class="heading"><h1>SAdLSA Scores Query Results</h1></div>
+    <div class="heading"><h1>SAdLSA Scores Query Results for {{ results[0][0] }}</h1></div>
 </div>
 <div class="container">
 <table class="table">
     <thead>
     <tr>
-        <th scope="col">Protein</th>
         <th scope="col">seqname</th>
         <th scope="col">alnlen</th>
         <th scope="col">range1</th>
@@ -42,7 +41,6 @@
     <tbody>
             {% for row in results %}
     <tr>
-        <td>{{ row.0 }}</td>
         <td>{{ row.1 }}</td>
         <td>{{ row.2 }}</td>
         <td>{{ row.3 }}</td>

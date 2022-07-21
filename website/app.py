@@ -7,10 +7,17 @@ from pathlib import Path
 from markupsafe import escape
 from database.database import Database
 
+import pandas as pd
+
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
-sqlite3_db = Path('static/dlfa.db')
+sqlite3_db = Path('/dlfa_db/dlfa.db') # docker volume
+
+if not sqlite3_db.exists():
+    # We're not running in the container, so just access db directly
+    sqlite3_db = Path('../db/dlfa.db')
+
 db = Database(sqlite3_db)
 
 @app.route('/')
@@ -63,4 +70,4 @@ if __name__ == '__main__':
         print(f'{sqlite3_db} does not exist; please create and restart')
         sys.exit(1)
 
-    app.run(debug=True, ssl_context='adhoc')
+    app.run(debug=True, host='0.0.0.0')
