@@ -90,7 +90,7 @@ if __name__ == '__main__':
                         help='directory containing SAdLSA alignment and score '
                              'filed got a single protein')
     parser.add_argument('--database', required=True,
-                        help='sqlite3 in which to insert EC data')
+                        help='sqlite3 in which to insert SAdLSA data')
 
     args = parser.parse_args()
 
