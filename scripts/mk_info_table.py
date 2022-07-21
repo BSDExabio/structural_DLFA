@@ -30,4 +30,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     dlfa_db = Database(args.database)
-    dlfa_db.add_info_table(version=args.version, date=args.date)
+    dlfa_db.update_info_table(version=args.version, date=args.date)
