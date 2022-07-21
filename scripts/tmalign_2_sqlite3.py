@@ -41,7 +41,7 @@ def add_scores_to_db(tmalign_dir, database):
     :return: None
     """
     # grab score file first
-    score_file = list(sadlsa_dir.glob('*_sco.dat*'))
+    score_file = list(tmalign_dir.glob('*_sco.dat*'))
     if [] == score_file:
         logging.critical(
             f'No score file found in path {sadlsa_dir!s} ... exiting')
