@@ -241,5 +241,3 @@ if __name__ == '__main__':
 
     print('Reading alignment file')
     align_df = parse_apoc_aln_file(str(base_path / 'WP_010938264.1_aln.dat'))
-
-    pass
