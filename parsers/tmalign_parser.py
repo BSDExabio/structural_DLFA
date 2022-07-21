@@ -82,4 +82,8 @@ def parse_tmalign_align_file(fn):
 
 
 if __name__ == '__main__':
+    # test harness for parsers
+
+    df = parse_tmalign_score_file('/Users/may/Projects/data/Alphafold/TMalign-APoc/WP_010939197.1/WP_010939197.1_sco.dat')
+
     pass
