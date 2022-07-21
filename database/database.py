@@ -58,27 +58,32 @@ class Database():
         self.engine = create_engine(f'sqlite:///{db_filename}')
 
 
-    def add_info_table(self, version=None, date=None):
+    def update_info_table(self, version=None, date=None, drop=False):
         """
-            This will add a table in the sqlite3 database that will identify
-            the source of this database.
+            This will add or update a table in the sqlite3 database that will
+            identify the source of this database.
 
-            TODO need to drop table before hand if run on existing database
-            so tht we only have the one canonical row of info.
+            :param version: for this update to database info
+            :param date: associated with this info update
+            :param drop: is True if we should create a new table from scratch
+                first
         """
         if not date:
             date = datetime.now().date().isoformat()
         if not version:
+            # TODO auto-increment version based on
             version = '0.0'
         with self.engine.connect() as conn:
             # Drop table because we want to over-write it with just this
             # one row of information each time.  I.e., we don't want to keep
             # accumulating redundant rows of data.
-            conn.execute(text('DROP TABLE IF EXISTS info'))
-            conn.execute(text('CREATE TABLE '
-                              'info (institution TEXT, '
-                              'date TEXT, '
-                              'version TEXT)'))
+
+            if drop:
+                conn.execute(text('DROP TABLE IF EXISTS info'))
+                conn.execute(text('CREATE TABLE '
+                                  'info (institution TEXT, '
+                                  'date TEXT, '
+                                  'version TEXT)'))
             conn.execute(text('INSERT INTO info (institution, date, version) '
                               'VALUES (:institution, :date, :version)'),
                          [{'institution' : 'Oak Ridge National Laboratory',
@@ -234,7 +239,7 @@ class Database():
 if __name__ == '__main__':
     # test harness
     dlfa_db = Database('../db/dlfa.db')
-    dlfa_db.add_info_table()
+    dlfa_db.update_info_table()
 
     info = dlfa_db.get_info_table()
     print(f'info: {info}')

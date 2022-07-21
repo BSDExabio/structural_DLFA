@@ -1,0 +1,4 @@
+v0.1
+
+* Changed Database add_info_table() to update_info_table() and added option
+  to drop table.

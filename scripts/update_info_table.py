@@ -3,7 +3,7 @@
     Create the sqlite3 info table that describes the version and date
     for the database.
 
-    usage: mk_info_table.py [-h] [--date DATE] [--version VERSION] database
+    usage: update_info_table.py [-h] [--date DATE] [--version VERSION] database
 
     For creating or updating the sqlite info table
 
@@ -30,4 +30,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     dlfa_db = Database(args.database)
-    dlfa_db.add_info_table(version=args.version, date=args.date)
+    dlfa_db.update_info_table(version=args.version, date=args.date)
