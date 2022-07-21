@@ -44,7 +44,7 @@ def add_scores_to_db(tmalign_dir, database):
     score_file = list(tmalign_dir.glob('*_sco.dat*'))
     if [] == score_file:
         logging.critical(
-            f'No score file found in path {sadlsa_dir!s} ... exiting')
+            f'No score file found in path {tmalign_dir!s} ... exiting')
         sys.exit(1)
 
     # We return the first element of the glob because there should only be one

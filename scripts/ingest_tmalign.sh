@@ -35,7 +35,7 @@ usage() {
 # cores, but not on Macs, apparently.  :P
 CORES=8
 
-while getopts "hp:d:s:" arg; do
+while getopts "hc:d:t:" arg; do
     case $arg in
     h)
       usage ;;
@@ -52,6 +52,16 @@ echo "DATABASE is ${DATABASE}"
 echo "TMalign_DIR is ${TMalign_DIR}"
 echo "CORES is ${CORES}"
 
+if [ ${TMalign_DIR}x = x ]; then
+  echo "Need to specify TMalign dir"
+  exit
+fi
+
+if [ ${DATABASE}x = x ]; then
+  echo "Need to specify database"
+  exit
+fi
+
 # So we can find database import
 export PYTHONPATH=..:../database:../parsers:$PYTHONPATH
 
@@ -64,7 +74,7 @@ ls -d ${TMalign_DIR}/WP* > /tmp/FILES
 # to build any new tables a the same time, which is bad.  So just let one
 # create any needed database tables so that we can then later run parallel
 # safely since then all those tables are guaranteed to exist.
-python3 ./tmlign_2_sqlite3.py --database $DATABASE --tmalign-dir `head -1 /tmp/FILES`
+python3 ./tmalign_2_sqlite3.py --database $DATABASE --tmalign-dir `head -1 /tmp/FILES`
 
 # Then crank on all the rest with no worries of creating tables, which were done
 # in the previous line.
