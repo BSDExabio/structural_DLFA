@@ -1,8 +1,8 @@
 #!/bin/bash
 #To Run one to one pdb
-#usage: sh runTmalign.sh <input_pdb> <run_against_pdb> <output_directory> <tm-score_threshold>
+#usage: sh runTMalign1toM.sh <input_pdb> <run_against_pdb> <output_directory> <tm-score_threshold>
 #To run one to many pdb
-#usage: sh runTmalign.sh <input_pdb> <directory_of_pdb_to_run_against_many> <output_directory> <tm-score_threshold>
+#usage: sh runTMalign1toM.sh <input_pdb> <directory_of_pdb_to_run_against_many> <output_directory> <tm-score_threshold>
 #The output will be saved in a file "output_directory/"
 
 inp_pdb=$(readlink -f $1) 

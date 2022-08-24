@@ -26,5 +26,7 @@ do
 	sh $root_dir/runTMalign1toM.sh $pdb $against_pdb_folder $outname $threshold
 done
 
+echo "The respective outputs are saved as a .txt format in $outdir"
+echo "The respective aligned outputs are saved in the $outdir/<PDB_NAME>/aligned_pdbs directory"
 
 
