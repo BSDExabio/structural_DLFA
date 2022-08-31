@@ -6,4 +6,5 @@ services:
       - dlfa_db:/dlfa_db
     ports:
       - "80:80"
-
+volumes:
+  dlfa_db:

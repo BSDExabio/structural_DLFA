@@ -11,6 +11,7 @@ import pandas as pd
 
 from flask import Flask, render_template, request
 app = Flask(__name__)
+app.config.from_prefixed_env()
 
 sqlite3_db = Path('/dlfa_db/dlfa.db') # docker volume
 
@@ -67,7 +68,12 @@ def show_subpath(subpath):
 
 if __name__ == '__main__':
     if not sqlite3_db.exists():
-        print(f'{sqlite3_db} does not exist; please create and restart')
+        app.logger.critical(f'{sqlite3_db} does not exist; please create and restart')
         sys.exit(1)
 
-    app.run(debug=True, host='0.0.0.0')
+    if app.config['DEPLOYMENT'] == 'development':
+        app.logger.info('Starting in development mode')
+        app.run(debug=True, port=80, host='0.0.0.0')
+    else:
+        app.logger.info('Starting in production mode')
+        app.run(debug=True, port=80, host='128.219.186.120')

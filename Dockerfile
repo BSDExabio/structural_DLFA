@@ -3,6 +3,9 @@ FROM python:3.9-slim
 LABEL maintainer="colettima@ornl.gov"
 
 ENV FLASK_APP=/usr/src/website/app.py
+# FLASK_DEPLOYMENT can also be 'production'
+ENV FLASK_DEPLOYMENT=development
+
 ENV PYTHONPATH=/usr/src/
 
 COPY website/requirements.txt ./
@@ -18,5 +21,4 @@ COPY database/ /usr/src/database/
 
 WORKDIR /usr/src/website
 
-CMD ["python3", "-m", "flask", "run", "--port=80", "--host=128.219.186.120"]
-
+CMD ["python3", "-m", "flask", "run"]
