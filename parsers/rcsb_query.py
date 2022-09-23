@@ -63,10 +63,12 @@ def query_uniprot(protein, chain):
 
     for entry in data['data']['entries']:
         for entity in entry['polymer_entities']:
-            if chain in entity['rcsb_polymer_entity_container_identifiers']['asym_ids'] or \
-                chain in entity['rcsb_polymer_entity_container_identifiers']['auth_asym_ids']:
-                uniprot_id = entity['uniprots'][0]['rcsb_id']
-                break
+            if chain in entity['rcsb_polymer_entity_container_identifiers']['asym_ids'] or chain in entity['rcsb_polymer_entity_container_identifiers']['auth_asym_ids']:
+                if entity['uniprots'] != None:
+                    uniprot_id = entity['uniprots'][0]['rcsb_id']
+                    break
+                else:
+                    continue
 
     return uniprot_id
 
