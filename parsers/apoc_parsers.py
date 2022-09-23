@@ -59,7 +59,7 @@ def parse_apoc_score_file(fn):
     """
     import gzip
 
-    columns = ["protein", "Seqname", "Alnlen", "Sta1-End1", "Tmscore1", "Sta2-End2", "Tmscore2", "AlnScore", "Seq_ID", "Description"]
+    columns = ["protein", "tname", "malnlen", "mrmsd", "mscore", "mseqid", "Description"]
 
     rows = [] # will contain rows of dicts corresponding to score data
 
@@ -88,7 +88,7 @@ def parse_apoc_score_file(fn):
         temp_dict = {index: value for index, value in zip(columns, rec)}
 
         # Drop the noisome '%' so that later we can do numeric operations on it
-        temp_dict['Seq_ID'] = temp_dict['Seq_ID'][:-1]
+        temp_dict['mseqid'] = temp_dict['mseqid'][:-1]
         rows.append(temp_dict.copy())
 
     df = pd.DataFrame(rows)
@@ -97,7 +97,7 @@ def parse_apoc_score_file(fn):
     df = df.convert_dtypes()
 
     # Convert to numeric those things that are numeric
-    df[["Alnlen", "Tmscore1", "Tmscore2", "AlnScore", "Seq_ID"]] = df[["Alnlen","Tmscore1", "Tmscore2", "AlnScore", "Seq_ID"]].apply(pd.to_numeric)
+    df[["malnlen", "mrmsd", "mscore", "mseqid"]] = df[["malnlen", "mrmsd", "mscore", "mseqid"]].apply(pd.to_numeric)
 
     return df
 
