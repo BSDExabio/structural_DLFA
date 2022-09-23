@@ -216,6 +216,49 @@ def create_vmd_vis_state(vis_state_file_name, colorbar_file_name, pdb_file_name,
 
     OUTPUTS:
     A new vis state file and colorbar figure that can be used to visualize the metric data on the structure.
+    """
+    import numpy as np
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+    from matplotlib import colors
+
+    # ----------------------------------------
+    # SETTING COLORS
+    # ----------------------------------------
+    # white used for residues with metric value below metric_min
+    color_rgba = colors.to_rgba(under_color)
+    color_defs = {}
+    color_defs[33] = "color change rgb 33 %.3f %.3f %.3f\n"%(color_rgba[0],color_rgba[1],color_rgba[2])
+    # min_color used for the minimum metric value
+    min_color_rgba = np.array(colors.to_rgba(min_color))
+    # max_color used for the maximum metric value
+    max_color_rgba = np.array(colors.to_rgba(max_color))
+    # color difference
+    max_min_diff = max_color_rgba - min_color_rgba
+
+    # ----------------------------------------
+    # CREATING/FILLING COLOR DICTIONARIES
+    # ----------------------------------------
+    possible_colorids = list(range(34,1057))
+    nColorids = len(possible_colorids)
+    cmap_positions = np.linspace(0,1,nColorids)
+
+    cdict = {'red':[], 'green':[], 'blue':[]}
+    for colorid in possible_colorids:
+        idx = colorid - possible_colorids[0]
+        thiscolor = np.abs(min_color_rgba + idx * max_min_diff/(nColorids-1))
+        ### VMD Stuff
+        color_defs[colorid] = "color change rgb " + str(colorid) + " " + str(thiscolor[0]) + " " + str(thiscolor[1]) + " " + str(thiscolor[2]) + '\n'
+        ### MATPLOTLIB Stuff
+        cdict['red'].append((cmap_positions[idx],thiscolor[0],thiscolor[0]))
+        cdict['green'].append((cmap_positions[idx],thiscolor[1],thiscolor[1]))
+        cdict['blue'].append((cmap_positions[idx],thiscolor[2],thiscolor[2]))
+
+    # ----------------------------------------
+    # WRITING THE VIS STATE FILE
+    # ----------------------------------------
+    with open(vis_state_file_name,'w') as W:
+        ### starting lines
         W.write('#!/usr/local/bin/vmd\nset viewplist {}\nset fixedlist {}\n\n')
     
         ### setting colorids
