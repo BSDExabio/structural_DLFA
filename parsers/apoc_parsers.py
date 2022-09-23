@@ -76,7 +76,7 @@ def parse_apoc_score_file(fn):
             lines = f.readlines()
 
     for line in lines:
-        if '###' == line[0:3] or 'Seqname' == line[0:7]: # skip descriptive comments and header
+        if '###' == line[0:3] or 'tname' == line[0:5]: # skip descriptive comments and header
             continue
 
         temp = line.strip().split('|')
