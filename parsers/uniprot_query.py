@@ -7,23 +7,23 @@
 
 import requests
 import datetime
+import copy
 
 flat_file_url = 'https://www.uniprot.org/uniprot/%s.txt'
-dictionary_namespace = {'uniprotID': '',            # UniProt Accession ID associated with the metadata
-                    'entry_name': '',           # ID line
-                    'status': '',               # ID line
-                    'sequence_length': '',      # ID line
-                    'original_date': '',        # 1st DT line
-                    'sequence_date': '',        # 2nd DT line
-                    'modified_date': '',        # 3rd DT line
-                    'gene_name': '',            # GN line
-                    'species_name': '',         # OS line
-                    'database_references': [],  # DR lines
-                    'primary_evidence': '',     # PE line
-                    'features': [],             # FT lines
-                    'sequence': '>',            # SQ and blank lines afterwards
-                    'ecIDs': [],                # Gather any lines that have EC IDs in them
-                    'success': 0}
+dictionary_namespace = {'entry_name': '',           # ID line
+                        'status': '',               # ID line
+                        'sequence_length': '',      # ID line
+                        'original_date': '',        # 1st DT line
+                        'sequence_date': '',        # 2nd DT line
+                        'modified_date': '',        # 3rd DT line
+                        'gene_name': '',            # GN line
+                        'species_name': '',         # OS line
+                        'database_references': [],  # DR lines
+                        'primary_evidence': '',     # PE line
+                        'features': [],             # FT lines
+                        'sequence': '>',            # SQ and blank lines afterwards
+                        'ecIDs': [],                # Gather any lines that have EC IDs in them
+                        'success': 0}
 
 def request_uniprot_metadata(accession_id):
     """
@@ -32,7 +32,7 @@ def request_uniprot_metadata(accession_id):
         response = requests.get(flat_file_url %(accession_id))
     except Exception as e:
         print(f'Requesting the associated flat file for {accession_id} failed.')
-        return {'uniprotID':accession_id,'success':0}
+        return {'success':0}
     
     status_code   = response.status_code
     response_text = response.text
@@ -40,7 +40,6 @@ def request_uniprot_metadata(accession_id):
     # successful response
     if status_code == 200:
         uni_dict = copy.deepcopy(dictionary_namespace)
-        uni_dict['uniprotID'] = accession_id
         uni_dict['success']   = 1
         response_lines = response_text.split('\n')
         for line in response_lines:
@@ -50,20 +49,20 @@ def request_uniprot_metadata(accession_id):
             # end of file is denoted by '//' so break from the for loop if it occurs
             if line == '//':    # used to denote end of file for the UniProt flat files
                 break
-           # parse first line
-           elif line[:2] == 'ID':
-                temp = line.split()
-                uni_dict['entry_name'] = temp[1]
-                uni_dict['status'] = temp[2][:-1] # stupid semicolon at the end of the status string
-                uni_dict['sequence_length'] = int(temp[3])
-           # parse the chronology lines
-           elif line[:2] == 'DT':
-                if 'integrated' in line:
-                    uni_dict['original_date'] = datetime.datetime.strptime(line.split()[1][:-1],'%d-%b-%Y').strftime('%Y-%m-%d')
-                elif 'sequence version' in line:
-                    uni_dict['sequence_date'] = datetime.datetime.strptime(line.split()[1][:-1],'%d-%b-%Y').strftime('%Y-%m-%d')
-                elif 'entry version' in line:
-                    uni_dict['modified_date'] = datetime.datetime.strptime(line.split()[1][:-1],'%d-%b-%Y').strftime('%Y-%m-%d')
+            # parse first line
+            elif line[:2] == 'ID':
+                 temp = line.split()
+                 uni_dict['entry_name'] = temp[1]
+                 uni_dict['status'] = temp[2][:-1] # stupid semicolon at the end of the status string
+                 uni_dict['sequence_length'] = int(temp[3])
+            # parse the chronology lines
+            elif line[:2] == 'DT':
+                 if 'integrated' in line:
+                     uni_dict['original_date'] = datetime.datetime.strptime(line.split()[1][:-1],'%d-%b-%Y').strftime('%Y-%m-%d')
+                 elif 'sequence version' in line:
+                     uni_dict['sequence_date'] = datetime.datetime.strptime(line.split()[1][:-1],'%d-%b-%Y').strftime('%Y-%m-%d')
+                 elif 'entry version' in line:
+                     uni_dict['modified_date'] = datetime.datetime.strptime(line.split()[1][:-1],'%d-%b-%Y').strftime('%Y-%m-%d')
             # parse the gene name line(s)
             elif line[:2] == 'GN':
                 uni_dict['gene_name'] += line[5:]
@@ -94,11 +93,11 @@ def request_uniprot_metadata(accession_id):
     # if the request response fails with known 'failure' status codes
     elif status_code in [400,404,410,500,503]:
         print(uniprotID, status_code, response_text)
-        return {'uniprotID':accession_id,'success':0}
+        return {'success':0}
     # if the request response fails for any other reason
     else:
         print(uniprotID, status_code, 'Something really funky is going on')
-        return {'uniprotID':accession_id,'success':0}
+        return {'success':0}
 
 
 if __name__ == '__main__':
