@@ -131,6 +131,7 @@ if __name__ == '__main__':
     parser.add_argument('--timings-file', '-ts', required=True, help='CSV file for protein processing timings')
     parser.add_argument('--tskmgr-log-file', '-log', required=True, help='string that will be used to store logging info for this run')
     parser.add_argument('--tmscore-threshold', '-cut', required=True, help='float value between 0 and 1 used as the cutoff for TMscore results.')
+    parser.add_argument('--uniprot-metadata-pickle', '-meta', help='path to a pickle file associated with ')
     args = parser.parse_args()
 
     # start dask client.
@@ -185,7 +186,7 @@ if __name__ == '__main__':
                     ac.add(client.submit(_query_rcsb, pdbid_chainid))
 
         # handling step 2 results:
-        if task_num == 2:
+        elif task_num == 2:
             pdbid_chainid = list(results.keys())[0]
             pdbid_to_uniprot_dict.update(results)
             append_timings(timings_csv,timings_file,platform,workerid,start,stop,pdbid_chainid,return_code)
@@ -193,20 +194,26 @@ if __name__ == '__main__':
             # only submit a new step 3 task if the uniprot accession id != None or '' and also has not already been seen.
             if results[pdbid_chainid] and results[pdbid_chainid] not in uniprotid_list:
                 uniprotid_list.append(results[pdbid_chainid])
-                ac.add(client.submit(_query_uniprot_flat_file,results[pdbid_chainid])
+                ac.add(client.submit(_query_uniprot_flat_file,results[pdbid_chainid]))
             
         # handling step 3 results:
-        if task_num == 3:
+        elif task_num == 3:
             uniprotid = list(results.keys())[0]
             uniprot_metadata_dict.update(results)
             append_timings(timings_csv,timings_file,platform,workerid,start,stop,uniprotid,return_code)
             main_logger.info(f'The flat file associated with {uniprotid} has been parsed. Return code: {return_code}. Took {stop-start} seconds.')
     
     # save dictionary of panda dataframes
+    with open( str(args.output_dir / 'structural_alignment_results.pkl'), 'w') as out:
+        pickle.dump(protID_dict,out,protocol=pickle.HIGHEST_PROTOCOL)
 
     # save dictionary of the pdbid_chainid to uniprotid mapping
+    with open( str(args.output_dir / 'pdbid_to_uniprotid_map.pkl'), 'w') as out:
+        pickle.dump(pdbid_to_uniprot_dict,out,protocol=pickle.HIGHEST_PROTOCOL)
 
     # save dictionary of uniprot accession id meta data
+    with open( str(args.output_dir / 'uniprot_metadata.pkl'), 'w') as out:
+        pickle.dump(uniprot_metadata_dict,out,protocol=pickle.HIGHEST_PROTOCOL)
 
     # close log files and shut down the cluster.
     timings_file.close()
