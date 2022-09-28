@@ -166,15 +166,26 @@ if __name__ == '__main__':
     timings_csv = csv.DictWriter(timings_file,['hostname','worker_id','start_time','stop_time','query_pdb','task_type','return_code'])
     timings_csv.writeheader()
 
-    # do the thing; step 1.
+    ### do the thing; only submitting step 1 for now since we know we need to run this set of tasks.
     step1_futures = client.map(_parse_alignment_score_file, alignment_files)
 
-    # gather results from step1, step 2, and step3 into respective containers
+    ### gather results from step1, step 2, and step3 into respective containers
+    protID_dict          = {}   # home for this run's parsed structural alignment results
+    
+    #NOTE... add code here
+    # if provided as an argument, read in a map file of pdbid_to_uniprot; 
+    # update this map dictionary object as new pdbid_to_uniprotid runs are performed
+    # avoid redundant collection of metadata associated with a pdbid if we've already seen't it
     pdbid_chainid_list   = []
-    uniprotid_list       = []
-    protID_dict          = {}
     pdbid_to_uniprot_dict= {}
+    
+    #NOTE... add code here
+    # if provided as an argument, read in a dictionary filled with uniprot accession id metadata 
+    # update this dictionary object as new uniprot accession ids are seen and parsed.
+    uniprotid_list       = []
     uniprot_metadata_dict= {}
+
+    # collect futures into a bucket that we will add tasks to
     ac = as_completed(step1_futures)
     for finished_task in ac:
         task_num, results, platform, workerid, start, stop, return_code = finished_task.result()
@@ -183,13 +194,15 @@ if __name__ == '__main__':
             protID = alignment_pd_df['protein'][0]
             append_timings(timings_csv,timings_file,platform,workerid,start,stop,protID,return_code)
             main_logger.info(f'Structural alignment file associated with {protID} has been parsed. Return code: {return_code}. Took {stop-start} seconds.')
-            protID_dict[protID] = alignment_pd_df.drop(labels['protein','Description'],axis=1) # removing redundant/unnecessary fields
-            # loop over all pdbid_chainid's marked as "good" hits
-            for pdbid_chainid in alignment_pd_df.log[alignment_pd_df['mscore'] > args.tmscore_threshold]['tname']:
-                # only submit a new step 2 task if the pdbid_chainid has not been seen before
-                if pdbid_chainid not in pdbid_chainid_list:
-                    pdbid_chainid_list.append(pdbid_chainid)
-                    ac.add(client.submit(_query_rcsb, pdbid_chainid))
+            if return_code == 1:
+                # removing redundant/unnecessary fields from the pandas dataframe object; store away in the protID_dict dictionary object
+                protID_dict[protID] = alignment_pd_df.drop(labels['protein','Description'],axis=1)
+                # loop over all pdbid_chainid's marked as "good" hits ('mscore' > tmscore_threshold)
+                for pdbid_chainid in alignment_pd_df.log[alignment_pd_df['mscore'] > args.tmscore_threshold]['tname']:
+                    # only submit a step 2 task if the pdbid_chainid has never been seen before
+                    if pdbid_chainid not in pdbid_chainid_list:
+                        pdbid_chainid_list.append(pdbid_chainid)
+                        ac.add(client.submit(_query_rcsb, pdbid_chainid))
 
         # handling step 2 results:
         elif task_num == 2:
@@ -197,8 +210,8 @@ if __name__ == '__main__':
             pdbid_to_uniprot_dict.update(results)
             append_timings(timings_csv,timings_file,platform,workerid,start,stop,pdbid_chainid,return_code)
             main_logger.info(f'The UniProt accession ID associated with {pdbid_chainid} has been queried. Return code: {return_code}. Took {stop-start} seconds.')
-            # only submit a new step 3 task if the uniprot accession id != None or '' and also has not already been seen.
-            if results[pdbid_chainid] and results[pdbid_chainid] not in uniprotid_list:
+            # only submit a new step 3 task if the return_code is 1, the uniprot accession id != None or '', and the uniprot aaccession id has not already been seen.
+            if return_code == 1 and results[pdbid_chainid] and results[pdbid_chainid] not in uniprotid_list:
                 uniprotid_list.append(results[pdbid_chainid])
                 ac.add(client.submit(_query_uniprot_flat_file,results[pdbid_chainid]))
             
@@ -221,7 +234,7 @@ if __name__ == '__main__':
     with open( str(args.output_dir / 'uniprot_metadata.pkl'), 'w') as out:
         pickle.dump(uniprot_metadata_dict,out,protocol=pickle.HIGHEST_PROTOCOL)
 
-    # gotta finish the annotation pipeline work... matching structure alignment hits to the uniprot metadata...
+    # gotta finish the annotation pipeline work... matching structure alignment hits to the uniprot metadata... maybe for another script?
 
     # close log files and shut down the cluster.
     timings_file.close()
