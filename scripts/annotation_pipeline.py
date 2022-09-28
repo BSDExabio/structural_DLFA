@@ -1,5 +1,4 @@
 
-import sys
 import argparse
 import time
 import platform
@@ -18,18 +17,8 @@ import rcsb_query
 import uniprot_query
 
 #######################################
-### DASK RELATED FUNCTIONS
+### LOGGING FUNCTIONS
 #######################################
-
-def get_num_workers(client):
-    """ Get the number of active workers
-    :param client: active dask client
-    :return: the number of workers registered to the scheduler
-    """
-    scheduler_info = client.scheduler_info()
-
-    return len(scheduler_info['workers'].keys())
-
 
 def append_timings(csv_writer, file_object, hostname, worker_id, start_time, stop_time,
                    query, return_code):
@@ -73,7 +62,21 @@ def clean_logger(logger):
         logger.removeHandler(handle)
 
 
-def _parse_alignment_score_file(alignment_results_file, file_type = 'TMalign'):
+#######################################
+### DASK RELATED FUNCTIONS
+#######################################
+
+def get_num_workers(client):
+    """ Get the number of active workers
+    :param client: active dask client
+    :return: the number of workers registered to the scheduler
+    """
+    scheduler_info = client.scheduler_info()
+
+    return len(scheduler_info['workers'].keys())
+
+
+def _parse_alignment_score_file(alignment_results_file, file_type = 'APOC'):
     """
     """
     start_time = time.time()
@@ -127,18 +130,20 @@ if __name__ == '__main__':
     # read command line arguments.
     parser = argparse.ArgumentParser(description='Parsing and requesting metadata associated with structural alignment hits.')
     parser.add_argument('--scheduler-file', '-s', required=True, help='dask scheduler file')
-    parser.add_argument('--input-list-file', '-inp', required=True, help='list file that contains the paths to alignment score files')
+    parser.add_argument('--input-list-file', '-inp', required=True, help='list file that contains the paths to alignment score files. Stem of this file name will be used to name the parsed alignment results file.')
+    parser.add_argument('--output-dir', '-out', required=True, help='path to a directory (already made) where all output files will be stored.')
     parser.add_argument('--timings-file', '-ts', required=True, help='CSV file for protein processing timings')
     parser.add_argument('--tskmgr-log-file', '-log', required=True, help='string that will be used to store logging info for this run')
     parser.add_argument('--tmscore-threshold', '-cut', required=True, help='float value between 0 and 1 used as the cutoff for TMscore results.')
-    parser.add_argument('--uniprot-metadata-pickle', '-meta', help='path to a pickle file associated with ')
+    #parser.add_argument('--uniprot-metadata-pickle', '-meta', help="path to a pickle file associated with the uniprot accession IDs' metadata dictionary.")
+    #parser.add_argument('--pdbid-to-uniprot-map-pickle', '-map', help='path to a pickle file associated with the mapping between pdbids and uniprot accession ids.')
     args = parser.parse_args()
 
     # start dask client.
     client = Client(scheduler_file=args.scheduler_file,timeout=5000,name='AlignmentTaskMgr')
 
     # set up the main logger file and list all relevant parameters.
-    main_logger = setup_logger('tskmgr_logger',args.tskmgr_log_file)
+    main_logger = setup_logger('tskmgr_logger', str(args.output_dir / args.tskmgr_log_file))
     main_logger.info(f'Starting dask pipeline and setting up logging. Time: {time.time()}')
     main_logger.info(f'Scheduler file: {args.scheduler_file}')
     main_logger.info(f'Timing file: {args.timings_file}')
@@ -154,9 +159,10 @@ if __name__ == '__main__':
     with open(args.input_list_file,'r') as alignment_list_file:
         alignment_files = alignment_list_file.readlines()
     main_logger.info(f'{len(alignment_files)} alignment results will be parsed.')
+    stem = Path(args.input_list_file).stem
 
     # set up timing log file.
-    timings_file = open(args.timings_file, 'w')
+    timings_file = open( str(args.output_dir / args.timings_file), 'w')
     timings_csv = csv.DictWriter(timings_file,['hostname','worker_id','start_time','stop_time','query_pdb','task_type','return_code'])
     timings_csv.writeheader()
 
@@ -204,7 +210,7 @@ if __name__ == '__main__':
             main_logger.info(f'The flat file associated with {uniprotid} has been parsed. Return code: {return_code}. Took {stop-start} seconds.')
     
     # save dictionary of panda dataframes
-    with open( str(args.output_dir / 'structural_alignment_results.pkl'), 'w') as out:
+    with open( str(args.output_dir / f'{stem}_structural_alignment_results.pkl'), 'w') as out:
         pickle.dump(protID_dict,out,protocol=pickle.HIGHEST_PROTOCOL)
 
     # save dictionary of the pdbid_chainid to uniprotid mapping
@@ -214,6 +220,8 @@ if __name__ == '__main__':
     # save dictionary of uniprot accession id meta data
     with open( str(args.output_dir / 'uniprot_metadata.pkl'), 'w') as out:
         pickle.dump(uniprot_metadata_dict,out,protocol=pickle.HIGHEST_PROTOCOL)
+
+    # gotta finish the annotation pipeline work... matching structure alignment hits to the uniprot metadata...
 
     # close log files and shut down the cluster.
     timings_file.close()
