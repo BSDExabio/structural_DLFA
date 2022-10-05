@@ -8,6 +8,11 @@ The pipeline to run TMalign in the following ways:
 ## TMalign1toM
 ```
 $ sh runTMalign1toM.sh <input_pdb> <run_against_pdb or directory> <output_directory> <tm-score_threshold>
+
+OR TO RUN ON BOTH CIF AND PDB FILES
+
+$ sh runTMalign1toM_cif_pdb.sh <input_pdb> <run_against_pdb or directory> <output_directory> <tm-score_threshold>
+
 ```
 ### Example
 ```
