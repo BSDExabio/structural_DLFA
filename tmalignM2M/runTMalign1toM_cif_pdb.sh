@@ -20,7 +20,7 @@ fi
 
 if [ ! -d $second_pdb ]; then #if second PDB is a PDB file
 	#Extract the RMSD and TM-score portions of the TMalign output
-	IN=$(./TMalign $inp_pdb $second_pdb | grep 'RMSD\|TM-score\|CPU time' | head -5)
+	IN=$(./TMalign $inp_pdb $second_pdb | grep 'RMSD\|TM-score\|CPU time' | head -8)
 	#echo "****** $IN"
 	rmsd=$(echo $IN | grep -oP '(?<=RMSD= )[^ ]*' | tr -d ,) 
         tmscore1=$(echo $IN | grep -oP '(?<=TM-score= )[^ ]*' | head -1) 
@@ -86,8 +86,8 @@ else #If second_pdb is a directory of PDBs
                 continue
             fi
         fi
-		IN=$(./TMalign $inp_pdb $pdb2 | grep 'RMSD\|TM-score\|CPU time' | head -8)
-		echo "********************8##################### $IN"
+	IN=$(./TMalign $inp_pdb $pdb2 | grep 'RMSD\|TM-score\|CPU time' | head -8)
+	echo "********************8##################### $IN"
         echo "************************************ END *******************************"
         
         #continue
