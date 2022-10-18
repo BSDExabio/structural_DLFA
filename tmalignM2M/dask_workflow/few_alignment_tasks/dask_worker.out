@@ -1,0 +1,387 @@
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:37247
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:37247
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:34455
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-kcmkd8sy
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:40547
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:40547
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:40803
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-6wugko1u
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:44995
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:44995
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:38119
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-y55znsym
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:37179
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:37179
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:36539
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-9ktbeuk_
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:39203
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:39203
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:43925
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-jdzkqq33
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:44721
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:44721
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:34171
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-7ntwm83l
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:40293
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:40293
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:38931
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-d5jpr0_0
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:36509
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:36509
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:36497
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-d_cwwzgi
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:38127
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:38127
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:36075
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-3mlc6lq1
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:44949
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:44949
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:39457
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-4oruneis
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:34605
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:34605
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:33765
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-6mvdbgya
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:34929
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:34929
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:33693
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-4z7o6ctw
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:40259
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:40259
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:34479
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-j6o346ss
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:44523
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:44523
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:45587
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-y3eo1quk
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:42501
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:42501
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:45899
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-zocxtv3c
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:44891
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:44891
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:37393
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-na76kkpv
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:38437
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:38437
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:37401
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-s3ihtglm
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:35081
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:35081
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:40519
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-jmgfv8ls
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:43007
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:43007
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:42445
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-d6h8luh5
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:37553
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:37553
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:45099
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-u666u9d0
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:40031
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:40031
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:39597
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-0ntyjc2u
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:46743
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:46743
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:43711
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-_d294ey0
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:40531
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:40531
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:38399
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-m1wdfxmi
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:42195
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:42195
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:39619
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-1dc4vkv2
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:39159
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:39159
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:39133
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-4ldr_g87
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:39037
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:39037
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:41387
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-9w8c2qi1
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:34407
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:34407
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:37979
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-j6ruvxqb
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:43865
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:43865
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:37439
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-0ku7hv2v
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:34809
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:34809
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:44105
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-eker1go3
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:39413
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:39413
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:37885
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-pa60mc1t
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:39935
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:39935
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:36909
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-3jqmm970
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Start worker at:   tcp://10.43.17.176:41487
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          Listening to:   tcp://10.43.17.176:41487
+2022-10-18 15:56:44,191 - distributed.worker - INFO -          dashboard at:         10.43.17.176:38909
+2022-10-18 15:56:44,191 - distributed.worker - INFO - Waiting to connect to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:44,191 - distributed.worker - INFO -               Threads:                          1
+2022-10-18 15:56:44,191 - distributed.worker - INFO -                Memory:                 251.49 GiB
+2022-10-18 15:56:44,191 - distributed.worker - INFO -       Local Directory: /tmp/dask-worker-space/worker-6e89owbg
+2022-10-18 15:56:44,191 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,013 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,014 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,014 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,016 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,016 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,017 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,017 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,017 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,017 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,017 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,017 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,017 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,018 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,018 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,018 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,018 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,018 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,018 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,018 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,018 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,019 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,019 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,019 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,019 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,019 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,019 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,019 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,020 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,020 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,020 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,020 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,020 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,020 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,020 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,020 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,021 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,024 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,024 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,024 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,024 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,025 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,025 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,025 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,025 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,025 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,025 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,025 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,026 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,026 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,026 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,026 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,026 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,026 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,027 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,027 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,027 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,027 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,027 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,027 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,027 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,028 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,028 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,028 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,028 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,028 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,028 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,028 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,028 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,029 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,029 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,029 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,029 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,029 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,029 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,030 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,029 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,030 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,030 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,030 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,030 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,030 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,031 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,031 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,031 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,031 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,031 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,031 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,031 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,032 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,032 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,032 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,032 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,032 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,032 - distributed.worker - INFO -         Registered to:     tcp://10.43.17.93:8786
+2022-10-18 15:56:46,032 - distributed.worker - INFO - -------------------------------------------------
+2022-10-18 15:56:46,033 - distributed.core - INFO - Starting established connection
+srun: forcing job termination
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 1488634.1 ON andes176 CANCELLED AT 2022-10-18T15:56:48 ***

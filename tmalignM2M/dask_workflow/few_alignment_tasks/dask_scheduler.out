@@ -1,0 +1,111 @@
+2022-10-18 15:56:43,218 - distributed.scheduler - INFO - -----------------------------------------------
+2022-10-18 15:56:43,241 - distributed.http.proxy - INFO - To route to workers diagnostics web server please install jupyter-server-proxy: python -m pip install jupyter-server-proxy
+2022-10-18 15:56:43,244 - distributed.scheduler - INFO - State start
+2022-10-18 15:56:43,247 - distributed.scheduler - INFO - -----------------------------------------------
+2022-10-18 15:56:43,247 - distributed.scheduler - INFO - Clear task state
+2022-10-18 15:56:43,247 - distributed.scheduler - INFO -   Scheduler at:    tcp://10.43.17.93:8786
+2022-10-18 15:56:43,247 - distributed.scheduler - INFO -   dashboard at:          10.43.17.93:8787
+2022-10-18 15:56:43,883 - distributed.scheduler - INFO - Receive client connection: Client-AlignmentTaskMgr-fd7b510b-4f1e-11ed-bcea-6c2b59b042d1
+2022-10-18 15:56:44,312 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,013 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:39413', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,013 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:39413
+2022-10-18 15:56:46,013 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,016 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:42195', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,016 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:42195
+2022-10-18 15:56:46,016 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,016 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:40547', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,016 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:40547
+2022-10-18 15:56:46,016 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,017 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:44949', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,017 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:44949
+2022-10-18 15:56:46,017 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,017 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:46743', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,017 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:46743
+2022-10-18 15:56:46,017 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,017 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:35081', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,018 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:35081
+2022-10-18 15:56:46,018 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,018 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:38127', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,018 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:38127
+2022-10-18 15:56:46,018 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,018 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:37553', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,018 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:37553
+2022-10-18 15:56:46,018 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,019 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:44891', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,019 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:44891
+2022-10-18 15:56:46,019 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,019 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:40293', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,019 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:40293
+2022-10-18 15:56:46,019 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,019 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:34605', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,020 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:34605
+2022-10-18 15:56:46,020 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,020 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:43007', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,020 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:43007
+2022-10-18 15:56:46,020 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,023 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:39159', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,024 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:39159
+2022-10-18 15:56:46,024 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,024 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:39037', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,024 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:39037
+2022-10-18 15:56:46,024 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,024 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:34929', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,024 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:34929
+2022-10-18 15:56:46,025 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,025 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:39203', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,025 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:39203
+2022-10-18 15:56:46,025 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,025 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:37179', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,026 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:37179
+2022-10-18 15:56:46,026 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,026 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:44523', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,026 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:44523
+2022-10-18 15:56:46,026 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,026 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:40259', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,026 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:40259
+2022-10-18 15:56:46,026 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,026 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:36509', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,027 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:36509
+2022-10-18 15:56:46,027 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,027 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:43865', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,027 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:43865
+2022-10-18 15:56:46,027 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,027 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:44721', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,028 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:44721
+2022-10-18 15:56:46,028 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,028 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:42501', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,028 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:42501
+2022-10-18 15:56:46,028 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,028 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:41487', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,028 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:41487
+2022-10-18 15:56:46,028 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,029 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:37247', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,029 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:37247
+2022-10-18 15:56:46,029 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,029 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:44995', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,029 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:44995
+2022-10-18 15:56:46,029 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,029 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:34809', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,030 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:34809
+2022-10-18 15:56:46,030 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,030 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:38437', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,030 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:38437
+2022-10-18 15:56:46,030 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,030 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:40531', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,031 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:40531
+2022-10-18 15:56:46,031 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,031 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:34407', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,031 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:34407
+2022-10-18 15:56:46,031 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,031 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:39935', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,032 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:39935
+2022-10-18 15:56:46,032 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:46,032 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.17.176:40031', status: undefined, memory: 0, processing: 0>
+2022-10-18 15:56:46,032 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.17.176:40031
+2022-10-18 15:56:46,032 - distributed.core - INFO - Starting established connection
+2022-10-18 15:56:47,952 - distributed.scheduler - INFO - Remove client Client-AlignmentTaskMgr-fd7b510b-4f1e-11ed-bcea-6c2b59b042d1
+2022-10-18 15:56:47,956 - distributed.scheduler - INFO - Remove client Client-AlignmentTaskMgr-fd7b510b-4f1e-11ed-bcea-6c2b59b042d1
+2022-10-18 15:56:47,962 - distributed.scheduler - INFO - Close client connection: Client-AlignmentTaskMgr-fd7b510b-4f1e-11ed-bcea-6c2b59b042d1
+srun: forcing job termination
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 1488634.0 ON andes93 CANCELLED AT 2022-10-18T15:56:48 ***
