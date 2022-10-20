@@ -84,11 +84,11 @@ def _parse_alignment_score_file(alignment_results_file, file_type = 'APOC'):
     start_time = time.time()
     worker = get_worker()
     aln_scores_df = []
-    return_code = 0
+    return_code = -9999
 
     if file_type.upper() == 'APOC':
         aln_scores_df = apoc_parsers.parse_apoc_score_file(alignment_results_file)
-        return_code = 1
+        return_code = 0
     elif file_type.upper() == 'TMALIGN':
         pass
         #aln_scores_df = apoc_parsers.parse_apoc_score_file(alignment_results_file)
@@ -102,10 +102,10 @@ def _query_rcsb(pdbid_chainid):
     start_time = time.time()
     worker = get_worker()
     uniprotid = ''
-    return_code = 0
+    return_code = -9999
     try:
         uniprotid = rcsb_query.query_uniprot_str(pdbid_chainid)
-        return_code = 1
+        return_code = 0
     except:
         print(f'failed to pull the uniprot accession id associated with {pdbid_chainid}. oh well...')
 
@@ -118,10 +118,10 @@ def _query_uniprot_flat_file(uniprotid):
     start_time = time.time()
     worker = get_worker()
     meta_dict = {}
-    return_code = 0
+    return_code = -9999
     try:
         meta_dict = uniprot_query.request_uniprot_metadata(uniprotid)
-        return_code = 1
+        return_code = 0
     except:
         print(f'failed to pull {uniprotid} flat file. oh well...')
 
@@ -141,8 +141,8 @@ if __name__ == '__main__':
     parser.add_argument('--timings-file', '-ts', required=True, help='CSV file for protein processing timings')
     parser.add_argument('--tskmgr-log-file', '-log', required=True, help='string that will be used to store logging info for this run')
     parser.add_argument('--tmscore-threshold', '-cut', required=True, help='float value between 0 and 1 used as the cutoff for TMscore results.')
-    #parser.add_argument('--uniprot-metadata-pickle', '-meta', help="path to a pickle file associated with the uniprot accession IDs' metadata dictionary.")
-    #parser.add_argument('--pdbid-to-uniprot-map-pickle', '-map', help='path to a pickle file associated with the mapping between pdbids and uniprot accession ids.')
+    parser.add_argument('--pdbid-to-uniprot-map-pickle', '-map', help='path to a pickle file associated with the mapping between pdbids and uniprot accession ids.')
+    parser.add_argument('--uniprot-metadata-pickle', '-meta', help="path to a pickle file associated with the uniprot accession IDs' metadata dictionary.")
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
@@ -175,25 +175,36 @@ if __name__ == '__main__':
     timings_csv = csv.DictWriter(timings_file,['hostname','worker_id','start_time','stop_time','query','task_type','return_code'])
     timings_csv.writeheader()
 
-    ### do the thing; only submitting step 1 for now since we know we need to run this set of tasks.
-    step1_futures = client.map(_parse_alignment_score_file, alignment_files)
-
-    ### gather results from step1, step 2, and step3 into respective containers
-    protID_dict          = {}   # home for this run's parsed structural alignment results
-    
-    #NOTE... add code here
+    # handle the potential for a PDBID_CHAINID to UniProtID map file already having been made
     # if provided as an argument, read in a map file of pdbid_to_uniprot; 
     # update this map dictionary object as new pdbid_to_uniprotid runs are performed
     # avoid redundant collection of metadata associated with a pdbid if we've already seen't it
-    pdbid_chainid_list   = []
-    pdbid_to_uniprot_dict= {}
+    if args.pdbid_to_uniprot_map_pickle is not None:
+        with open(args.pdbid_to_uniprot_map_pickle,'rb') as pkl_file:
+            pdbid_to_uniprot_dict = pickle.load(pkl_file)
+        pdbid_chainid_list = [key for key in pdbid_to_uniprot_dict.keys()]
     
-    #NOTE... add code here
-    # if provided as an argument, read in a dictionary filled with uniprot accession id metadata 
+    # no map file pointed towards so starting a brand new dictionary/list
+    else:
+        pdbid_chainid_list   = []
+        pdbid_to_uniprot_dict= {}
+    
+    # handle the potential for a UniProtID metadata dictionary file already having been made
+    # if provided as an argument, read in as a dictionary filled with uniprot accession id metadata 
     # update this dictionary object as new uniprot accession ids are seen and parsed.
-    uniprotid_list       = []
-    uniprot_metadata_dict= {}
+    if args.uniprot_metadata_pickle is not None:
+        with open(args.uniprot_metadata_pickle,'rb') as pkl_file:
+            uniprot_metadata_dict = pickle.load(pkl_file)
+        uniprotid_list = [key for key in uniprot_metadata_dict.keys()]
+    
+    # no metadata dictionary file pointed towards so strating a brand new dictionary/list
+    else:
+        uniprotid_list       = []
+        uniprot_metadata_dict= {}
 
+    ### do the thing; only submitting step 1 for now since we know we always need to run this set of tasks.
+    step1_futures = client.map(_parse_alignment_score_file, alignment_files)
+    protID_dict          = {}   # home for this run's parsed structural alignment results
     # collect futures into a bucket that we will add tasks to
     ac = as_completed(step1_futures)
     for finished_task in ac:
@@ -202,8 +213,8 @@ if __name__ == '__main__':
         if task_num == 1:
             protID = results['protein'][0]
             append_timings(timings_csv,timings_file,hostname,workerid,start,stop,protID,task_num,return_code)
-            main_logger.info(f'Structural alignment file associated with {protID} has been parsed. Return code: {return_code}. Took {stop-start} seconds.')
-            if return_code == 1:
+            if return_code == 0:
+                main_logger.info(f'Structural alignment file associated with {protID} has been parsed. Return code: {return_code}. Took {stop-start} seconds.')
                 # removing redundant/unnecessary fields from the pandas dataframe object; store away in the protID_dict dictionary object
                 protID_dict[protID] = results.drop(labels=['protein','Description'],axis=1)
                 # loop over all pdbid_chainid's marked as "good" hits ('mscore' > tmscore_threshold)
@@ -212,36 +223,43 @@ if __name__ == '__main__':
                     if pdbid_chainid not in pdbid_chainid_list:
                         pdbid_chainid_list.append(pdbid_chainid)
                         ac.add(client.submit(_query_rcsb, pdbid_chainid))
+            else:
+                main_logger.info(f'Structural alignment file associated with {protID} failed to be parsed. Return code: {return_code}. Took {stop-start} seconds.')
 
         # handling step 2 results:
         elif task_num == 2:
             pdbid_chainid = list(results.keys())[0]
             pdbid_to_uniprot_dict.update(results)
             append_timings(timings_csv,timings_file,hostname,workerid,start,stop,pdbid_chainid,task_num,return_code)
-            main_logger.info(f'The UniProt accession ID associated with {pdbid_chainid} has been queried. Return code: {return_code}. Took {stop-start} seconds.')
             # only submit a new step 3 task if the return_code is 1, the uniprot accession id != None or '', and the uniprot aaccession id has not already been seen.
-            if return_code == 1 and results[pdbid_chainid] and results[pdbid_chainid] not in uniprotid_list:
+            if return_code == 0 and results[pdbid_chainid] and results[pdbid_chainid] not in uniprotid_list:
+                main_logger.info(f'The UniProt accession ID associated with {pdbid_chainid} has been queried. Return code: {return_code}. Took {stop-start} seconds.')
                 uniprotid_list.append(results[pdbid_chainid])
                 ac.add(client.submit(_query_uniprot_flat_file,results[pdbid_chainid]))
+            else:
+                main_logger.info(f'The UniProt accession ID assocaited with {pdbid_chainid} failed to be gathered. Return code: {return_code}. Took {stop-start} seconds.')
             
         # handling step 3 results:
         elif task_num == 3:
             uniprotid = list(results.keys())[0]
             uniprot_metadata_dict.update(results)
-            append_timings(timings_csv,timings_file,hostname,workerid,start,stop,uniprotid,task_num,return_code)
-            main_logger.info(f'The flat file associated with {uniprotid} has been parsed. Return code: {return_code}. Took {stop-start} seconds.')
+            if return_code == 0:
+                append_timings(timings_csv,timings_file,hostname,workerid,start,stop,uniprotid,task_num,return_code)
+                main_logger.info(f'The flat file associated with {uniprotid} has been parsed. Return code: {return_code}. Took {stop-start} seconds.')
+            else:
+                main_logger.info(f'The flat file associated with {uniprotid} failed to be parsed. Return code: {return_code}. Took {stop-start} seconds.')
     
     # save dictionary of panda dataframes
-    with open( str(output_dir / f'{stem}_structural_alignment_results.pkl'), 'w') as out:
-        pickle.dump(protID_dict,out,protocol=pickle.HIGHEST_PROTOCOL)
+    with open( str(output_dir / 'structural_alignment_results.pkl'), 'wb') as out:
+        pickle.dump(protID_dict,out) #,protocol=pickle.HIGHEST_PROTOCOL)
 
     # save dictionary of the pdbid_chainid to uniprotid mapping
-    with open( str(output_dir / 'pdbid_to_uniprotid_map.pkl'), 'w') as out:
-        pickle.dump(pdbid_to_uniprot_dict,out,protocol=pickle.HIGHEST_PROTOCOL)
+    with open( str(output_dir / 'pdbid_to_uniprotid_map.pkl'), 'wb') as out:
+        pickle.dump(pdbid_to_uniprot_dict,out) #,protocol=pickle.HIGHEST_PROTOCOL)
 
     # save dictionary of uniprot accession id meta data
-    with open( str(output_dir / 'uniprot_metadata.pkl'), 'w') as out:
-        pickle.dump(uniprot_metadata_dict,out,protocol=pickle.HIGHEST_PROTOCOL)
+    with open( str(output_dir / 'uniprot_metadata.pkl'), 'wb') as out:
+        pickle.dump(uniprot_metadata_dict,out) #,protocol=pickle.HIGHEST_PROTOCOL)
 
     # gotta finish the annotation pipeline work... matching structure alignment hits to the uniprot metadata... maybe for another script?
 
