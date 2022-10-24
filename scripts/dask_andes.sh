@@ -38,12 +38,12 @@ unset __conda_setup
 
 # activate the conda environment
 conda activate openmm_andes
-export PYTHONPATH=$PYTHONPATH:/gpfs/alpine/bif135/proj-shared/rbd_work/scripts/git/structural_DLFA/parsers
+export PYTHONPATH=$PYTHONPATH:/path/to/this/repo/structural_DLFA/parsers
 
 # set active directories
-RUN_DIR=/gpfs/alpine/bif135/proj-shared/rbd_work/dask_testing/parsing_results/$WorkingDirName
+RUN_DIR=/path/to/a/results/directory/$WorkingDirName
 SCHEDULER_FILE=${RUN_DIR}/scheduler_file.json
-SRC_DIR=/gpfs/alpine/bif135/proj-shared/rbd_work/dask_testing/parsing_results
+SRC_DIR=/path/to/this/repo/structural_DLFA/scripts
 
 if [ ! -d "$RUN_DIR" ]
 then
