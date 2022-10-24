@@ -136,30 +136,38 @@ def post_analysis_pipeline(query_str, result_files_list, outputdir_str= './', su
     temp_path.mkdir(mode=0o777,parents=True,exist_ok=True)
     # open and write alignment results to file
     with open(str(temp_path) + '/alignment_results.dat','w') as out_file, open(str(temp_path) + '/alignment_results.log','w') as log_file:
-        out_file.write(f'Target Path,RMSD,Length1,TMscore1,Length2,TMscore2\n')
+        out_file.write(f'Target Path,RMSD,nAligned,Length1,TMscore1,Length2,TMscore2\n')
         for result_file in result_files_list:
             with open(result_file,'rb') as infile:
                 temp_results = pickle.load(infile)
             for key, value in temp_results.items():
                 if query_str not in key:
                     continue
-                elif len(value) != 6:
+                elif len(value) != 7:
                     log_file.write(key,value, "len(value) does not match expected length. something wrong with the TMalign results?")
                     continue
                 else:
                     target = '/' + key.split('_/')[1]
-                    out_file.write(f'{target},{value[0]},{value[1]},{value[2]},{value[3]},{value[4]}\n')
+                    out_file.write(f'{target},{value[0]},{value[1]},{value[2]},{value[3]},{value[4]},{value[5]}\n')
         
     # read in the results file and parse
     df = pandas.read_csv(str(temp_path) + '/alignment_results.dat')
     # create a maxTMscore column if expecting to sort by this value
     if sorted_by == 'maxTMscore':
         df['maxTMscore'] = np.max(df[['TMscore1','TMscore2']],axis=1)
+    # check that sorted_by is one of the column names of the panda dataframe
+    elif sorted_by not in list(df.columns):
+        print(f'{sort_by} not in pandas dataframe columns {list(df.columns)}. No ranked_alignment_results.dat file is written.', file=sys.stderr, flush=True)
+        stop_time = time.time()
+        return start_time, stop_time, query_str
+
     # sort the dataframe
     sorted_df = df.sort_values(sorted_by,ascending=False)
     # write the sorted dataframe to file
     try:
         sorted_df.head(nRanked).to_csv(str(temp_path) + '/ranked_alignment_results.dat')
+    # if nRanked > the total number of alignments performed, the above code will raise an exception
+    # instead, just write the full set of ranked alignment results. 
     except:
         sorted_df.to_csv(str(temp_path) + '/ranked_alignment_results.dat')
 
