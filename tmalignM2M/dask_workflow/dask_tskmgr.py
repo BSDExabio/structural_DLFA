@@ -165,11 +165,11 @@ def post_analysis_pipeline(query_str, result_files_list, outputdir_str= './', su
     sorted_df = df.sort_values(sorted_by,ascending=False)
     # write the sorted dataframe to file
     try:
-        sorted_df.head(nRanked).to_csv(str(temp_path) + '/ranked_alignment_results.dat')
+        sorted_df.head(nRanked).to_csv(str(temp_path) + '/ranked_alignment_results.dat',index=False)
     # if nRanked > the total number of alignments performed, the above code will raise an exception
     # instead, just write the full set of ranked alignment results. 
     except:
-        sorted_df.to_csv(str(temp_path) + '/ranked_alignment_results.dat')
+        sorted_df.to_csv(str(temp_path) + '/ranked_alignment_results.dat',index=False)
 
     stop_time = time.time()
     return start_time, stop_time, query_str
