@@ -31,7 +31,7 @@ def parse_tmalign_score_file(fn):
 
     df = pd.read_csv(fn)
     df['protein']    = [protein for i in range(len(df))]
-    df['Descrption'] = ['' for i in range(len(df))]
+    df['Description'] = ['' for i in range(len(df))]
     
     return df
 
