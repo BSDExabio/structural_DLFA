@@ -11,6 +11,13 @@ from pathlib import Path
 import pandas as pd
 import gzip
 
+def _get_protein(fn):
+    """ return the protein name, which is part of the filename path
+        E.g. '~/WP_014320981.1/ranked_alignment_results.dat' -> 'WP_014320981.1'
+    """
+    return Path(fn).parent.name
+
+
 def parse_tmalign_score_file(fn):
     """ Read given TMalign scores file into a pandas dataframe
     These files are written in csv format to begin with so will
@@ -20,10 +27,13 @@ def parse_tmalign_score_file(fn):
     :return: pandas dataframe
     """
     
+    protein = _get_protein(fn)
+
     df = pd.read_csv(fn)
+    df['protein']    = [protein for i in range(len(df))]
+    df['descrption'] = ['' for i in range(len(df))]
     
     return df
-
 
 
 def parse_tmalign_align_file(fn):
