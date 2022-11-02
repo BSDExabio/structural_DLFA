@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 """
-    For parsing TMalign data.  It expects data like this:
-
-/gpfs/alpine/bif135/proj-shared/rbd_work/databases/PDB70/pdb70_2022_03_19/rbd_work/pdb70_2022_03_19_structures/structure_dir/6CVL_C.pdb,1.84,201,229.0,0.88695,343.0,0.60308,0.88695
-/gpfs/alpine/bif135/proj-shared/rbd_work/databases/PDB70/pdb70_2022_03_19/rbd_work/pdb70_2022_03_19_structures/structure_dir/3TIF_A.pdb,1.95,201,229.0,0.88572,230.0,0.88213,0.88572
-/gpfs/alpine/bif135/proj-shared/rbd_work/databases/PDB70/pdb70_2022_03_19/rbd_work/pdb70_2022_03_19_structures/structure_dir/5LIL_B.pdb,1.96,201,229.0,0.88397,604.0,0.34851,0.88397
+    For parsing TMalign data.
 
 """
 from pathlib import Path
@@ -13,9 +9,17 @@ import gzip
 
 def _get_protein(fn):
     """ return the protein name, which is part of the filename path
-        E.g. '~/WP_014320981.1/ranked_alignment_results.dat' -> 'WP_014320981.1'
+        Unfortunately, there are now multiple formats for filename paths.
+        The function needs to find the protein name for all formats.
+            REALLY OLD: protein name in fn's file name
+                '~/WP_164928147.1_aln.dat' -> 'WP_164928147.1'
+            OLD: protein name in fn's parent directory name
+                '~/WP_014320981.1/ranked_alignment_results.dat' -> 'WP_014320981.1'
+            NEW: protein name in fn's grandparent directory name
+                '~/WP_014320981.1/pdb70_2022_03_19_rbd/ranked_alignment_results.dat' -> 'WP_014320981.1'
     """
-    return Path(fn).parent.name
+    return Path(fn).parent.parent.name
+    #return Path(fn).parent.name
 
 
 def parse_tmalign_score_file(fn):
