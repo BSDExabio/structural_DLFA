@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """ Task manager for running the dask pipeline for running TMalign of a set of query protein structures against a library of pdb structures.
-
     USAGE: 
         python3 dask_taskmgr.py [-h] --scheduler-file SCHEDULER_FILE --query-pdb-list-file INPUT_FILE --target-pdb-list-file TARGET_FILE --timings-file TIMINGS_FILE.csv --working-dir /path/to/dir/ --script-path /path/to/dir/script.py --tskmgr-log-file TSKMGR.log
-
     INPUT: 
         -h, --help      show this help message and exit
         --scheduler-file SCHEDULER_FILE, -s SCHEDULER_FILE
@@ -16,21 +14,23 @@
                         full path to the script to be run within the subprocess
         --working-dir /path/to/dir/, -wd /path/to/dir/
                         full path to the directory within which files will be written
+        --subdirectory-string DIRNAME, -sub DIRNAME
+                        string to be used for consistent naming of subdirectories within which results files will be saved for each query structure.
         --timings-file TIMINGS_FILE.csv, -ts TIMINGS_FILE.csv 
                         CSV file for task processing timings
         --tskmgr-log-file TSKMGR.log, -log TSKMGR.log 
                         path for a file within which logging output for the workflow will be written
-        --tmscore-threshold THRESHOLD, -cut THRESHOLD
-                        float value between 0 and 1 used as the cutoff for TMscore results.
-
+        --nRanked-structures INTEGER_VALUE, -nrank INTEGER_VALUE
+                        integer value set for number of top scoring alignments hits to be written to ranked file
+        --sorted-by COLUMN_NAME, -sort COLUMN_NAME
+                        string to set which column of the pandas dataframe to rank the alignment hits with. options: 'maxTMscore', 'TMscore1', 'TMscore2', ...
+        --num-workers nWORKERS_IN_WORKFLOW, -nw nWORKERS_IN_WORKFLOW
+                        integer value used to set the number of workers available to be used
 """
 
 import time
 import argparse
 import platform
-import os
-import stat
-import traceback
 import numpy as np
 from pathlib import Path
 import sys
@@ -118,7 +118,8 @@ def submit_pipeline(proteins, script):
     for target in target_proteins:
         try:
             completed_process = subprocess.run(f'bash {script} {query_protein} {target}',shell=True,capture_output=True,check=True)
-            results_dict[f'{query_protein}_{target}'] = [float(elem) for elem in completed_process.stdout.split()]
+            results_dict[f'{query_protein}_{target}'] = [float(elem) for elem in completed_process.stdout.decode().split('\n')[1].split('\t')[2:]]   # [TMscore1,TMscore2,RMSD,SeqID1,SeqID2,SeqIDali,L1,L2,Lali]
+            #results_dict[f'{query_protein}_{target}'] = [float(elem) for elem in completed_process.stdout.split()]
 
         except CalledProcessError as e:
             print(query_protein, target, e, file=sys.stderr, flush=True)
@@ -136,19 +137,19 @@ def post_analysis_pipeline(query_str, result_files_list, outputdir_str= './', su
     temp_path.mkdir(mode=0o777,parents=True,exist_ok=True)
     # open and write alignment results to file
     with open(str(temp_path) + '/alignment_results.dat','w') as out_file, open(str(temp_path) + '/alignment_results.log','w') as log_file:
-        out_file.write(f'Target Path,RMSD,nAligned,Length1,TMscore1,Length2,TMscore2\n')
+        out_file.write(f'Target Path,TMscore1,TMscore2,RMSD,SeqID1,SeqID2,SeqIDali,Len1,Len2,LenAligned\n') # [TMscore1,TMscore2,RMSD,SeqID1,SeqID2,SeqIDali,L1,L2,Lali]
         for result_file in result_files_list:
             with open(result_file,'rb') as infile:
                 temp_results = pickle.load(infile)
             for key, value in temp_results.items():
                 if query_str not in key:
                     continue
-                elif len(value) != 7:
-                    log_file.write(key,value, "len(value) does not match expected length. something wrong with the TMalign results?")
+                elif len(value) != 9:
+                    log_file.write( f"{key}, {value}, len(value) does not match expected length. something wrong with the TMalign results?\n")
                     continue
                 else:
                     target = '/' + key.split('_/')[1]
-                    out_file.write(f'{target},{value[0]},{value[1]},{value[2]},{value[3]},{value[4]},{value[5]}\n')
+                    out_file.write(f'{target},{value[0]},{value[1]},{value[2]},{value[3]},{value[4]},{value[5]},{value[6]},{value[7]},{value[8]}\n')
         
     # read in the results file and parse
     df = pandas.read_csv(str(temp_path) + '/alignment_results.dat')
@@ -185,10 +186,10 @@ if __name__ == '__main__':
     parser.add_argument('--scheduler-file', '-s', required=True, help='dask scheduler file')
     parser.add_argument('--query-pdb-list-file', '-inp', required=True, help='list file that contains the paths and sequence lengths of protein models')
     parser.add_argument('--target-pdb-list-file', '-lib', required=True, help='list file that contains the paths and sequence lengths of protein models assocaited with the target library')
-    parser.add_argument('--timings-file', '-ts', required=True, help='CSV file for protein processing timings')
-    parser.add_argument('--working-dir', '-wd', required=True, help='path that points to the working directory for the output files')
-    parser.add_argument('--subdirectory-string', '-sub', required=True, help='string; descriptive no-space text used to make a third tier subdirectory')
     parser.add_argument('--script-path', '-sp', required=True, help='path that points to the script for the subprocess call')
+    parser.add_argument('--working-dir', '-wd', required=True, help='path that points to the working directory for the output files')
+    parser.add_argument('--subdirectory-string', '-sub', required=True, help='string to be used for consistent naming of subdirectories within which results files will be saved for each query structure.')
+    parser.add_argument('--timings-file', '-ts', required=True, help='CSV file for protein processing timings')
     parser.add_argument('--tskmgr-log-file', '-log', required=True, help='string that will be used to store logging info for this run')
     parser.add_argument('--nRanked-structures', '-nrank', required=True, help='integer value set for number of top scoring alignment hits to ranked file')
     parser.add_argument('--sorted-by', '-sort', required=True, help='string used to denote which column to rank structures by')
@@ -319,48 +320,3 @@ if __name__ == '__main__':
     main_logger.info(f'Done. Shutting down the cluster. Time: {time.time()}')
     clean_logger(main_logger)
     #client.shutdown()
-
-    #for batch in as_completed(task_futures, with_results=True).batches():
-    #    for future, results_list in batch:
-    #        # hostname     = results_list[0]
-    #        # worker_id    = results_list[1]
-    #        # start_time   = results_list[2]
-    #        # stop_time    = results_list[3]
-    #        # return_code  = results_list[4]
-    #        # query        = results_list[5]
-    #        # target       = results_list[6]
-    #        # results      = results_list[7]    # actual quantitative metrics contained within a list
-    #        main_logger.info(f'{results_list[5]}-{results_list[6]} alignment has finished, return code: {results_list[4]}.')
-    #        append_timings(timings_csv, timings_file, results_list[0], results_list[1], results_list[2], results_list[3], results_list[4], results_list[5], results_list[6])
-    #        results_dict[f'{results_list[5]}_{results_list[6]}'] = results_list[7]
-
-    #        count += 1
-
-    #        # writing results dictionary out to file every 100,000 alignments
-    #        #if not count % 100000 and count != 0:
-    #        if count in report_increments:
-    #            out = f'{args.working_dir}/results_{result_file_num}.pkl'
-    #            main_logger.info(f'RESULTS WRITTEN TO {out}.')
-    #            results_files.append(out)
-    #            with open(out,'wb') as out_file:
-    #                pickle.dump(results_dict,out_file)
-    #            results_dict = {}
-    #            result_file_num += 1
-
-    ## handle any leftover results
-    #if len(results_dict.keys()):
-    #    out = f'{args.working_dir}/results_{result_file_num}.pkl'
-    #    main_logger.info(f'RESULTS WRITTEN TO {out}.')
-    #    results_files.append(out)
-    #    with open(out,'wb') as out_file:
-    #        pickle.dump(results_dict,out_file)
-    #    results_dict = {}
-
-    ## analyze all pickle files to gather relevant hits for each query structure.
-    #task_futures = client.map(post_analysis_pipeline, sorted_query_list, result_files_list = results_files, outputdir_str = args.working_dir, subdir_str = args.subdirectory_string, nRanked = int(args.nRanked_structures), sorted_by = args.sorted_by, pure=False)
-    #ac = as_completed(task_futures)
-    #for finished_task in ac:
-    #    hostname, worker_id, start_time, stop_time, return_code, query = finished_task.result()
-    #    append_timings(timings_csv, timings_file, hostname, worker_id, start_time, stop_time, return_code, query, 'parsed results')
-    #    main_logger.info(f'Parsed alignment hits for {query}, return code: {return_code}.')
-

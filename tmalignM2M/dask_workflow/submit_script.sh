@@ -2,7 +2,7 @@
 
 #SBATCH -A BIF135-ONE
 #SBATCH -t 36:00:00
-#SBATCH -N 2
+#SBATCH -N 16
 #SBATCH -p batch
 #SBATCH -J tmalign
 #SBATCH -o out.%J
@@ -12,15 +12,15 @@
 nSchedulerCores=31
 nClientCores=1
 nWorkerCores=1	# should be a factor of 32 to ensure all available resources are utilized and no workers are spread across two compute nodes
-WorkingDirName=few_alignment_tasks
+WorkingDirName=testing
 
 # set active directories
-RUN_DIR=/gpfs/alpine/bif135/proj-shared/rbd_work/dask_testing/tmalign_andes_workflow/one_to_one/$WorkingDirName
+RUN_DIR=/path/to/working/dir/parent/$WorkingDirName
 SCHEDULER_FILE=${RUN_DIR}/scheduler_file.json
-SRC_DIR=/gpfs/alpine/bif135/proj-shared/rbd_work/dask_testing/tmalign_andes_workflow/one_to_one
+SRC_DIR=/path/to/this/repository/dir/
 
-QUERY_LIST=${SRC_DIR}/small_testing_set.lst
-TARGET_LIST=${SRC_DIR}/small_testing_set.lst
+QUERY_LIST=$SRC_DIR/small_testing_set.lst
+TARGET_LIST=$SRC_DIR/small_testing_set.lst
 
 date
 
@@ -44,7 +44,7 @@ unset __conda_setup
 # activate the conda environment
 conda activate openmm_andes
 
-if [ ! -d "$SCHEDULER_DIR" ]
+if [ ! -d "$RUN_DIR" ]
 then
     mkdir -p $RUN_DIR
 fi
@@ -107,14 +107,15 @@ fi
 ###
 echo "Running the client script"
 	#python3 ${SRC_DIR}/dask_tskmgr.py --scheduler-file $SCHEDULER_FILE \
+	#--subdirectory-string pdb70_2022_03_19_rbd \
 srun -n 1 -N 1 -c $nClientCores --cpu-bind=threads -w $PrimaryNode \
-	python3 ${SRC_DIR}/dask_tskmgr_many_maps.py --scheduler-file $SCHEDULER_FILE \
+	python3 ${SRC_DIR}/dask_tskmgr.py --scheduler-file $SCHEDULER_FILE \
 					  --query-pdb-list-file $QUERY_LIST \
 					  --target-pdb-list-file $TARGET_LIST \
-					  --script-path $SRC_DIR/runTMalign1to1_cp.sh \
+					  --script-path $SRC_DIR/runTMalign_cp.sh \
 					  --working-dir ${RUN_DIR} \
-					  --subdirectory-string TMalign_cp_pdb70_2022_03_19 \
-					  --timings-file ${RUN_DIR}/timings.csv \
+					  --subdirectory-string TMalign_cp_all_to_all \
+					  --timings-file timings.csv \
 					  --tskmgr-log-file tskmgr.log \
 					  --nRanked-structures 100 \
 					  --sorted-by maxTMscore \
