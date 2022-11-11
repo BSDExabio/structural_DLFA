@@ -106,11 +106,11 @@ fi
 ###
 echo "Running the client script"
 srun -n 1 -N 1 -c $nClientCores --cpu-bind=threads -w $PrimaryNode \
-	python3 ${SRC_DIR}/dask_tskmgr.py --scheduler-file $SCHEDULER_FILE \
-					  --alignment-list-file $ALN_LIST \
-					  --script-path $SRC_DIR/runTMalign_cp_save_aln.sh \
-					  --timings-file timings.csv \
-					  --tskmgr-log-file tskmgr.log
+	python3 ${SRC_DIR}/dask_tskmgr_save_aln.py --scheduler-file $SCHEDULER_FILE \
+					  	   --alignment-list-file $ALN_LIST \
+					  	   --script-path $SRC_DIR/runTMalign_cp_save_aln.sh \
+					  	   --timings-file timings.csv \
+					  	   --tskmgr-log-file tskmgr.log
 
 # shutting down dask scheduler and worker commands
 for pid in $dask_pids

@@ -110,13 +110,14 @@ def submit_pipeline(proteins, script):
         temp_path.mkdir(mode=0o777,parents=True,exist_ok=True)
         
         try:
-            completed_process = subprocess.run(f'bash {script} {query_protein} {target} {str(temp_path}',shell=True,capture_output=True,check=True)
+            completed_process = subprocess.run(f'bash {script} {query_protein} {target} {str(temp_path)}',shell=True,capture_output=True,check=True)
             return_code = completed_process.returncode
             if return_code != 0:
                 print(query_protein, target, str(temp_path), return_code, file=sys.stderr, flush=True)
 
         except CalledProcessError as e:
             print(query_protein, target, e, file=sys.stderr, flush=True)
+            return_code = 1
         
     stop_time = time.time()
     return platform.node(), worker.id, start_time, stop_time, return_code
@@ -152,8 +153,7 @@ if __name__ == '__main__':
     # start dask client.
     client = Client(scheduler_file=args.scheduler_file,timeout=5000,name='AlignmentTaskMgr')
     # number of workers
-    NUM_WORKERS = int(args.num_workers)
-    main_logger.info(f'Client information: {client} {NUM_WORKERS}')
+    main_logger.info(f'Client information: {client}')
     
     # set up timing log file.
     main_logger.info(f'Opening the timing file.')
