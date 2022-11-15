@@ -1,0 +1,47 @@
+2022-09-08 11:36:48,297 - distributed.scheduler - INFO - -----------------------------------------------
+2022-09-08 11:36:48,314 - distributed.http.proxy - INFO - To route to workers diagnostics web server please install jupyter-server-proxy: python -m pip install jupyter-server-proxy
+2022-09-08 11:36:48,316 - distributed.scheduler - INFO - State start
+2022-09-08 11:36:48,319 - distributed.scheduler - INFO - -----------------------------------------------
+2022-09-08 11:36:48,319 - distributed.scheduler - INFO - Clear task state
+2022-09-08 11:36:48,319 - distributed.scheduler - INFO -   Scheduler at:   tcp://10.43.19.175:8786
+2022-09-08 11:36:48,319 - distributed.scheduler - INFO -   dashboard at:         10.43.19.175:8787
+2022-09-08 11:36:49,598 - distributed.scheduler - INFO - Receive client connection: Client-AlignmentTaskMgr-0d4541de-2f8c-11ed-8ce4-6c2b59b4a7d3
+2022-09-08 11:36:49,992 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:49,996 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:46695', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:49,996 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:46695
+2022-09-08 11:36:49,996 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:49,997 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:37459', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:49,997 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:37459
+2022-09-08 11:36:49,997 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:49,997 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:45609', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:49,997 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:45609
+2022-09-08 11:36:49,997 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:49,997 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:34079', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:49,998 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:34079
+2022-09-08 11:36:49,998 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:49,998 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:39451', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:49,998 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:39451
+2022-09-08 11:36:49,998 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:49,998 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:39823', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:49,998 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:39823
+2022-09-08 11:36:49,999 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:49,999 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:32821', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:49,999 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:32821
+2022-09-08 11:36:49,999 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:49,999 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:34461', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:49,999 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:34461
+2022-09-08 11:36:49,999 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:49,999 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:43203', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:50,000 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:43203
+2022-09-08 11:36:50,000 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:50,000 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:44057', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:50,000 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:44057
+2022-09-08 11:36:50,000 - distributed.core - INFO - Starting established connection
+2022-09-08 11:36:50,000 - distributed.scheduler - INFO - Register worker <WorkerState 'tcp://10.43.19.175:45571', status: undefined, memory: 0, processing: 0>
+2022-09-08 11:36:50,001 - distributed.scheduler - INFO - Starting worker compute stream, tcp://10.43.19.175:45571
+2022-09-08 11:36:50,001 - distributed.core - INFO - Starting established connection
+2022-09-08 11:37:05,497 - distributed.scheduler - INFO - Remove client Client-AlignmentTaskMgr-0d4541de-2f8c-11ed-8ce4-6c2b59b4a7d3
+2022-09-08 11:37:05,498 - distributed.scheduler - INFO - Remove client Client-AlignmentTaskMgr-0d4541de-2f8c-11ed-8ce4-6c2b59b4a7d3
+2022-09-08 11:37:05,499 - distributed.scheduler - INFO - Close client connection: Client-AlignmentTaskMgr-0d4541de-2f8c-11ed-8ce4-6c2b59b4a7d3
+srun: forcing job termination
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
