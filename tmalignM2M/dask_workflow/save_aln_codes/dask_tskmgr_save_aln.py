@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Task manager for the dask pipeline for running TMalign on a set of alignments, saving log and alignment files to subdirectories. 
+""" Task manager for the dask pipeline for running TM/USalign on a set of alignments, saving log and alignment files to subdirectories. 
     USAGE: 
         python3 dask_taskmgr.py [-h] --scheduler-file SCHEDULER_FILE --alignment-list-file INPUT_FILE --script-path /path/to/dir/script.py --timings-file TIMINGS_FILE.csv --tskmgr-log-file TSKMGR.log
     INPUT: 
@@ -94,6 +94,18 @@ def get_num_workers(client):
 
 def submit_pipeline(proteins, script):
     """
+    function used in the dask workflow to define a task
+    performs the alignments between proteins[0] (a path string) and proteins[1] (a list of path strings), saving results in proteins[2] (a path string)
+    the type of alignment performed is controlled by the script parameter; this is completely interchangeable since no output is being parsed/stored in this function
+    
+    INPUT:
+        :param proteins: list with elements 0 to 2 being a string, a list, and a string
+                         proteins[0] is a path string that points to a pdb file used as the mobile structure
+                         proteins[1] is a list of path strings that point to the pbd files to be used as the target structures
+                         proteins[2] is a path string that points to a pdb file used as the mobile structure
+        :param script: path string that points to the bash script that will be subprocess.run'd to automate the alignment between mobile and target structures
+    OUTPUT:
+        :return: resource/node information, dask worker id, start time, stop time, alignment return code
     """
     worker = get_worker()
     start_time = time.time()

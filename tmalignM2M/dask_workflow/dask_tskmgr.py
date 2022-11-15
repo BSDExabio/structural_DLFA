@@ -106,6 +106,27 @@ def get_num_workers(client):
 
 def submit_pipeline(proteins, script):
     """
+    function used in the dask workflow to define a task
+    performs the alignments between proteins[0] (a string) and proteins[1] (a list)
+    the type of alignment performed is controlled by the script parameter; this is interchangeable as long as output from the script follows the _expected format_ (see below)
+    
+    EXPECTED FORMAT:
+    ```
+    #PDBchain1	PDBchain2	TM1	TM2	RMSD	ID1	ID2	IDali	L1	L2	Lali
+    mobile.pdb	target.pdb	0.5970	0.5970	4.34	0.540	0.540	0.786	448	448	308
+    Total CPU time is  0.64 seconds
+    '''
+    The 2nd line holds the relevant quantitative metrics we wish to gather.
+
+    If format changes, this chunk of code will need to be updated to follow. 
+    
+    INPUT:
+        :param proteins: list with elements 0 and 1 being a string and a list, respectively
+                         proteins[0] is a path string that points to a pdb file used as the mobile structure
+                         proteins[1] is a list of path strings that point to the pbd files to be used as the target structures
+        :param script: path string that points to the bash script that will be subprocess.run'd to automate the alignment between mobile and target structures
+    OUTPUT:
+        :return: resource/node information, dask worker id, start time, stop time, number of alignments performed successfully, dictionary that houses the results
     """
     worker = get_worker()
     start_time = time.time()
@@ -154,7 +175,7 @@ def post_analysis_pipeline(query_str, result_files_list, outputdir_str= './', su
     # read in the results file and parse
     df = pandas.read_csv(str(temp_path) + '/alignment_results.dat')
     # create a maxTMscore column if expecting to sort by this value
-    if sorted_by == 'maxTMscore':
+    if sorted_by.upper() == 'MAXTMSCORE':
         df['maxTMscore'] = np.max(df[['TMscore1','TMscore2']],axis=1)
     # check that sorted_by is one of the column names of the panda dataframe
     elif sorted_by not in list(df.columns):
@@ -231,7 +252,7 @@ if __name__ == '__main__':
     with open(args.query_pdb_list_file,'r') as structures_file:
         query_list = [line.split() for line in structures_file.readlines() if line[0] != '#']
     
-    # sorted largest to smallest of the structure list; system size is a basic but good estimate of computational cost
+    # sorted largest to smallest of the query/mobile structure list; system size is a basic but good estimate of computational cost
     sorted_query_list = sorted(query_list, key = lambda x: int(x[1]))[::-1]
     del query_list
     sorted_query_list = [elem[0] for elem in sorted_query_list]
@@ -242,7 +263,7 @@ if __name__ == '__main__':
     with open(args.target_pdb_list_file,'r') as structures_file:
         target_list = [line.split() for line in structures_file.readlines() if line[0] != '#']
     
-    # sorted largest to smallest of the structure list; system size is a basic but good estimate of computational cost
+    # sorted largest to smallest of the target structure list; system size is a basic but good estimate of computational cost
     sorted_target_list = sorted(target_list, key = lambda x: int(x[1]))[::-1]
     del target_list
     sorted_target_list = [elem[0] for elem in sorted_target_list]
@@ -277,6 +298,7 @@ if __name__ == '__main__':
         with open(out,'wb') as out_file:
             pickle.dump(results_dict,out_file)
 
+        # submitting the post_analysis_pipeline as a dask task for all query structures
         parse_futures = client.map(post_analysis_pipeline, sorted_query_list, result_files_list = [out], outputdir_str = args.working_dir, subdir_str = args.subdirectory_string, nRanked = int(args.nRanked_structures), sorted_by = args.sorted_by, pure=False)
         parse_completed = as_completed(parse_futures)
         for finished_task in parse_completed:
@@ -284,15 +306,13 @@ if __name__ == '__main__':
             main_logger.info(f'Parsed alignment hits for {query}, taking {stop_time - start_time} seconds.')
 
     ############
-    # if total number of tasks is not relatively small, 
+    # if total number of alignments is not relatively small (>10k), 
     # then partition the target list and map query-target partitions to the client
     ############
     else:
         main_logger.info(f'The total number of alignments ({nAlignments:,}) is large. Will run the alignments in batches of targets.')
         target_sublists = [sorted_target_list[i::NUM_WORKERS*3] for i in range(NUM_WORKERS*3)]
         nTargets_per_sublist = int(np.mean([len(sublist) for sublist in target_sublists]))
-        #nTargets_per_sublist = nTargets//NUM_WORKERS + (nTargets % NUM_WORKERS > 0)
-        #target_sublists = [target_list[i:i+nTargets_per_sublist] for i in range(0,len(target_list),nTargets_per_sublist)] # not desired if target_list is sorted largest to smallest
         nTasks = len(sorted_query_list)*len(target_sublists)
         main_logger.info(f'The total number of tasks is {nTasks:,} where each task is the alignment of a query structure to a set of target structures (average lengths of {nTargets_per_sublist}).')
         for query in sorted_query_list:

@@ -1,6 +1,6 @@
 #!/bin/bash
-#To Run one to one pdb
-#usage: sh runTMalign_cp_rbd.sh <input_pdb> <run_against_pdb>
+#To Run one to one pdb alignment using a circular permutation-capable method
+#usage: sh runTMalign_cp.sh <input_pdb> <run_against_pdb>
 
 TMALIGN_HOME=/path/to/tmalign/installed/bin/dir/TMalign
 
