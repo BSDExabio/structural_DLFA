@@ -98,6 +98,10 @@ if __name__ == '__main__':
     results = query_uniprot('6lzm', 'ZZ')
     assert results == None
 
+    # Check for entity that has no uniprot ID associated with it
+    results = query_uniprot('5t0w', 'C')
+    assert results == None
+
     # Check for failed search for protein that does not exist
     results = query_uniprot('BOGUS', 'A')
     assert results == None
