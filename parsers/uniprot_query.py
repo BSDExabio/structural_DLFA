@@ -75,14 +75,26 @@ def request_uniprot_metadata(accession_id):
             # parse the primary evidence line(s)
             elif line[:2] == 'PE':
                 uni_dict['primary_evidence'] += line[5:]
-            # parse the features lines, if present at all
+            # parse the features lines
+            # if the line is associated with a new feature, the 5th character
+            # will be the first letter of the feature type and not a ' '
+            # in this case, append a new list to the features list.
             elif line[:2] == 'FT' and line[5] != ' ':
                 uni_dict['features'].append(line[5:].split())
+            # if the line is associated with a previous feature, the 5th
+            # character will be a ' '. 
+            # in this case, append the line's information to the previous list
             elif line[:2] == 'FT' and line[5] == ' ':
-                uni_dict['features'][-1].append(line.split()[-1])
+                uni_dict['features'][-1].append(line[2:].strip())
             # parse the sequence lines
+            # the 'SQ' key is the notification that the sequence information
+            # begins on this line
             elif line[:2] == 'SQ' and line[5] != ' ':
                 uni_dict['sequence'] += line[5:] + '\n'
+            # the only instance where the first two characters of a line == '  '
+            # is a line that continues with sequence information
+            # of course, these lines are formatted; blocks of 10 AAs separated
+            # by a space character; 60 AAs on a line
             elif line[:2] == '  ':
                 temp = line.split()
                 seq_string = ''.join(temp)
