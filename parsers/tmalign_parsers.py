@@ -5,7 +5,6 @@
 """
 from pathlib import Path
 import pandas as pd
-import gzip
 
 def _get_protein(fn):
     """ return the protein name, which is part of the filename path
@@ -38,16 +37,6 @@ def parse_tmalign_score_file(fn):
     df['Description'] = ['' for i in range(len(df))]
     
     return df
-
-
-def parse_tmalign_align_file(fn):
-    """ Read given TMalign alignment file into a pandas dataframe
-
-    :param fn: of score file
-    :return: pandas dataframe
-    """
-    # TODO implement
-    pass
 
 
 if __name__ == '__main__':
