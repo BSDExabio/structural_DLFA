@@ -13,6 +13,7 @@ import dask.config
 from distributed import Client, Worker, as_completed, get_worker
 
 import apoc_parsers
+import tmalign_parsers
 import rcsb_query
 import uniprot_query
 
@@ -90,8 +91,10 @@ def _parse_alignment_score_file(alignment_results_file, file_type = 'APOC'):
         aln_scores_df = apoc_parsers.parse_apoc_score_file(alignment_results_file)
         return_code = 0
     elif file_type.upper() == 'TMALIGN':
-        pass
-        #aln_scores_df = apoc_parsers.parse_apoc_score_file(alignment_results_file)
+        aln_scores_df = tmalign_parsers.parse_apoc_score_file(alignment_results_file)
+        return_code = 0
+    else:
+        return 1, [], platform.node(), worker.id, start_time, time.time(), 1
 
     return 1, aln_scores_df, platform.node(), worker.id, start_time, time.time(), return_code
 
