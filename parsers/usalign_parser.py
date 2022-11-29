@@ -12,7 +12,7 @@ import re
 def parse_usalign_file(fn,alignment_type):
     """ Read given USalign alignment file
 
-    :param fn: path string for score file
+    :param fn: path string for alignment log file
     :param alignment_type: string parameter to set format of alignment output to parse; currently accepted: CP, SNS, or FNS
     :return: dictionary of quantitative results associated with the alignment. Keys:
                     'struct1': string, path to the query structure; always assumed to be the model structure
@@ -81,6 +81,12 @@ def parse_usalign_file(fn,alignment_type):
 if __name__ == '__main__':
     # test harness for parsers
 
-    result_dict, start, stop, return_code = parse_tmalign_score_file('....')
+    result_dict, start, stop, return_code = parse_tmalign_score_file('/home/russ/Projects/ornl_DLFA/structural_alignment_codes/USalign_results/3cna_2pel_usalign_tmalign.log','None')
+
+    result_dict, start, stop, return_code = parse_tmalign_score_file('/home/russ/Projects/ornl_DLFA/structural_alignment_codes/USalign_results/3cna_2pel_usalign_cp.log','CP')
+
+    result_dict, start, stop, return_code = parse_tmalign_score_file('/home/russ/Projects/ornl_DLFA/structural_alignment_codes/USalign_results/3cna_2pel_usalign_sNS.log','sNS')
+
+    result_dict, start, stop, return_code = parse_tmalign_score_file('/home/russ/Projects/ornl_DLFA/structural_alignment_codes/USalign_results/3cna_2pel_usalign_fNS.log','fNS')
 
     pass
