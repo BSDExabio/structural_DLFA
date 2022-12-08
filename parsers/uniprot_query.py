@@ -2,7 +2,7 @@
 """
     Request Uniprot flat files associated with given UniProt Accession IDs
 
-    (Written by Russell B Davidson, davidsonrb@ornl.gov)
+    (Written by Russell B Davidson, davidsonrb@ornl.gov, rbdavid)
 """
 
 import requests
@@ -23,7 +23,7 @@ dictionary_namespace = {'entry_name': '',           # ID line
                         'features': [],             # FT lines
                         'sequence': '>',            # SQ and blank lines afterwards
                         'ecIDs': [],                # Gather any lines that have EC IDs in them
-                        'success': 0}
+                        'status': 0}
 
 def request_uniprot_metadata(accession_id):
     """
@@ -32,7 +32,7 @@ def request_uniprot_metadata(accession_id):
         response = requests.get(flat_file_url %(accession_id))
     except Exception as e:
         print(f'Requesting the associated flat file for {accession_id} failed.')
-        return {'success':0}
+        return {'status':-9999}
     
     status_code   = response.status_code
     response_text = response.text
@@ -40,7 +40,7 @@ def request_uniprot_metadata(accession_id):
     # successful response
     if status_code == 200:
         uni_dict = copy.deepcopy(dictionary_namespace)
-        uni_dict['success']   = 1
+        uni_dict['status'] = 0
         response_lines = response_text.split('\n')
         for line in response_lines:
             # gathering any and all instances where  EC ids are presented... morbid curiosity
@@ -105,19 +105,19 @@ def request_uniprot_metadata(accession_id):
     # if the request response fails with known 'failure' status codes
     elif status_code in [400,404,410,500,503]:
         print(uniprotID, status_code, response_text)
-        return {'success':0}
+        return {'status':status_code}
     # if the request response fails for any other reason
     else:
         print(uniprotID, status_code, 'Something really funky is going on')
-        return {'success':0}
+        return {'status':status_code}
 
 
 if __name__ == '__main__':
     # real uniprot accession id
     results = request_uniprot_metadata('A0A0M3KL33')
-    assert results['success'] == 1
+    assert results['status'] == 0
 
     # fake uniprot accession id
     results = request_uniprot_metadata('BOGUS')
-    assert results['success'] == 0
+    assert results['status'] != 0
 
