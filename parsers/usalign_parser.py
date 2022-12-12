@@ -25,7 +25,7 @@ def parse_usalign_file(fn,alignment_type):
                     'Len2': float, the target structure's length
                     'd0_1': float, the normalized distance for query structure; used in TMscore metric calculation
                     'd0_2': float, the normalized distance for target structure; used in TMscore metric calculation
-                    'map_2_to_1': dictionary, keys are target structure's residue indices (string) that map to a tuple with mobile structure's residue index (string), query residue name, target residue name, and alignment distance (float, only available for SNS and FNS alignments); optional, will not be present if alignment_type != 'CP', 'SNS', 'FNS'
+                    'map_1_to_2': dictionary, keys are query structure's ('1') residue indices (string) that map to a tuple with query residue name, target structure's ('2') residue index (string), target residue name, and alignment distance (float, only available for SNS and FNS alignments); optional, will not be present if alignment_type != 'CP', 'SNS', 'FNS'
     """
     start_time = time.time()
     results = {}
@@ -54,20 +54,29 @@ def parse_usalign_file(fn,alignment_type):
         map_lines    = [line.strip() for line in lines if ' CA ' == line[:4]]
 
         # dictionary of tuples; keys are mobile residue index with values being a tuple of (target residue index, mobile resname, target resname)
-        results['map_2_to_1'] = {}
+        results['map_1_to_2'] = {}
         for line in map_lines:
-            temp = line.split()
-            results['map_2_to_1'].update({temp[7] : (temp[3],temp[1],temp[5])})
+            #temp = line.split()
+            #temp[7] -> target resid
+            #temp[5] -> target resname
+            #temp[3] -> query resid
+            #temp[1] -> query resname
+            results['map_1_to_2'].update({line[10:14] : (line[4:8], line[26:30], line[20:24])}
     
     elif alignment_type.upper() in ['SNS','FNS']:
         # gather the alignment mapping
         map_lines    = [line.strip() for line in lines if ' CA ' == line[:4]]
         
         # dictionary of tuples; keys are mobile residue index with values being a tuple of (target residue index, mobile resname, target resname, distance)
-        results['map_2_to_1'] = {}
+        results['map_1_to_2'] = {}
         for line in map_lines:
-            temp = line.split()
-            results['map_2_to_1'].update({temp[7] : (temp[3],temp[1],temp[5],float(temp[8]))})
+            #temp = line.split()
+            #temp[7] -> target resid
+            #temp[5] -> target resname
+            #temp[3] -> query resid
+            #temp[1] -> query resname
+            #temp[8] -> alignment distance
+            results['map_1_to_2'].update({line[10:14] : (line[4:8], line[26:30], line[20:24], float(line[32:-1]))}
 
     else:
         print(f"'{alignment_type}' not expected by parser function. Only returning alignment quantitative metrics. No mapping.")
