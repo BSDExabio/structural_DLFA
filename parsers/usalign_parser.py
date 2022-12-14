@@ -56,12 +56,11 @@ def parse_usalign_file(fn,alignment_type):
         # dictionary of tuples; keys are mobile residue index with values being a tuple of (target residue index, mobile resname, target resname)
         results['map_1_to_2'] = {}
         for line in map_lines:
-            #temp = line.split()
-            #temp[7] -> target resid
-            #temp[5] -> target resname
-            #temp[3] -> query resid
-            #temp[1] -> query resname
-            results['map_1_to_2'].update({line[10:14] : (line[4:8], line[26:30], line[20:24])}
+            # line format: 'CA  LEU A 111 \t CA  GLN A  97'
+            # awkward white spaces:      ^^
+            # wanna keep: {'111': ('97','LEU','GLN')}
+            temp = [elem.strip() for elem in line.split('\t')]
+            results['map_1_to_2'].update({temp[0][-4:].strip(): (temp[1][-4:].strip(),temp[0][4:7],temp[1][4:7])})
     
     elif alignment_type.upper() in ['SNS','FNS']:
         # gather the alignment mapping
@@ -70,13 +69,11 @@ def parse_usalign_file(fn,alignment_type):
         # dictionary of tuples; keys are mobile residue index with values being a tuple of (target residue index, mobile resname, target resname, distance)
         results['map_1_to_2'] = {}
         for line in map_lines:
-            #temp = line.split()
-            #temp[7] -> target resid
-            #temp[5] -> target resname
-            #temp[3] -> query resid
-            #temp[1] -> query resname
-            #temp[8] -> alignment distance
-            results['map_1_to_2'].update({line[10:14] : (line[4:8], line[26:30], line[20:24], float(line[32:-1]))}
+            # line format: 'CA  LEU A 111 \t CA  GLN A  97 \t    1.568'
+            # awkward white spaces:      ^^               ^^
+            # wanna keep: {'111': ('97','LEU','GLN',1.568)}
+            temp = [elem.strip() for elem in line.split('\t')]
+            results['map_1_to_2'].update({temp[0][-4:].strip(): (temp[1][-4:].strip(),temp[0][4:7],temp[1][4:7],float(temp[2]))})
 
     else:
         print(f"'{alignment_type}' not expected by parser function. Only returning alignment quantitative metrics. No mapping.")
