@@ -100,9 +100,9 @@ def submit_pipeline(proteins, script):
     
     INPUT:
         :param proteins: list with elements 0 to 2 being a string, a list, and a string
-                         proteins[0] is a path string that points to a pdb file used as the mobile structure
-                         proteins[1] is a list of path strings that point to the pbd files to be used as the target structures
-                         proteins[2] is a path string that points to a pdb file used as the mobile structure
+                         proteins[0] is a path string or list of path strings that point to the pbd files to be used as the query structures
+                         proteins[1] is a path string that points to a pdb file used as the target structure
+                         proteins[2] is a path string that points to the final location for output to be written
         :param script: path string that points to the bash script that will be subprocess.run'd to automate the alignment between mobile and target structures
     OUTPUT:
         :return: resource/node information, dask worker id, start time, stop time, alignment return code
@@ -110,25 +110,25 @@ def submit_pipeline(proteins, script):
     worker = get_worker()
     start_time = time.time()
     results_dict = {}
-    query_protein  = proteins[0]
-    target_proteins= proteins[1]
+    query_proteins = proteins[0]
+    target_protein = proteins[1]
     output_directory = proteins[2]
 
-    if type(target_proteins) == str:
-        target_proteins = [target_proteins]
+    if type(query_proteins) == str:
+        query_proteins = [query_proteins]
 
-    for target in target_proteins:
-        temp_path = Path(output_directory) / Path(target).stem
+    for query in query_proteins:
+        temp_path = Path(output_directory) / Path(query).stem
         temp_path.mkdir(mode=0o777,parents=True,exist_ok=True)
         
         try:
-            completed_process = subprocess.run(f'bash {script} {query_protein} {target} {str(temp_path)}',shell=True,capture_output=True,check=True)
+            completed_process = subprocess.run(f'bash {script} {query} {target_protein} {str(temp_path)}',shell=True,capture_output=True,check=True)
             return_code = completed_process.returncode
             if return_code != 0:
-                print(query_protein, target, str(temp_path), return_code, file=sys.stderr, flush=True)
+                print(query, target_protein, str(temp_path), return_code, file=sys.stderr, flush=True)
 
         except CalledProcessError as e:
-            print(query_protein, target, e, file=sys.stderr, flush=True)
+            print(query, target_protein, e, file=sys.stderr, flush=True)
             return_code = 1
         
     stop_time = time.time()
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     # read command line arguments.
     parser = argparse.ArgumentParser(description='Molecular dynamics simulation task manager')
     parser.add_argument('--scheduler-file', '-s', required=True, help='dask scheduler file')
-    parser.add_argument('--alignment-list-file', '-inp', required=True, help='list file that contains the paths to query and target pdb files as well as directory within which files will be written in')
+    parser.add_argument('--alignment-list-file', '-inp', required=True, help='list file that contains the paths to (1) query and (2) target pdb files as well as (3) the directory within which files will be written in')
     parser.add_argument('--script-path', '-sp', required=True, help='path that points to the script for the subprocess call')
     parser.add_argument('--timings-file', '-ts', required=True, help='CSV file for protein processing timings')
     parser.add_argument('--tskmgr-log-file', '-log', required=True, help='string that will be used to store logging info for this run')
