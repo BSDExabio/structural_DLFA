@@ -9,5 +9,6 @@ first_pdb=$(readlink -f $1)
 second_pdb=$(readlink -f $2)
 out_dir=$(readlink -f $3)
 
-$USALIGN_HOME/USalign $first_pdb $second_pdb -ter 1 -mm 5 -outfmt 0 -m $out_dir/trans_rot_matrix.dat > $out_dir/usalign.log	#-o $out_dir/USalign_fNS 
+$USALIGN_HOME/USalign $first_pdb $second_pdb -ter 1 -mm 5 -outfmt 0 -m $out_dir/trans_rot_matrix.dat -o $out_dir/USalign_fNS > $out_dir/usalign.log
+rm $out_dir/*pml
 
